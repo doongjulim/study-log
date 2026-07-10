@@ -6,7 +6,8 @@ tags: [TransactionalEventListener, transactional-event-listener, 트랜잭션이
 topic: "@TransactionalEventListener — 트랜잭션과 이벤트의 정합성"
 summary: 기본 @EventListener가 롤백돼도 알림이 나가는 정합성 문제를 출발점으로, @TransactionalEventListener의 동기화 콜백 메커니즘과 4가지 phase, AFTER_COMMIT 리스너 안 DB 쓰기가 조용히 유실되는 함정(REQUIRES_NEW로 해결), 그리고 커밋 후 실패·서버 다운에 대비하는 Transactional Outbox 패턴까지 인터뷰로 검증했다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-07-10
 ---
 
 # @TransactionalEventListener — 트랜잭션과 이벤트의 정합성

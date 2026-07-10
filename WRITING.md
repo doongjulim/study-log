@@ -42,13 +42,19 @@ distilled: false
 ```yaml
 ---
 type: refined
+slug: <파일명과 동일한 kebab-case>
 tags: [한/영 동의어 — 검색용, 풍부하게]
-sources: [01_Raw_Logs/...md 경로들]
+topic: 한 줄 주제
+summary: 한두 문장 요약
+contributors: [member1, member2]
+source_refs: [외부 안정 URL만 — raw 경로·brain uuid 금지(dangling)]
 updated: YYYY-MM-DD
 ---
 ```
 
-본문: 개념 정의 → 작동 원리 → 트레이드오프/한계 → 오답 코너 → 복습 체크리스트.
+- 개인 메타(`last_reviewed`/`confidence`)와 raw 추적은 로컬 `.review-state/<slug>.json` 사이드카에 (02에 넣지 말 것).
+
+본문: 개념 정의 → 작동 원리 → 트레이드오프/한계 → 오답 코너(`> [!WARNING]`) → `## 복습 체크` 체크리스트 → `[[관련-slug]]` 링크.
 
 ## 하드 룰
 

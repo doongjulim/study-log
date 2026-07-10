@@ -6,7 +6,8 @@ tags: [SSE, server-sent-events, SseEmitter, 실시간알림, realtime-notificati
 topic: SSE(SseEmitter) 실시간 알림의 작동 원리와 한계 (study-board 프로젝트)
 summary: SSE가 연결을 끊지 않고 응답을 스트림으로 흘려보내는 원리, SseEmitter return 후 스레드 반납·연결 유지 메커니즘, ConcurrentHashMap과 cleanup의 필요성, 스케일 아웃 시 JVM 로컬 한계와 pub/sub 해법을 인터뷰로 검증했다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-07-10
 ---
 
 # SSE(SseEmitter) 실시간 알림의 작동 원리와 한계

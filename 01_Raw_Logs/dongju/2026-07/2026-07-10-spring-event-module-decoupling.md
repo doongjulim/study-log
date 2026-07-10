@@ -6,7 +6,8 @@ tags: [spring-events, ApplicationEventPublisher, EventListener, 이벤트기반,
 topic: Spring 이벤트로 모듈 간 결합 차단하기 (study-board 프로젝트)
 summary: 기능별 패키지 구성의 근거(응집도)와, plan→notification 모듈을 인터페이스가 아닌 Spring 이벤트로 분리했을 때 결합이 어떻게 끊기는지(명령 vs 사실 통보, OCP)를 인터뷰로 검증했다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-07-10
 ---
 
 # Spring 이벤트로 모듈 간 결합 차단하기
