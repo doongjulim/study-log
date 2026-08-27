@@ -6,7 +6,8 @@ tags: [Java, 자바, JVM, 바이트코드, bytecode, javac, class파일, WORA, �
 topic: Java의 동작 원리와 기초 (컴파일→JVM 실행→메모리→GC)
 summary: .java가 바이트코드로 컴파일되어 JVM에서 실행되는 전체 파이프라인을 인터뷰로 검증했다. 인터프리터/JIT 공존 이유(시작 속도 vs 반복 성능), 스택(스레드별)·힙(공유 1개) 구조와 동시성 문제의 뿌리, GC의 reachability 판정 기준과 StackOverflow/OOM/Stop-the-World까지 다뤘다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-08-25
 ---
 
 # Java의 동작 원리와 기초

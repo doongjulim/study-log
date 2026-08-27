@@ -6,7 +6,8 @@ tags: [Pageable, Page, Slice, 페이징, paging, pagination, 검색, search, off
 topic: Spring Data JPA 페이징 & 검색(Pageable)의 작동 원리와 한계 (study-board 프로젝트)
 summary: 개인 프로젝트 study-board의 게시글 목록/검색을 소재로, DB 페이징이 필요한 이유(메모리·스냅샷), Pageable이 만들어지고 실행되는 메커니즘(ArgumentResolver·구동 시 파싱·동적 프록시), offset 성능 절벽과 LIKE '%kw%' 인덱스 불가·Page vs Slice 트레이드오프를 인터뷰로 검증했다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-08-25
 ---
 
 # Spring Data JPA 페이징 & 검색(Pageable)의 작동 원리와 한계
