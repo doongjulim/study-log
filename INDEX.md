@@ -21,3 +21,7 @@
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 호출 카운터·임계값, 핫스팟, 워밍업, 역최적화
 - [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError
 - [GC 와 도달 가능성](02_Refined/garbage-collection-reachability.md) — GC Root, reachability, OOM 이 나는 이유, 메모리 누수 정의, Stop-the-World, 세대별은 별개 축
+- [비밀값 해시 알고리즘 선택 기준](02_Refined/secret-hashing-algorithm-choice.md) — BCrypt vs SHA-256, 비밀번호 저장, 리프레시 토큰 저장, 왜 알고리즘이 다른가, 해시 선택 기준
+- [비밀값의 엔트로피와 탐색 공간](02_Refined/secret-entropy-and-search-space.md) — 엔트로피, 탐색 공간, 무차별 대입, 비트는 자릿수, SecureRandom, 사전 공격
+- [결정적 해시와 DB 조회](02_Refined/deterministic-hash-for-lookup.md) — salt 랜덤성, 인덱스를 못 타는 이유, 토큰 갱신 조회, 전체 스캔, 찾기와 검증의 분리
+- [오프라인 공격 vs 온라인 공격](02_Refined/offline-vs-online-attack.md) — 레이트 리밋, 초대 코드, 인증번호, 시도 횟수 통제, 느린 해시의 DoS 역효과
