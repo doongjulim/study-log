@@ -25,3 +25,6 @@
 - [비밀값의 엔트로피와 탐색 공간](02_Refined/secret-entropy-and-search-space.md) — 엔트로피, 탐색 공간, 무차별 대입, 비트는 자릿수, SecureRandom, 사전 공격
 - [결정적 해시와 DB 조회](02_Refined/deterministic-hash-for-lookup.md) — salt 랜덤성, 인덱스를 못 타는 이유, 토큰 갱신 조회, 전체 스캔, 찾기와 검증의 분리
 - [오프라인 공격 vs 온라인 공격](02_Refined/offline-vs-online-attack.md) — 레이트 리밋, 초대 코드, 인증번호, 시도 횟수 통제, 느린 해시의 DoS 역효과
+- [리프레시 토큰 회전](02_Refined/refresh-token-rotation.md) — 회전은 차단이 아니라 탐지, 재사용 탐지, family 체인 폐기, 삭제하면 안 되는 이유
+- [토큰 갱신의 동시성](02_Refined/token-refresh-concurrency.md) — 필터에서 회전 금지, 고아 토큰, 동시 요청 경합, single-flight, grace period 멱등 재응답
+- [토큰 저장 위치 — localStorage vs HttpOnly 쿠키](02_Refined/token-storage-httponly-cookie.md) — XSS 유출, CSRF, SameSite/Secure/Path, 액세스·리프레시 저장 분리
