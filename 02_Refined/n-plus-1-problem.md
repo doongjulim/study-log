@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: n-plus-1-problem
-tags: [N+1, N+1문제, n-plus-one, fetch-join, join-fetch, EntityGraph, 엔티티그래프, default_batch_fetch_size, batch-size, IN절배치, 지연로딩쿼리폭발, 카테시안곱, 컬렉션페이징, firstResult-maxResults, MultipleBagFetchException, DTO조회, projection, JPA, Hibernate]
+tags: [N+1, N+1문제, n-plus-one, fetch-join, join-fetch, EntityGraph, 엔티티그래프, default_batch_fetch_size, batch-size, IN절배치, 지연로딩쿼리폭발, 카테시안곱, 컬렉션페이징, firstResult-maxResults, MultipleBagFetchException, DTO조회, projection, JPA, Hibernate, equals, hashCode, EqualsAndHashCode, 컬렉션연산, 숨은N+1]
 topic: 연관 엔티티를 하나씩 초기화하다 쿼리가 1+N 번 나가는 문제와 fetch join / batch size / DTO 조회 처방
 summary: 목록 조회 1번 + 각 행의 연관 초기화 N번으로 쿼리가 폭발하는 문제. fetch join·@EntityGraph 로 한 방에 채우거나, batch size 로 IN 절 묶음 조회를 하거나, 애초에 DTO 로 직접 조회한다.
 contributors: [dongju]
 source_refs:
   - https://docs.spring.io/spring-data/jpa/reference/jpa/entity-persistence.html
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
-updated: 2026-08-25
+updated: 2026-09-10
 ---
 
 # N+1 문제와 fetch join
@@ -92,6 +92,25 @@ N+1 이 **1 + (N/배치크기)** 로 줄어든다. 컬렉션이 여러 개일 �
 > - **"EAGER 로 바꾸면 N+1 이 사라진다"** — 오히려 악화된다. 쿼리 시점을 통제할 수 없어 예상 못 한 지점에서 터진다.
 > - **"컬렉션도 fetch join 하고 페이징하면 된다"** — 메모리 페이징으로 조용히 전환된다. 로그의 `HHH000104` 를 볼 것.
 
+### 코드에 쿼리가 보이지 않는 N+1 — equals / hashCode
+
+`@EqualsAndHashCode`(전체 필드)가 붙은 엔티티는 `hashCode()` 계산에 지연 연관 필드가 포함된다.
+
+```java
+Set<Notice> set = new HashSet<>();
+for (Notice n : notices) set.add(n);   // 1000개
+```
+
+`add()` → `hashCode()` 1000회 → 각각 프록시 초기화 → **`SELECT` 1000번.**
+쿼리를 유발할 만한 코드가 한 줄도 보이지 않는데 쿼리가 쏟아진다.
+
+**`join fetch` 로 아무리 최적화해도 소용이 없다.** 조회는 한 번에 끝났더라도
+`equals`/`hashCode` 가 뒤에서 다시 프록시를 깨우기 때문이다.
+연관 필드를 비교 대상에서 빼는 것이 근본 처방이다 ([[jpa-entity-equality]]).
+
+> 참고로 이것은 **쿼리 횟수** 문제이며, 해시 충돌로 인한 O(n) 선형 탐색은 **비교 횟수** 문제다.
+> 이름이 비슷해 헷갈리기 쉽지만 원인도 해법도 다르다 ([[equals-hashcode-contract]]).
+
 ## 복습 체크
 
 - [ ] 글 100건 목록에서 쿼리가 몇 번 나가는지, 그 구성(1 + N)을 설명할 수 있는가?
@@ -100,7 +119,9 @@ N+1 이 **1 + (N/배치크기)** 로 줄어든다. 컬렉션이 여러 개일 �
 - [ ] 컬렉션 fetch join 에 페이징을 걸면 무슨 일이 벌어지는가? 로그에 뭐가 찍히는가?
 - [ ] `default_batch_fetch_size` 가 쿼리 횟수를 어떤 식으로 줄이는가?
 - [ ] 컬렉션 두 개를 동시에 fetch join 하면 어떤 예외가 나는가?
+- [ ] `equals`/`hashCode` 가 N+1 을 유발하는 경로를 설명할 수 있는가?
+- [ ] 이 경우 `join fetch` 가 왜 처방이 되지 못하는가?
 
 ## 관련
 
-[[lazy-loading-proxy]] · [[open-in-view-osiv]] · [[db-pagination]] · [[keyset-pagination]]
+[[lazy-loading-proxy]] · [[open-in-view-osiv]] · [[db-pagination]] · [[keyset-pagination]] · [[jpa-entity-equality]] · [[equals-hashcode-contract]]

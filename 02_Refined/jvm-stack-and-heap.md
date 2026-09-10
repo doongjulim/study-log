@@ -1,13 +1,13 @@
 ---
 type: refined
 slug: jvm-stack-and-heap
-tags: [스택, stack, 힙, heap, 런타임데이터영역, 메모리구조, 스택프레임, stack-frame, 지역변수, 기본형, 참조, reference, 참조변수, 스레드별, thread-private, 공유메모리, shared-memory, 스레드안전, thread-safety, 동시성, concurrency, StackOverflowError, 메서드영역]
+tags: [스택, stack, 힙, heap, 런타임데이터영역, 메모리구조, 스택프레임, stack-frame, 지역변수, 기본형, 참조, reference, 참조변수, 스레드별, thread-private, 공유메모리, shared-memory, 스레드안전, thread-safety, 동시성, concurrency, StackOverflowError, 메서드영역, Error, Exception, Throwable, ExceptionHandler, 무한재귀, infinite-recursion]
 topic: 스택은 스레드마다 하나, 힙은 전체가 공유하는 하나 — 이 비대칭이 자바 동시성 문제의 뿌리
 summary: 기본형 지역변수와 참조는 스택에, new 로 만든 객체는 힙에 놓인다. 스택은 스레드마다 독립이라 지역변수는 태생적으로 스레드 안전하고, 힙은 공유되기에 객체 교환이 가능한 대신 동시성 문제가 발생한다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html
-updated: 2026-08-25
+updated: 2026-09-10
 ---
 
 # JVM 메모리 구조 — 스택과 힙
@@ -76,6 +76,36 @@ public void order() {
 >   참조가 하나도 남지 않았을 때 GC 대상이 될 뿐이다.
 > - **"지역변수도 동기화해야 안전하다"** — 다른 스레드가 접근할 경로가 없어 이미 안전하다.
 
+### 스택 고갈은 `Exception` 이 아니라 `Error` 다
+
+```
+Throwable
+├── Exception   ← 애플리케이션이 대응할 수 있는 상황 (복구 시도 가능)
+└── Error       ← JVM 수준에서 무너진 상황 (복구 대상이 아님)
+    ├── StackOverflowError
+    └── OutOfMemoryError
+```
+
+이 구분은 실무에서 치명적이다. `Error` 는 `Exception` 의 하위가 아니므로
+
+```java
+@ExceptionHandler(Exception.class)   // StackOverflowError 는 여기 걸리지 않는다
+```
+
+전역 예외 핸들러를 그대로 통과해 WAS 까지 올라간다. 로그에는 동일한 스택 프레임이 수천 줄 반복되고
+사용자에겐 정제되지 않은 500 이 나간다. 게다가 스택이 이미 무너진 상태라 `catch` 안에서 뭘 하려 해도 다시 터질 수 있다.
+**고칠 대상은 예외 처리가 아니라 스택을 고갈시킨 코드 자체다.**
+
+무한 루프와 무한 재귀는 다르다. `while(true)` 는 프레임을 쌓지 않아 영원히 돌지만,
+재귀는 호출마다 프레임을 쌓으므로 몇 초 안에 죽는다.
+엔티티의 양방향 연관을 `equals` 로 비교할 때가 대표적인 사례다 ([[jpa-entity-equality]]).
+
+### 지역변수의 스레드 안전이 만드는 실무 판단
+
+지역변수가 구조적으로 도달 불가능하다는 사실은 "동기화가 필요 없다"에서 끝나지 않는다.
+**메서드 안에서 만들어 밖으로 새어나가지 않는 객체에 락을 거는 것은 순수한 낭비**라는 판단으로 이어진다.
+`StringBuffer` 대신 `StringBuilder` 를 쓰는 근거가 정확히 이것이다 ([[string-concatenation-cost]]).
+
 ## 복습 체크
 
 - [ ] `int count` 와 `new Pizza()` 와 `p` 가 각각 어디에 놓이는지 말할 수 있는가?
@@ -84,7 +114,10 @@ public void order() {
 - [ ] 힙이 공유되지 않으면 무엇이 불가능해지는가?
 - [ ] `StackOverflowError` 와 `OutOfMemoryError` 가 각각 어느 영역의 고갈인가?
 - [ ] 싱글턴 빈에 가변 필드를 두면 왜 위험한가?
+- [ ] `StackOverflowError` 가 `Exception` 이 아니라 `Error` 인 것이 왜 실무에서 문제가 되는가?
+- [ ] 무한 루프와 무한 재귀는 무엇이 다른가?
+- [ ] 지역변수로 만든 객체에 동기화를 거는 것이 왜 낭비인가?
 
 ## 관련
 
-[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]]
+[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]]

@@ -6,7 +6,8 @@ tags: [equals, hashCode, 규약, contract, 비둘기집 원리, pigeonhole, 해�
 topic: equals 를 재정의하면 hashCode 도 재정의해야 하는 이유와, JPA 엔티티에서 두 메서드를 어떻게 구현해야 하는가
 summary: 필수 규약은 "equals 가 true 면 hashCode 도 같다" 한 방향뿐이며 역방향은 int 의 유한성 때문에 지킬 수조차 없다. JPA 엔티티에 Lombok 전체 필드 @EqualsAndHashCode 를 붙이면 무한 재귀·프록시 예외·N+1 세 지뢰를 동시에 밟고, id 는 save 시점에 변하는 가변 필드라 hashCode 에 넣을 수 없어 결국 상수 hashCode + instanceof + id 기반 equals 가 답이 된다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-09-10
 ---
 
 ## 배운 개념

@@ -1,13 +1,13 @@
 ---
 type: refined
 slug: lazy-loading-proxy
-tags: [지연로딩, lazy-loading, LAZY, EAGER, 즉시로딩, 프록시, proxy, 프록시객체, LazyInitializationException, could-not-initialize-proxy, no-Session, 프록시초기화, Hibernate-initialize, 영속성컨텍스트, 준영속, detached, JPA, Hibernate]
+tags: [지연로딩, lazy-loading, LAZY, EAGER, 즉시로딩, 프록시, proxy, 프록시객체, LazyInitializationException, could-not-initialize-proxy, no-Session, 프록시초기화, Hibernate-initialize, 영속성컨텍스트, 준영속, detached, JPA, Hibernate, equals, hashCode, getClass, instanceof, HibernateProxy, 컬렉션연산]
 topic: 지연 로딩 프록시가 실제 값을 채우는 메커니즘과 LazyInitializationException 의 진짜 원인
 summary: LAZY 연관은 껍데기 프록시로 채워지고, 실제 값 접근 시 영속성 컨텍스트에 쿼리를 위임해 초기화된다. 컨텍스트가 닫힌 뒤 프록시를 건드리면 "부탁할 대상이 없어" LazyInitializationException 이 터진다.
 contributors: [dongju]
 source_refs:
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
-updated: 2026-08-25
+updated: 2026-09-10
 ---
 
 # 지연 로딩과 프록시
@@ -70,6 +70,32 @@ org.hibernate.LazyInitializationException:
 > - **"`@ManyToOne` 기본값은 LAZY"** — `@ManyToOne`/`@OneToOne` 의 JPA 기본값은 **`EAGER`** 다.
 >   `@OneToMany`/`@ManyToMany` 만 `LAZY` 가 기본.
 
+### equals / hashCode 안의 지연 연관 — 예외가 엉뚱한 곳에서 터진다
+
+이 예외는 보통 "컨트롤러·뷰에서 지연 연관을 건드릴 때 나는 것"으로 알려져 있지만,
+`equals`/`hashCode` 에 지연 연관 필드가 포함되면 **발생 지점이 완전히 달라진다.**
+
+```java
+@Entity @EqualsAndHashCode           // 모든 필드 포함 → writer 프록시도 비교 대상
+class Notice { @Id Long id; String title; @ManyToOne(fetch = LAZY) Member writer; }
+```
+
+`set.add()`, `list.contains()`, `assertEquals()` 같은 **평범한 컬렉션 연산이 예외 발생 지점**이 된다.
+`equals` 는 아무도 터질 거라고 예상하지 않는 메서드이고, 스택 트레이스도 `HashSet.add` 로 찍혀
+원인을 가린다. 그래서 진단이 훨씬 어렵다 ([[jpa-entity-equality]]).
+
+### getClass() 는 프록시를 다른 클래스로 판정한다
+
+프록시는 원본 클래스를 **상속한** 껍데기(`Member$HibernateProxy$abc123`)이므로,
+
+| | 원본 vs 프록시 |
+|---|---|
+| `getClass() != o.getClass()` | **다르다고 판정** → 식별자 비교까지 가지도 못함 |
+| `o instanceof Member` | 하위 타입이므로 **통과** |
+
+엔티티 `equals` 에서 `instanceof` 를 쓰는 이유가 이것이다. 대가로 상속 계층에서 대칭성이 깨질 여지를 받아들인다.
+Hibernate 6 라면 `Hibernate.getClass(o)` 로 프록시를 벗겨낼 수도 있다.
+
 ## 복습 체크
 
 - [ ] LAZY 연관 필드에 처음 담기는 것이 무엇인지, 그 안에 무엇이 들어있는지 말할 수 있는가?
@@ -77,7 +103,9 @@ org.hibernate.LazyInitializationException:
 - [ ] `LazyInitializationException` 의 원인을 "DB" 가 아니라 "Session" 으로 정확히 지목할 수 있는가?
 - [ ] 이 예외가 나오는 대표 상황 세 가지를 댈 수 있는가?
 - [ ] 연관관계 애노테이션별 fetch 기본값을 정확히 말할 수 있는가?
+- [ ] `equals` 안에 지연 연관이 들어가면 예외 발생 지점이 어떻게 달라지는가?
+- [ ] `getClass()` 가 프록시를 어떻게 판정하며, 대안은 무엇인가?
 
 ## 관련
 
-[[open-in-view-osiv]] · [[n-plus-1-problem]] · [[dirty-checking]]
+[[open-in-view-osiv]] · [[n-plus-1-problem]] · [[dirty-checking]] · [[jpa-entity-equality]]

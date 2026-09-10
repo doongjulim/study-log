@@ -8,8 +8,8 @@
 - [@TransactionalEventListener](02_Refined/transactional-event-listener.md) — TransactionPhase, AFTER_COMMIT 조용한 유실 함정, REQUIRES_NEW, 원자성 상실
 - [Transactional Outbox 패턴](02_Refined/transactional-outbox-pattern.md) — outbox 테이블, 반드시 전달, 릴레이 폴링/CDC, at-least-once·멱등성
 - [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기, 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE
-- [지연 로딩과 프록시](02_Refined/lazy-loading-proxy.md) — LAZY/EAGER, 프록시 초기화, LazyInitializationException "no Session", fetch 기본값
-- [N+1 문제와 fetch join](02_Refined/n-plus-1-problem.md) — 1+N 쿼리, join fetch, @EntityGraph, default_batch_fetch_size, 컬렉션 페이징 불가
+- [지연 로딩과 프록시](02_Refined/lazy-loading-proxy.md) — LAZY/EAGER, 프록시 초기화, LazyInitializationException "no Session", fetch 기본값, equals 안의 프록시, getClass vs instanceof, 컬렉션 연산에서 터지는 예외
+- [N+1 문제와 fetch join](02_Refined/n-plus-1-problem.md) — 1+N 쿼리, join fetch, @EntityGraph, default_batch_fetch_size, 컬렉션 페이징 불가, equals/hashCode 가 만드는 숨은 N+1
 - [변경 감지 (Dirty Checking)](02_Refined/dirty-checking.md) — 스냅샷, flush 시점, 영속 vs 준영속, readOnly 최적화, 쓰기 지연
 - [DB 수준 페이징과 Page vs Slice](02_Refined/db-pagination.md) — LIMIT/OFFSET, ORDER BY 전제조건, count 쿼리 비용, Slice limit+1
 - [키셋(커서) 페이징](02_Refined/keyset-pagination.md) — OFFSET 성능 절벽, WHERE 마지막값, 무한 스크롤, 임의 페이지 점프 포기
@@ -19,7 +19,7 @@
 - [HandlerMethodArgumentResolver](02_Refined/handler-method-argument-resolver.md) — 컨트롤러 파라미터 바인딩, PageableHandlerMethodArgumentResolver, 0-based page, 커스텀 리졸버
 - [JVM 실행 파이프라인과 WORA](02_Refined/jvm-execution-pipeline.md) — javac→바이트코드→JVM, 플랫폼 독립성, 클래스로더·런타임데이터영역·실행엔진
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 호출 카운터·임계값, 핫스팟, 워밍업, 역최적화
-- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError
+- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, 무한 재귀, @ExceptionHandler 가 못 잡는 것
 - [GC 와 도달 가능성](02_Refined/garbage-collection-reachability.md) — GC Root, reachability, OOM 이 나는 이유, 메모리 누수 정의, Stop-the-World, 세대별은 별개 축
 - [비밀값 해시 알고리즘 선택 기준](02_Refined/secret-hashing-algorithm-choice.md) — BCrypt vs SHA-256, 비밀번호 저장, 리프레시 토큰 저장, 왜 알고리즘이 다른가, 해시 선택 기준
 - [비밀값의 엔트로피와 탐색 공간](02_Refined/secret-entropy-and-search-space.md) — 엔트로피, 탐색 공간, 무차별 대입, 비트는 자릿수, SecureRandom, 사전 공격
@@ -28,3 +28,9 @@
 - [리프레시 토큰 회전](02_Refined/refresh-token-rotation.md) — 회전은 차단이 아니라 탐지, 재사용 탐지, family 체인 폐기, 삭제하면 안 되는 이유
 - [토큰 갱신의 동시성](02_Refined/token-refresh-concurrency.md) — 필터에서 회전 금지, 고아 토큰, 동시 요청 경합, single-flight, grace period 멱등 재응답
 - [토큰 저장 위치 — localStorage vs HttpOnly 쿠키](02_Refined/token-storage-httponly-cookie.md) — XSS 유출, CSRF, SameSite/Secure/Path, 액세스·리프레시 저장 분리
+- [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서
+- [오토박싱과 래퍼 캐시](02_Refined/wrapper-cache-autoboxing.md) — Long.valueOf, -128~127 캐시, ID 128 부터 깨지는 == 비교, fail-open vs fail-closed, contains 타입 불일치
+- [equals / hashCode 규약](02_Refined/equals-hashcode-contract.md) — 필수는 한 방향뿐, 비둘기집 원리, HashMap 3단계, 가변 키와 유령 원소, 정확성 vs 성능
+- [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상수 hashCode, 1차 캐시 동일성
+- [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
+- [문자열 연결의 비용](02_Refined/string-concatenation-cost.md) — + 는 invokedynamic, 루프에서 O(n²), StringBuilder 분할상환 O(1), StringBuffer 를 안 쓰는 진짜 이유

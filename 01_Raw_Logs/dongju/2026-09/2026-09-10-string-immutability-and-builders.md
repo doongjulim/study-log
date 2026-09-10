@@ -6,7 +6,8 @@ tags: [String, 문자열, 불변, immutable, 불변객체, 문자열 상수 풀,
 topic: String 의 불변성이 만들어내는 이득과, 문자열 연결에서 StringBuilder/StringBuffer 를 언제 왜 쓰는가
 summary: 불변성 하나가 해시 캐싱·스레드 안전·풀 공유라는 세 이득을 나란히 낳는다. + 연산은 컴파일러가 invokedynamic 으로 최적화하지만 그 최적화는 하나의 표현식 안에서만 작동하므로, 루프를 가로질러 누적하는 자리에서는 O(n^2) 를 O(n) 으로 바꾸기 위해 명시적 StringBuilder 가 필요하다. StringBuffer 는 느려서가 아니라 정확히 필요한 구간이 존재하지 않아서 쓰지 않는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-09-10
 ---
 
 ## 배운 개념

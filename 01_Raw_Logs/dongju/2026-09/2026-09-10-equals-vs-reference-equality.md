@@ -6,7 +6,8 @@ tags: [==, equals, 동일성, identity, 동등성, equality, 참조 비교, refe
 topic: == 와 equals() 의 차이, 오토박싱 캐시가 만드는 함정, 그리고 소유자 확인을 equals 로 해야 하는 이유
 summary: == 는 "변수 상자에 담긴 값 자체"를 비교할 뿐이며, 참조타입에서는 그 값이 참조이므로 결과적으로 동일 객체 여부를 묻게 된다. JPA 엔티티의 @Id 가 Long 인 이상 -128~127 밖에서는 같은 값이라도 서로 다른 객체가 되어 == 소유자 확인이 128번째 회원부터 조용히 깨진다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-09-10
 ---
 
 ## 배운 개념
