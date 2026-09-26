@@ -14,12 +14,12 @@
 - [DB 수준 페이징과 Page vs Slice](02_Refined/db-pagination.md) — LIMIT/OFFSET, ORDER BY 전제조건, count 쿼리 비용, Slice limit+1
 - [키셋(커서) 페이징](02_Refined/keyset-pagination.md) — OFFSET 성능 절벽, WHERE 마지막값, 무한 스크롤, 임의 페이지 점프 포기
 - [LIKE '%kw%' 와 B-tree 인덱스](02_Refined/like-search-btree-index.md) — 앞 와일드카드 풀 스캔, 탐색 시작점, Containing vs StartingWith, full-text
-- [리포지토리 동적 프록시](02_Refined/spring-data-repository-proxy.md) — 구현 없는 인터페이스, 구동 시 1회 생성 싱글턴, SimpleJpaRepository, @Transactional AOP, self-invocation
+- [리포지토리 동적 프록시](02_Refined/spring-data-repository-proxy.md) — 구현 없는 인터페이스, 구동 시 1회 생성 싱글턴, SimpleJpaRepository, @Transactional AOP, 프록시가 롤백 결정, self-invocation
 - [파생 쿼리 메서드](02_Refined/derived-query-method.md) — 메서드 이름이 쿼리, 엔티티 필드명, 구동 시점 파싱 fail-fast, PropertyReferenceException
 - [HandlerMethodArgumentResolver](02_Refined/handler-method-argument-resolver.md) — 컨트롤러 파라미터 바인딩, PageableHandlerMethodArgumentResolver, 0-based page, 커스텀 리졸버
 - [JVM 실행 파이프라인과 WORA](02_Refined/jvm-execution-pipeline.md) — javac→바이트코드→JVM, 플랫폼 독립성, 클래스로더·런타임데이터영역·실행엔진
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 호출 카운터·임계값, 핫스팟, 워밍업, 역최적화
-- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, 무한 재귀, @ExceptionHandler 가 못 잡는 것
+- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것
 - [GC 와 도달 가능성](02_Refined/garbage-collection-reachability.md) — GC Root, reachability, OOM 이 나는 이유, 메모리 누수 정의, Stop-the-World, 세대별은 별개 축
 - [비밀값 해시 알고리즘 선택 기준](02_Refined/secret-hashing-algorithm-choice.md) — BCrypt vs SHA-256, 비밀번호 저장, 리프레시 토큰 저장, 왜 알고리즘이 다른가, 해시 선택 기준
 - [비밀값의 엔트로피와 탐색 공간](02_Refined/secret-entropy-and-search-space.md) — 엔트로피, 탐색 공간, 무차별 대입, 비트는 자릿수, SecureRandom, 사전 공격
@@ -34,3 +34,9 @@
 - [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상수 hashCode, 1차 캐시 동일성
 - [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
 - [문자열 연결의 비용](02_Refined/string-concatenation-cost.md) — + 는 invokedynamic, 루프에서 O(n²), StringBuilder 분할상환 O(1), StringBuffer 를 안 쓰는 진짜 이유
+- [record](02_Refined/java-record.md) — 요청/응답 DTO, private final 자동, 정규 생성자·컴팩트 생성자, 접근자 title() vs getTitle(), Jackson 생성자 바인딩, getRecordComponents, 엔티티로 못 쓰는 이유
+- [얕은 불변과 방어적 복사](02_Refined/shallow-immutability-defensive-copy.md) — final 은 참조만 고정, 공유 리스트 앨리어싱, unmodifiableList(view·CCTV) vs List.copyOf(copy·사진), readonly 없음, copyOf null NPE
+- [Optional](02_Refined/java-optional.md) — 시그니처가 전달하는 "없을 수 있음", 인지 강제 vs 처리 강제, get() → NoSuchElementException, orElseThrow(), 파라미터 상태 3개·필드·Optional<List> 안티패턴
+- [orElse vs orElseGet](02_Refined/optional-orelse-vs-orelseget.md) — 인자 먼저 평가, 즉시 평가 vs 지연 평가, Supplier, 부수효과로 인한 중복 저장·불필요 호출
+- [Checked vs Unchecked 예외](02_Refined/checked-vs-unchecked-exception.md) — RuntimeException 상속 여부가 유일 기준, catch or declare, throws 전파, IOException 설계 의도, DataAccessException 예외 전환
+- [@Transactional 롤백 규칙](02_Refined/transactional-rollback-rules.md) — 기본 RuntimeException·Error 롤백 / Checked 커밋, 프록시가 통과 예외 타입으로 결정, rollbackFor vs RuntimeException 상속, catch 로 삼키면 전체 커밋, UnexpectedRollbackException

@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-3.html#jls-3.10.5
-updated: 2026-09-10
+updated: 2026-09-26
 ---
 
 # String 의 불변성
@@ -84,6 +84,8 @@ public int hashCode() {
 
 - 불변의 대가는 **연결할 때마다 새 객체**라는 점이다. 반복 누적에서 O(n²) 가 되는 이유가 이것이고,
   그래서 가변 버퍼를 쓰는 `StringBuilder` 가 필요하다 ([[string-concatenation-cost]]).
+- `String` 은 **깊은 불변**이지만, 모든 필드가 `final` 인 클래스가 곧 불변은 아니다. `final` 은 참조만 고정하므로
+  가변 컬렉션을 담으면 내용이 바뀐다 → 방어적 복사가 필요하다 ([[shallow-immutability-defensive-copy]]).
 - `intern()` 은 힙의 문자열을 풀에 넣어 공유시키지만 호출 비용이 있고, 대량 사용 시 풀이 커진다.
 - 비밀번호 같은 민감값을 `String` 으로 들고 있으면 **명시적으로 지울 수 없다.**
   가변인 `char[]` 를 쓰고 사용 후 덮어쓰라는 권고가 여기서 나온다.
@@ -108,4 +110,4 @@ public int hashCode() {
 
 ## 관련
 
-[[string-concatenation-cost]] · [[reference-vs-value-equality]] · [[wrapper-cache-autoboxing]] · [[equals-hashcode-contract]] · [[jvm-stack-and-heap]]
+[[string-concatenation-cost]] · [[reference-vs-value-equality]] · [[wrapper-cache-autoboxing]] · [[equals-hashcode-contract]] · [[jvm-stack-and-heap]] · [[shallow-immutability-defensive-copy]]

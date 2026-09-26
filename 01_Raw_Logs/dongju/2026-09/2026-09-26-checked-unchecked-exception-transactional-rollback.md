@@ -6,7 +6,8 @@ tags: [Checked Exception, 체크 예외, Unchecked Exception, 언체크 예외, 
 topic: Checked/Unchecked 예외를 가르는 기준과, @Transactional 이 어떤 예외에서 롤백하는지 — 그리고 그 결정을 누가 언제 내리는가
 summary: Checked/Unchecked 는 RuntimeException 을 상속했는지 하나로 갈리고, 컴파일러는 Checked 에만 catch or declare 를 강제한다. @Transactional 은 메서드 밖으로 나간 예외를 프록시가 보고 판단하며, 기본값은 RuntimeException·Error 만 롤백, Checked 는 커밋이다. 그래서 비즈니스 예외를 Checked 로 만들거나 트랜잭션 안에서 예외를 catch 로 삼키면 에러가 났는데도 전체가 커밋된다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-09-26
 ---
 
 ## 배운 개념

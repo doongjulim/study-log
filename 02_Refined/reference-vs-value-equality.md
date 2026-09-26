@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Objects.html#equals(java.lang.Object,java.lang.Object)
-updated: 2026-09-10
+updated: 2026-09-26
 ---
 
 # == 와 equals — 동일성과 동등성
@@ -90,4 +90,4 @@ if (!loginUser.getId().equals(notice.getWriterId())) { ... }   // 로그인 사�
 
 ## 관련
 
-[[equals-hashcode-contract]] · [[wrapper-cache-autoboxing]] · [[jpa-entity-equality]] · [[string-immutability]] · [[jvm-stack-and-heap]]
+[[equals-hashcode-contract]] · [[wrapper-cache-autoboxing]] · [[jpa-entity-equality]] · [[string-immutability]] · [[jvm-stack-and-heap]] · [[java-optional]]

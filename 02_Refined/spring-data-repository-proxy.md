@@ -7,7 +7,7 @@ summary: Spring Data JPA 는 앱 구동 시 리포지토리 인터페이스를 �
 contributors: [dongju]
 source_refs:
   - https://docs.spring.io/spring-data/jpa/reference/repositories/core-concepts.html
-updated: 2026-08-25
+updated: 2026-09-26
 ---
 
 # 리포지토리 동적 프록시
@@ -52,6 +52,10 @@ public interface PostRepository extends JpaRepository<Post, Long> { }
 프록시가 **호출을 가로채(intercept) 부가 기능을 앞뒤로 덧붙이는 것** — 이것이 Spring AOP 의 본질이다.
 리포지토리 프록시와 트랜잭션 프록시는 "프록시가 가로채 부가 기능을 수행한다"는 하나의 원리를 공유한다.
 
+"커밋(또는 롤백)"을 가르는 것도 프록시다. 메서드 밖으로 **나가는 예외의 타입**을 보고 결정하며,
+기본값은 `RuntimeException`·`Error` 만 롤백하고 Checked 예외는 커밋한다. 안에서 catch 로 삼킨 예외는 프록시가 보지 못해 커밋된다
+([[transactional-rollback-rules]]).
+
 ## 트레이드오프 / 한계
 
 - **프록시를 거치지 않으면 부가 기능도 없다.** 같은 클래스 안에서 `this.someTransactionalMethod()` 로
@@ -80,4 +84,4 @@ public interface PostRepository extends JpaRepository<Post, Long> { }
 
 ## 관련
 
-[[derived-query-method]] · [[handler-method-argument-resolver]] · [[open-in-view-osiv]] · [[spring-application-events]]
+[[derived-query-method]] · [[handler-method-argument-resolver]] · [[open-in-view-osiv]] · [[spring-application-events]] · [[transactional-rollback-rules]]

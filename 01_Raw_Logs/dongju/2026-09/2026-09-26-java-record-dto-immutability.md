@@ -6,7 +6,8 @@ tags: [record, 레코드, Java 16, Java 17, DTO, 요청 DTO, 응답 DTO, 불변,
 topic: record 를 DTO 로 쓰는 이유와, record 의 불변성이 실제로 어디까지 보장되는가
 summary: record 는 필드가 private final 이고 setter 가 없어 요청 DTO 가 계층을 지나는 동안 값이 바뀌지 않게 해 준다. 값은 setter 가 아니라 정규 생성자로 주입되며(Jackson 은 클래스 파일에 남은 컴포넌트 이름으로 매칭), final 은 참조만 고정하는 얕은 불변이라 컬렉션 필드는 컴팩트 생성자에서 List.copyOf 로 방어적 복사를 해야 완전히 막힌다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-09-26
 ---
 
 ## 배운 개념

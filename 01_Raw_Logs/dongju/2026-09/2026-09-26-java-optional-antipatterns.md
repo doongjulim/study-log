@@ -6,7 +6,8 @@ tags: [Optional, 옵셔널, Java 8, null, 널, NullPointerException, NPE, NoSuch
 topic: Optional 을 왜 쓰는가, 어디까지 강제하는가, 그리고 어디에 두면 안티패턴이 되는가
 summary: Optional 은 "없을 수 있다"는 정보를 반환 타입에 새겨 호출자가 무시할 수 없게 할 뿐, 올바른 처리까지 강제하지는 않는다. get() 은 대비 없이 꺼내는 안티패턴이고, orElse 의 인자는 값이 있어도 항상 먼저 실행되므로 부수효과 있는 코드는 orElseGet 에 넣는다. 파라미터·필드·컬렉션 래핑은 상태 수를 늘리거나 매핑이 깨지므로 반환 타입에만 쓴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-09-26
 ---
 
 ## 배운 개념

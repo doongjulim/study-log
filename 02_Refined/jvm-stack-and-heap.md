@@ -7,7 +7,7 @@ summary: 기본형 지역변수와 참조는 스택에, new 로 만든 객체는
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html
-updated: 2026-09-10
+updated: 2026-09-26
 ---
 
 # JVM 메모리 구조 — 스택과 힙
@@ -96,6 +96,10 @@ Throwable
 사용자에겐 정제되지 않은 500 이 나간다. 게다가 스택이 이미 무너진 상태라 `catch` 안에서 뭘 하려 해도 다시 터질 수 있다.
 **고칠 대상은 예외 처리가 아니라 스택을 고갈시킨 코드 자체다.**
 
+`Exception` 쪽은 다시 **`RuntimeException` 을 상속했는지**로 Checked/Unchecked 가 갈린다.
+`Error` 는 Checked 강제(catch or declare)를 받지 않고, `@Transactional` 에서는 `RuntimeException` 과 함께 **기본 롤백 대상**이다
+([[checked-vs-unchecked-exception]], [[transactional-rollback-rules]]).
+
 무한 루프와 무한 재귀는 다르다. `while(true)` 는 프레임을 쌓지 않아 영원히 돌지만,
 재귀는 호출마다 프레임을 쌓으므로 몇 초 안에 죽는다.
 엔티티의 양방향 연관을 `equals` 로 비교할 때가 대표적인 사례다 ([[jpa-entity-equality]]).
@@ -120,4 +124,4 @@ Throwable
 
 ## 관련
 
-[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]]
+[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]]
