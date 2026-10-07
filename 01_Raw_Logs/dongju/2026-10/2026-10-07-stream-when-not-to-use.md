@@ -6,7 +6,8 @@ tags: [Stream, 스트림, 스트림 쓰지 말아야 할 때, when not to use st
 topic: Stream 을 어디에 쓰고 어디에 안 쓰는가 — 부수효과 루프, 람다 안 checked 예외, parallel() 의 함정(분할 비용·commonPool·작은 데이터)
 summary: Stream 은 컬렉션을 변환·필터·집계해 결과값을 얻는 도구라, 결과가 아니라 행위(부수효과)가 목적인 반복이나 checked 예외를 던지는 I/O 중심 루프에는 for 문이 낫다. 람다는 함수형 인터페이스 메서드(예 Predicate.test)의 구현인데 그 시그니처에 throws 가 없어 checked 예외를 던질 수 없고 try-catch 로 감싸야 해 선언형 장점이 묻힌다. parallel() 은 ArrayList 처럼 O(1) 분할되는 소스·큰 데이터·CPU 연산에서만 이득이고, LinkedList 소스·작은 데이터·블로킹 I/O(공용 ForkJoinPool 고갈)에선 손해다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

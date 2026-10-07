@@ -44,3 +44,8 @@
 - [ArrayList 내부 동작](02_Refined/arraylist-internals.md) — Object[] elementData, 랜덤 접근 O(1), 1.5배 grow·Arrays.copyOf, +1 확장은 O(n²), 맨 앞 shift O(n), 확장 vs shift, Vector/Hashtable 증가율
 - [LinkedList 내부 동작](02_Refined/linkedlist-internals.md) — 이중 연결 Node(prev/next), first/last, node(index) 가까운 끝 순회, 중간 삽입 O(1) 함정, 맨 앞 O(1), 메모리 4~6배·캐시 미스, ArrayDeque
 - [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n)
+- [Stream vs for 문](02_Refined/stream-vs-for-loop.md) — 어디에 쓰고 안 쓰나, 선언형 vs 명령형(≠ 절차/객체지향), 가독성의 구체적 의미, 결과값 vs 행위, break=findFirst, forEach 공유 상태, toList 불변, 면접 답변
+- [Stream 지연 평가·수직 처리·단락](02_Refined/stream-lazy-evaluation.md) — 중간/최종 연산, 최종 연산 없으면 0줄, 일회용 IllegalStateException, 루프 퓨전, 원소 하나씩 끝까지, findFirst 7번, sorted 장벽, count 가 peek 생략
+- [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent
+- [람다와 checked 예외](02_Refined/lambda-checked-exception.md) — Predicate.test 에 throws 없음, 오버라이드 규칙, catch 만 남음, UncheckedIOException, 메서드 추출, I/O 루프는 for 문
+- [병렬 Stream 의 함정](02_Refined/parallel-stream-pitfalls.md) — Spliterator 분할, ArrayList O(1) vs LinkedList O(n), commonPool 공유·코어-1, 블로킹 I/O 고갈, 작은 데이터 오버헤드, 전용 Executor

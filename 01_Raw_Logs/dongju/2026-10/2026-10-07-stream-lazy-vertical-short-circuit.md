@@ -6,7 +6,8 @@ tags: [Stream, 스트림, 지연 평가, lazy evaluation, 중간 연산, interme
 topic: Stream 파이프라인의 실행 모델 — 지연 평가, 수직 처리(루프 퓨전), 단락 평가
 summary: filter/map 같은 중간 연산은 Stream 을 반환하며 단계를 등록만 하고, toList/findFirst 같은 최종 연산이 호출돼야 실행이 시작된다(최종 연산이 없으면 아무것도 출력되지 않는다). 실행은 단계별 전체 처리(수평)가 아니라 원소 하나가 파이프라인 끝까지 가는 수직 처리라 원본을 한 번만 돌고 중간 리스트가 없으며, 덕분에 findFirst 등은 답이 나오는 즉시 멈춘다(1~100만 중 첫 7의 배수 → filter 7번).
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

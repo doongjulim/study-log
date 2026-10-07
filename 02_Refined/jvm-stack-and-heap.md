@@ -7,7 +7,7 @@ summary: 기본형 지역변수와 참조는 스택에, new 로 만든 객체는
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html
-updated: 2026-09-26
+updated: 2026-10-07
 ---
 
 # JVM 메모리 구조 — 스택과 힙
@@ -52,7 +52,7 @@ public void order() {
 **② 힙 공유가 자바 동시성 문제의 구조적 뿌리다.**
 힙이 하나이기에 스레드끼리 객체를 주고받을 수 있다. 만약 힙도 스레드별로 분리되면
 스레드 A 가 만든 객체를 B 가 영영 볼 수 없어 **객체 공유 자체가 불가능**해진다.
-그 대신 여러 스레드가 같은 객체를 동시에 건드릴 수 있고, 여기서 경쟁 조건이 발생한다.
+그 대신 여러 스레드가 같은 객체를 동시에 건드릴 수 있고, 여기서 경쟁 조건이 발생한다 ([[race-condition-lost-update]]).
 
 > 싱글턴 빈(스프링의 기본 스코프)에 가변 필드를 두면 위험한 이유가 정확히 이것이다.
 > 빈은 힙에 하나뿐이고 모든 요청 스레드가 그것을 공유한다 ([[spring-data-repository-proxy]]).
@@ -124,4 +124,4 @@ Throwable
 
 ## 관련
 
-[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]]
+[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]] · [[race-condition-lost-update]]

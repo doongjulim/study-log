@@ -111,6 +111,8 @@ elementData[--size] = null;   // 마지막 칸 비우고 size 감소 (GC 위해 
 - **맨 앞 삽입·삭제가 O(n).** 앞에서 빼는 큐 용도엔 부적합 → `ArrayDeque` ([[linkedlist-internals]]).
 - **확장 순간의 지연 스파이크.** 평균은 O(1) 이지만 확장이 터지는 그 add 는 O(n). 크기를 알면 `new ArrayList<>(expectedSize)` 나 `ensureCapacity()` 로 확장 자체를 없앤다.
 - **남는 용량은 메모리 낭비.** 최대 1/3 가까이 빈칸일 수 있다 (`trimToSize()` 로 회수).
+- **스레드 안전하지 않다.** `add` 는 `elementData[size]` 쓰기 + `size++` 두 단계라 여러 스레드가 동시에 부르면 같은 칸을 덮어써 값이 사라진다 ([[race-condition-lost-update]]).
+- 병렬 Stream 소스로는 좋다 — 인덱스 계산으로 O(1) 분할 ([[parallel-stream-pitfalls]]).
 - 그래도 연속 메모리라 **캐시 지역성**이 좋아 실무 기본 List 는 ArrayList 다.
 
 > [!WARNING]
@@ -135,4 +137,4 @@ elementData[--size] = null;   // 마지막 칸 비우고 size 감소 (GC 위해 
 
 ## 관련
 
-[[linkedlist-internals]] · [[hashmap-internals]] · [[big-o-notation]] · [[string-concatenation-cost]] · [[garbage-collection-reachability]]
+[[linkedlist-internals]] · [[hashmap-internals]] · [[big-o-notation]] · [[string-concatenation-cost]] · [[garbage-collection-reachability]] · [[race-condition-lost-update]] · [[parallel-stream-pitfalls]]

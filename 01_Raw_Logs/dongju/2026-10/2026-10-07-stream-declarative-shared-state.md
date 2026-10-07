@@ -6,7 +6,8 @@ tags: [Stream, 스트림, Stream API, 선언형, declarative, 명령형, imperat
 topic: Stream 이 for 문 대비 해결하는 것 — 선언형 기술과 공유 가변 상태 제거 (병렬 add 시 갱신 유실)
 summary: Stream 의 "가독성"은 구체적으로 명령형(How)이 아닌 선언형(What)이라 의도가 단어로 드러난다는 뜻이고, 중간 결과를 루프 도중 변하는 가변 리스트에 쌓지 않는다는 점이 핵심이다. 공유 ArrayList 에 여러 스레드가 add 하면 같은 size 를 읽고 같은 칸을 덮어써 갱신이 유실되지만, collect/toList 는 스레드별로 따로 모아 합치므로 구조적으로 안전하다. 단 Stream 안에서 바깥 리스트를 건드리면 같은 버그가 재발한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

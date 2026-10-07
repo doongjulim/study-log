@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: checked-vs-unchecked-exception
-tags: [Checked-Exception, 체크예외, 확인된예외, Unchecked-Exception, 언체크예외, 비확인예외, RuntimeException, 런타임예외, Exception, Error, Throwable, 예외계층, exception-hierarchy, catch-or-declare, throws, try-catch, 예외처리, 컴파일에러, IOException, SQLException, DataAccessException, 비즈니스예외, BusinessException, 커스텀예외, custom-exception, 예외전환, exception-translation]
+tags: [Checked-Exception, 체크예외, 확인된예외, Unchecked-Exception, 언체크예외, 비확인예외, RuntimeException, 런타임예외, Exception, Error, Throwable, 예외계층, exception-hierarchy, catch-or-declare, throws, try-catch, 예외처리, 컴파일에러, IOException, SQLException, DataAccessException, 비즈니스예외, BusinessException, 커스텀예외, custom-exception, 예외전환, exception-translation, 람다, lambda, 함수형인터페이스]
 topic: Checked 와 Unchecked 예외를 가르는 기준과, 컴파일러가 Checked 에만 강제하는 것
 summary: 기준은 RuntimeException 을 상속했는지 하나뿐이다(통신·비즈니스 여부와 무관). 컴파일러는 예외 발생을 검출하지 못하고, Checked 예외에 대해서만 try-catch 로 처리하거나 throws 로 떠넘기라는 catch-or-declare 규칙을 강제한다. 스프링 진영은 비즈니스 예외를 RuntimeException 기반으로 만드는 것이 관례다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-11.html
   - https://docs.oracle.com/javase/tutorial/essential/exceptions/runtime.html
-updated: 2026-09-26
+updated: 2026-10-07
 ---
 
 # Checked vs Unchecked 예외
@@ -86,4 +86,4 @@ public Coupon findCoupon(Long id) throws CouponNotFoundException {   // Checked 
 
 ## 관련
 
-[[transactional-rollback-rules]] · [[jvm-stack-and-heap]] · [[java-optional]]
+[[transactional-rollback-rules]] · [[jvm-stack-and-heap]] · [[java-optional]] · [[lambda-checked-exception]]

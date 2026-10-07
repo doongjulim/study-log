@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html#orElseGet(java.util.function.Supplier)
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-15.html#jls-15.12.4.2
-updated: 2026-09-26
+updated: 2026-10-07
 ---
 
 # orElse vs orElseGet
@@ -63,4 +63,4 @@ B 가 넘기는 것은 `Supplier<Coupon>` — 호출하면 쿠폰을 만들어 �
 
 ## 관련
 
-[[java-optional]]
+[[java-optional]] · [[stream-lazy-evaluation]]

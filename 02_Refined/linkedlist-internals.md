@@ -117,12 +117,17 @@ LinkedList 원소 1개 = Node 객체 (객체 헤더 + item + prev + next)  ≈ 2
 
 → **빅오가 같아도 실제 속도는 ArrayList 가 대체로 빠르다.** 큐·덱이 필요해도 배열 기반 원형 버퍼인 **`ArrayDeque`** 가 권장된다.
 
+### 병렬 Stream 소스로는 최악
+
+병렬 Stream 은 소스를 반씩 쪼개 스레드에 나누는데, LinkedList 는 중간 지점을 찾으려면 **앞에서부터 걸어가야(O(n))** 해서 분할 단계에서 다른 스레드가 논다. ArrayList 는 인덱스 계산(O(1))으로 바로 자른다 ([[parallel-stream-pitfalls]]).
+
 > [!WARNING]
 > **오답 코너**
 > - **"키값을 가진 오브젝트들을 하나의 리스트로 저장"** — List 계열엔 **키가 없다.** 각 원소가 `prev`/`next` 로 이웃을 가리키는 Node 다.
 > - **"Node 는 저장된 데이터의 마지막 위치값을 가진다"** — 마지막 위치(`last`)는 **LinkedList 객체**의 필드다. Node 는 `prev`/`next` 만 가진다.
 > - **"get(i) 는 리스트 전체를 돌며 next 값을 비교한다"** — 전체가 아니라 **index 까지만**, 비교가 아니라 **칸 수 카운트**다. 가까운 끝에서 출발한다.
 > - **"LinkedList 는 중간 삽입·삭제가 O(1) 이라 빠르다"** — **연결만** O(1). 인덱스로 위치를 찾는 O(n) 을 포함하면 전체 O(n) 이다.
+> - **"parallel 시 LinkedList 는 next 를 계속 비교해서 느리다"** — 같은 오개념의 재발. 비교가 아니라 **걸으며 카운트**, 손해 보는 단계는 **분할(split)**.
 > - **"get(500_000) 은 O(250,000)"** — 빅오에 숫자를 넣지 않는다. n/2 → **O(n)** ([[big-o-notation]]).
 
 ## 복습 체크
@@ -137,4 +142,4 @@ LinkedList 원소 1개 = Node 객체 (객체 헤더 + item + prev + next)  ≈ 2
 
 ## 관련
 
-[[arraylist-internals]] · [[hashmap-internals]] · [[big-o-notation]] · [[garbage-collection-reachability]]
+[[arraylist-internals]] · [[hashmap-internals]] · [[big-o-notation]] · [[garbage-collection-reachability]] · [[parallel-stream-pitfalls]]
