@@ -6,7 +6,8 @@ tags: [LinkedList, 링크드리스트, 연결 리스트, linked list, 이중 연
 topic: LinkedList 의 내부 구조(이중 연결 Node)와, "중간 삽입 O(1)" 이 반만 맞는 이유, 메모리·캐시 측면 트레이드오프
 summary: LinkedList 는 item/prev/next 를 가진 Node 들을 연결한 이중 연결 리스트로, 연결 변경 자체는 O(1) 이지만 인덱스로 위치를 찾는 데 O(n) 이 들어 add(index, x) 전체는 O(n) 이다. 진짜 강점은 first/last 로 바로 접근하는 맨 앞 삽입·삭제(O(1))이고, 원소당 Node 객체 오버헤드와 나쁜 캐시 지역성 때문에 실무에선 ArrayList/ArrayDeque 가 대체로 더 빠르다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

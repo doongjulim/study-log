@@ -6,7 +6,8 @@ tags: [HashMap, 해시맵, 해시 테이블, hash table, table, 버킷, bucket, 
 topic: HashMap 이 키로 O(1) 조회를 하는 원리(hashCode → 인덱스)와 해시 충돌 처리(체이닝·equals·treeify·resize)
 summary: HashMap 내부도 Node<K,V>[] 배열이며, 키의 hashCode 를 배열 크기 범위로 줄여(hash & (n-1)) 칸 번호를 계산하므로 넣을 때와 꺼낼 때 같은 칸으로 바로 간다(평균 O(1)). 충돌 시 같은 칸에 next 로 연결(체이닝)하고 hash 비교 + equals 로 키를 골라내며, 최악의 경우 O(n) 은 Java 8 treeify(O(log n))와 0.75 초과 시 2배 resize 로 방어한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

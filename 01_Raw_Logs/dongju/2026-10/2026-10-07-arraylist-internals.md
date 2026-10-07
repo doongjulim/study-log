@@ -6,7 +6,8 @@ tags: [ArrayList, 어레이리스트, 동적 배열, dynamic array, elementData,
 topic: ArrayList 의 내부 구조(Object[])와 용량 확장·삽입/삭제 비용, 그리고 add 가 분할 상환 O(1) 인 이유
 summary: ArrayList 는 Object[] elementData 를 감싼 동적 배열이라 get(i) 는 주소 계산 한 번으로 O(1)이다. 꽉 차면 1.5배 새 배열을 만들어 복사하는데, 배수로 키우기 때문에 add 는 분할 상환 O(1)이고 +1씩 키우면 전체 O(n²)로 폭발한다. 맨 앞 삽입/삭제는 같은 배열 안에서 나머지를 shift 하므로 O(n)이다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

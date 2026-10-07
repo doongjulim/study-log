@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://openjdk.org/jeps/280
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html
-updated: 2026-09-10
+updated: 2026-10-07
 ---
 
 # 문자열 연결의 비용
@@ -82,7 +82,7 @@ for (String tag : tags) sb.append(tag).append(", ");
 10만 자를 담는 동안 `16 → 34 → 70 → 142 → … → 147454` 로 확장은 **13~14번**뿐이고,
 복사 총량도 등비급수라 `≈ 2n` 으로 수렴한다.
 확장 비용을 전체에 분산시키면 `append()` 한 번당 상수 시간 — **분할상환(amortized) O(1)**, 전체 **O(n)**.
-`ArrayList` 가 커질 때 쓰는 것과 같은 전략이다.
+`ArrayList` 가 커질 때 쓰는 것과 같은 전략이다 ([[arraylist-internals]], 빅오 읽는 법은 [[big-o-notation]]).
 
 ## 트레이드오프 / 한계
 
@@ -149,4 +149,4 @@ if (sb.length() > 0) {                  // ① 락 획득 → 해제
 
 ## 관련
 
-[[string-immutability]] · [[jvm-stack-and-heap]] · [[reference-vs-value-equality]]
+[[string-immutability]] · [[jvm-stack-and-heap]] · [[reference-vs-value-equality]] · [[arraylist-internals]] · [[big-o-notation]]

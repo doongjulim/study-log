@@ -6,7 +6,8 @@ tags: [빅오, Big-O, 빅오 표기법, big-o notation, 시간복잡도, time co
 topic: 빅오 표기법을 "숫자 대입"이 아니라 "n 이 커질 때 비용의 모양"으로 읽는 법 — 2배 판별법
 summary: 빅오는 특정 n 에서의 실행 횟수가 아니라 n 이 커질 때 비용이 어떤 모양으로 커지는지를 나타낸다. n 을 그대로 두고 상수는 버리며, "n 을 2배로 하면 비용이 몇 배?"(1배→O(1), 2배→O(n), 4배→O(n²))로 판별한다. O(1) 의 1 은 '1번'이 아니라 'n 과 무관한 고정 비용'이고 O(0) 이라는 표기는 쓰지 않는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-07
 ---
 
 ## 배운 개념

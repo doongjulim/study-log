@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html
-updated: 2026-09-10
+updated: 2026-10-07
 ---
 
 # equals / hashCode 규약
@@ -85,7 +85,7 @@ size()            : 1         ← 분명히 안에 있음
 - **상수 `hashCode`(예: `getClass().hashCode()`)는 규약을 완벽히 지킨다.** 모든 해시가 같으니 (가)가 자동으로 참이다.
   대신 모든 원소가 한 버킷에 몰려 탐색이 **O(n) 선형**(= `ArrayList.contains()` 수준)이 된다.
   정확성을 사고 성능을 내주는 거래이며, 원소 수가 적으면 성립한다 ([[jpa-entity-equality]]).
-- Java 8+ `HashMap` 은 한 버킷에 8개 이상 쌓이면 트리로 전환해 O(log n) 이 되지만 `Comparable` 구현이 전제다.
+- Java 8+ `HashMap` 은 한 버킷에 8개 이상 쌓이면 트리로 전환해 O(log n) 이 되지만 `Comparable` 구현이 전제다 — 해시가 전부 같으면 트리도 hash 로는 가를 수 없기 때문 (체이닝·treeify·resize 전체 구조는 [[hashmap-internals]]).
 - 해시 분포가 나쁜 것은 느려질 뿐 **틀리지는 않는다.** 반대로 규약을 어기면 데이터를 잃는다.
 
 > [!WARNING]
@@ -110,4 +110,4 @@ size()            : 1         ← 분명히 안에 있음
 
 ## 관련
 
-[[reference-vs-value-equality]] · [[jpa-entity-equality]] · [[wrapper-cache-autoboxing]] · [[string-immutability]] · [[deterministic-hash-for-lookup]]
+[[hashmap-internals]] · [[reference-vs-value-equality]] · [[jpa-entity-equality]] · [[wrapper-cache-autoboxing]] · [[string-immutability]] · [[deterministic-hash-for-lookup]]

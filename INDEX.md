@@ -40,3 +40,7 @@
 - [orElse vs orElseGet](02_Refined/optional-orelse-vs-orelseget.md) — 인자 먼저 평가, 즉시 평가 vs 지연 평가, Supplier, 부수효과로 인한 중복 저장·불필요 호출
 - [Checked vs Unchecked 예외](02_Refined/checked-vs-unchecked-exception.md) — RuntimeException 상속 여부가 유일 기준, catch or declare, throws 전파, IOException 설계 의도, DataAccessException 예외 전환
 - [@Transactional 롤백 규칙](02_Refined/transactional-rollback-rules.md) — 기본 RuntimeException·Error 롤백 / Checked 커밋, 프록시가 통과 예외 타입으로 결정, rollbackFor vs RuntimeException 상속, catch 로 삼키면 전체 커밋, UnexpectedRollbackException
+- [빅오 표기법](02_Refined/big-o-notation.md) — 시간복잡도, 숫자 대입 금지·상수 제거, 2배 판별법(1배 O(1)/2배 O(n)/4배 O(n²)), O(1) 의 1 은 '고정', O(0) 없음, 분할상환 O(1)
+- [ArrayList 내부 동작](02_Refined/arraylist-internals.md) — Object[] elementData, 랜덤 접근 O(1), 1.5배 grow·Arrays.copyOf, +1 확장은 O(n²), 맨 앞 shift O(n), 확장 vs shift, Vector/Hashtable 증가율
+- [LinkedList 내부 동작](02_Refined/linkedlist-internals.md) — 이중 연결 Node(prev/next), first/last, node(index) 가까운 끝 순회, 중간 삽입 O(1) 함정, 맨 앞 O(1), 메모리 4~6배·캐시 미스, ArrayDeque
+- [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n)
