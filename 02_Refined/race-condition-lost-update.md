@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: race-condition-lost-update
-tags: [경쟁조건, race-condition, 레이스컨디션, 갱신유실, lost-update, 데이터유실, 공유가변상태, shared-mutable-state, 스레드안전, thread-safety, 동시성, concurrency, 원자성, atomicity, read-modify-write, check-then-act, size++, ArrayList동시add, ArrayIndexOutOfBoundsException, 병렬, parallel, collect, combiner, synchronizedList, CopyOnWriteArrayList, AtomicInteger, CAS]
+tags: [경쟁조건, race-condition, 레이스컨디션, 갱신유실, lost-update, 데이터유실, 공유가변상태, shared-mutable-state, 스레드안전, thread-safety, 동시성, concurrency, 원자성, atomicity, read-modify-write, check-then-act, size++, ArrayList동시add, ArrayIndexOutOfBoundsException, 병렬, parallel, collect, combiner, synchronizedList, CopyOnWriteArrayList, AtomicInteger, CAS, static, static-final, SimpleDateFormat, DateTimeFormatter, Calendar, 날짜포맷, 간헐적버그]
 topic: 공유 가변 상태에 여러 스레드가 "읽고-고치고-쓰기"를 하면 갱신이 조용히 유실된다 — ArrayList 동시 add 로 보는 경쟁 조건
 summary: ArrayList.add 는 elementData[size] 에 넣고 size++ 하는 두 단계라 원자적이지 않다. 두 스레드가 같은 size 를 읽으면 같은 칸을 덮어써 한 값이 사라지고 size 도 실제 add 횟수보다 작아진다(갱신 유실). 에러 없이 데이터만 사라져 찾기 어렵다. 해법은 공유 상태를 없애거나(스레드별 컨테이너 후 합치기 — Stream collect), 원자적으로 만들거나(락, CAS, 동시성 컬렉션)다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ArrayList.html
   - https://docs.oracle.com/javase/tutorial/essential/concurrency/interfere.html
-updated: 2026-10-07
+updated: 2026-10-09
 ---
 
 # 경쟁 조건과 갱신 유실
@@ -51,6 +51,29 @@ size++;                  // ② size 증가 (이것도 읽기 → +1 → 쓰기 
 - 배열이 꽉 차서 확장(grow)되는 순간에 겹치면 `ArrayIndexOutOfBoundsException` 이 나기도 한다.
 - 패턴 이름: **read-modify-write** (읽고 → 고치고 → 쓰기 사이에 끼어듦). 비슷한 것으로 **check-then-act** ([[string-concatenation-cost]] 의 StringBuffer 예).
 
+## 사례 2 — `static final SimpleDateFormat`
+
+같은 Date 에 같은 문자열을 내니 순수 함수처럼 보이지만, `SimpleDateFormat` 은 내부 **`Calendar` 필드**를 바꿔 가며 계산하는 가변 객체다.
+
+```java
+public final class DateUtils {
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static String format(Date date) { return FORMAT.format(date); }
+}
+```
+
+```
+         스레드 A (글 1: 10/01)                 스레드 B (글 2: 12/25)
+ t1   FORMAT.calendar ← 10/01 로 세팅
+ t2                                         FORMAT.calendar ← 12/25 로 덮어씀
+ t3   calendar 읽어서 문자열 생성 → "2026-12-25"   ❌ 글 1인데 다른 날짜!
+ t4                                         "2026-12-25"
+```
+
+- `static` → JVM 에 하나, **모든 요청 스레드가 공유**. 화면에 엉뚱한 날짜가 조용히 찍히고, `parse()` 에선 `NumberFormatException` 등이 **간헐적으로** 나며 로컬 단독 테스트로는 재현되지 않는다.
+- `final` 은 참조만 고정할 뿐 **내부 필드 변경**은 못 막는다 ([[shallow-immutability-defensive-copy]]).
+- 해결: 불변 객체 `DateTimeFormatter.ofPattern("yyyy-MM-dd")`. static 필드에는 가변 상태를 두지 않는다 ([[static-util-vs-spring-bean]] 기준 4).
+
 ## 해법 — 두 갈래
 
 | 갈래 | 방법 | 예 |
@@ -69,6 +92,8 @@ size++;                  // ② size 증가 (이것도 읽기 → +1 → 쓰기 
 > [!WARNING]
 > **오답 코너**
 > - **"여러 스레드가 같은 리스트에 add 하면 순서가 꼬인다"** — 순서만이 아니다. 같은 size 를 읽어 **같은 칸을 덮어쓴다** → 값 소실 + size 불일치(갱신 유실).
+> - **"static SimpleDateFormat 을 동시에 쓰면 값의 동일성이 보장 안 된다"** — 방향은 맞지만 용어 오류. "동일성" 은 `==`(같은 객체인가)다. 정확히는 공유 가변 상태(Calendar)에 대한 **경쟁 조건 → 다른 요청의 날짜로 덮어써짐**.
+> - **"`static final` 이니 안전하다"** — final 은 참조만 고정한다. 내부가 가변이면 똑같이 깨진다.
 > - **"`size++` 는 한 줄이니 원자적이다"** — 읽기 → +1 → 쓰기 3단계다.
 > - **"Stream 을 쓰면 스레드 안전하다"** — collect 가 안전한 것이지, 람다 안에서 공유 상태를 바꾸면 똑같다.
 
@@ -79,7 +104,8 @@ size++;                  // ② size 증가 (이것도 읽기 → +1 → 쓰기 
 - [ ] 경쟁 조건과 갱신 유실의 관계는?
 - [ ] 해법 두 갈래(공유 제거 vs 원자화)와 각각의 예는?
 - [ ] 동시성 컬렉션을 써도 깨지는 복합 연산 예를 들 수 있는가?
+- [ ] `static final SimpleDateFormat` 이 동시 요청에서 깨지는 과정과 해결책은?
 
 ## 관련
 
-[[jvm-stack-and-heap]] · [[arraylist-internals]] · [[stream-vs-for-loop]] · [[token-refresh-concurrency]] · [[string-concatenation-cost]]
+[[jvm-stack-and-heap]] · [[arraylist-internals]] · [[stream-vs-for-loop]] · [[token-refresh-concurrency]] · [[string-concatenation-cost]] · [[static-util-vs-spring-bean]] · [[shallow-immutability-defensive-copy]]

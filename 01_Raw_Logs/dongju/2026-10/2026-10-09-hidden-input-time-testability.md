@@ -6,7 +6,8 @@ tags: [숨은 입력, hidden input, 순수 함수, pure function, 결정적, det
 topic: 메서드 안의 LocalDate.now() 는 숨은 입력이다 — 매개변수로 드러내 순수 함수로 만들거나 Clock 을 주입해 테스트를 결정적으로 만든다
 summary: calcDday(deadline) 가 내부에서 LocalDate.now() 를 부르면 시그니처는 입력 1개처럼 보여도 시스템 시계라는 두 번째 입력을 몰래 읽어, 같은 인자에도 날마다 결과가 바뀌고 테스트가 다음 날 깨진다. 고치는 법은 오늘 날짜를 calcDday(today, deadline) 매개변수로 드러내 static 순수 함수로 남기고 now() 는 서비스(경계) 한 곳에서만 부르거나, Clock 을 빈으로 주입받아 테스트에서 Clock.fixed 를 넣는 것이다. 테스트는 now() 를 부르지 않고 고정값을 넣는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-09
 ---
 
 ## 배운 개념

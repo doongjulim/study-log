@@ -6,7 +6,8 @@ tags: [오버라이딩, overriding, 오버로딩, overloading, 동적 바인딩,
 topic: 오버라이딩과 오버로딩은 "언제, 무엇을 보고" 구현을 고르는가 — 동적 바인딩(받는 객체의 실제 클래스) vs 정적 바인딩(인자의 선언 타입)
 summary: 오버라이딩은 실행 시점에 점(.) 왼쪽 받는 객체의 실제 클래스를 보고 몸통을 고르는 동적 바인딩이고, 오버로딩은 컴파일 시점에 괄호 안 인자의 선언 타입을 보고 시그니처를 바이트코드에 박는 정적 바인딩이다. 그래서 Object x = "hello"; print(x) 는 실제 객체가 String 이어도 print(Object) 가 호출된다. 면접에서 말하는 다형성은 보통 오버라이딩 + 동적 바인딩 쪽이다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-09
 ---
 
 ## 배운 개념

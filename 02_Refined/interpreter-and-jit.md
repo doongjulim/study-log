@@ -7,7 +7,7 @@ summary: 인터프리터는 시작이 빠르지만 반복 코드가 느리고, �
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/index.html
-updated: 2026-08-25
+updated: 2026-10-09
 ---
 
 # 인터프리터와 JIT 컴파일러
@@ -47,7 +47,7 @@ JVM 은 메서드와 루프마다 **실행 횟수 카운터**를 둔다.
 Oracle 기본 JVM 의 이름이 **"HotSpot JVM"** 인 이유가 이 전략이다.
 
 JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 한다 — 메서드 인라이닝, 죽은 코드 제거,
-실제 타입이 하나뿐인 호출의 단일화 등. 정적 컴파일러가 알 수 없는 "실제로 어떻게 실행되는가"를
+실제 타입이 하나뿐인 호출의 단일화(동적 바인딩 비용 제거 — [[overriding-vs-overloading-binding]]) 등. 정적 컴파일러가 알 수 없는 "실제로 어떻게 실행되는가"를
 알기 때문에 가능한 최적화이며, 가정이 깨지면 **역최적화(deoptimization)** 로 인터프리터로 되돌아간다.
 
 ## 트레이드오프 / 한계
@@ -77,4 +77,4 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 
 ## 관련
 
-[[jvm-execution-pipeline]] · [[jvm-stack-and-heap]]
+[[jvm-execution-pipeline]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]]

@@ -6,7 +6,8 @@ tags: [static, 공유 가변 상태, shared mutable state, static final, SimpleD
 topic: static final SimpleDateFormat 은 왜 위험한가 — static 은 JVM 전체 스레드가 공유하고, final 은 참조만 고정할 뿐 내부 가변 상태(Calendar)는 경쟁 조건에 노출된다
 summary: 같은 Date 에 같은 문자열을 내니 순수 함수처럼 보이지만, SimpleDateFormat 은 내부 Calendar 필드를 바꿔 가며 계산하는 가변 객체다. static 으로 하나만 두고 여러 요청 스레드가 동시에 format 하면 A 가 세팅한 날짜를 B 가 덮어써 다른 글의 날짜가 찍히거나 parse 에서 간헐적 예외가 나며 로컬에선 재현되지 않는다. static final 은 다른 객체를 가리키지 못하게 할 뿐 내부 변경은 못 막는다(얕은 불변). 해결은 불변 객체인 DateTimeFormatter. static 필드에는 가변 상태를 두지 않는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-09
 ---
 
 ## 배운 개념

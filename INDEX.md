@@ -35,7 +35,7 @@
 - [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
 - [문자열 연결의 비용](02_Refined/string-concatenation-cost.md) — + 는 invokedynamic, 루프에서 O(n²), StringBuilder 분할상환 O(1), StringBuffer 를 안 쓰는 진짜 이유
 - [record](02_Refined/java-record.md) — 요청/응답 DTO, private final 자동, 정규 생성자·컴팩트 생성자, 접근자 title() vs getTitle(), Jackson 생성자 바인딩, getRecordComponents, 엔티티로 못 쓰는 이유
-- [얕은 불변과 방어적 복사](02_Refined/shallow-immutability-defensive-copy.md) — final 은 참조만 고정, 공유 리스트 앨리어싱, unmodifiableList(view·CCTV) vs List.copyOf(copy·사진), readonly 없음, copyOf null NPE
+- [얕은 불변과 방어적 복사](02_Refined/shallow-immutability-defensive-copy.md) — final 은 참조만 고정, 공유 리스트 앨리어싱, unmodifiableList(view·CCTV) vs List.copyOf(copy·사진), readonly 없음, copyOf null NPE, static final 도 내부는 가변(SimpleDateFormat)
 - [Optional](02_Refined/java-optional.md) — 시그니처가 전달하는 "없을 수 있음", 인지 강제 vs 처리 강제, get() → NoSuchElementException, orElseThrow(), 파라미터 상태 3개·필드·Optional<List> 안티패턴
 - [orElse vs orElseGet](02_Refined/optional-orelse-vs-orelseget.md) — 인자 먼저 평가, 즉시 평가 vs 지연 평가, Supplier, 부수효과로 인한 중복 저장·불필요 호출
 - [Checked vs Unchecked 예외](02_Refined/checked-vs-unchecked-exception.md) — RuntimeException 상속 여부가 유일 기준, catch or declare, throws 전파, IOException 설계 의도, DataAccessException 예외 전환
@@ -46,6 +46,10 @@
 - [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n)
 - [Stream vs for 문](02_Refined/stream-vs-for-loop.md) — 어디에 쓰고 안 쓰나, 선언형 vs 명령형(≠ 절차/객체지향), 가독성의 구체적 의미, 결과값 vs 행위, break=findFirst, forEach 공유 상태, toList 불변, 면접 답변
 - [Stream 지연 평가·수직 처리·단락](02_Refined/stream-lazy-evaluation.md) — 중간/최종 연산, 최종 연산 없으면 0줄, 일회용 IllegalStateException, 루프 퓨전, 원소 하나씩 끝까지, findFirst 7번, sorted 장벽, count 가 peek 생략
-- [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent
+- [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent, static final SimpleDateFormat·Calendar 덮어쓰기·DateTimeFormatter
 - [람다와 checked 예외](02_Refined/lambda-checked-exception.md) — Predicate.test 에 throws 없음, 오버라이드 규칙, catch 만 남음, UncheckedIOException, 메서드 추출, I/O 루프는 for 문
 - [병렬 Stream 의 함정](02_Refined/parallel-stream-pitfalls.md) — Spliterator 분할, ArrayList O(1) vs LinkedList O(n), commonPool 공유·코어-1, 블로킹 I/O 고갈, 작은 데이터 오버헤드, 전용 Executor
+- [다형성 — 오버라이딩 vs 오버로딩](02_Refined/overriding-vs-overloading-binding.md) — 하나의 호출·실제 객체·여러 구현, 점(.) 왼쪽 받는 객체가 결정, 동적 바인딩 vs 정적 바인딩, invokevirtual/invokestatic, print(Object) 함정, static 은 hiding
+- [enum 상수별 구현과 다형성](02_Refined/enum-constant-specific-polymorphism.md) — constant-specific body, 익명 자식 클래스 SearchType$1, getDeclaringClass, switch default vs 컴파일 에러, switch 식, OCP, @Autowired 불가, 전략 패턴 빈
+- [static 유틸 vs 스프링 빈](02_Refined/static-util-vs-spring-bean.md) — 판단 기준 4가지(의존성·교체·순수성·가변 상태), 여러 곳 호출은 기준 아님, static 주입 불가, PasswordEncoder 공존·테스트, 면접 답변
+- [숨은 입력과 테스트 — now() 를 밖으로](02_Refined/hidden-input-time-testability.md) — LocalDate.now() 숨은 입력, 다음 날 깨지는 테스트, calcDday(today, deadline), 경계에서만 now(), Clock 주입·Clock.fixed

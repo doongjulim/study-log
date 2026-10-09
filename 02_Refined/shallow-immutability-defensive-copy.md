@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: shallow-immutability-defensive-copy
-tags: [얕은불변, shallow-immutability, 깊은불변, deep-immutability, final, 참조, reference, 참조재할당, 방어적복사, defensive-copy, List.copyOf, Collections.unmodifiableList, unmodifiable, 읽기전용, read-only, readonly, 뷰, view, 복사본, copy, UnsupportedOperationException, 컴팩트생성자, compact-constructor, record, 불변객체, 가변컬렉션, aliasing, 앨리어싱]
+tags: [얕은불변, shallow-immutability, 깊은불변, deep-immutability, final, 참조, reference, 참조재할당, 방어적복사, defensive-copy, List.copyOf, Collections.unmodifiableList, unmodifiable, 읽기전용, read-only, readonly, 뷰, view, 복사본, copy, UnsupportedOperationException, 컴팩트생성자, compact-constructor, record, 불변객체, 가변컬렉션, aliasing, 앨리어싱, static-final, SimpleDateFormat, 스레드안전]
 topic: final 이 실제로 지켜 주는 것(참조)과 지켜 주지 않는 것(내용), 그리고 view 가 아닌 copy 로 막아야 하는 이유
 summary: final 은 참조 재할당만 막고 참조가 가리키는 객체의 내용은 막지 못한다(얕은 불변). 컬렉션을 받아 저장하면 외부와 같은 객체를 공유하게 되므로, 수정 불가 view(unmodifiableList)가 아니라 복사본(List.copyOf)으로 저장해야 외부 수정까지 차단된다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html#copyOf(java.util.Collection)
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collections.html#unmodifiableList(java.util.List)
-updated: 2026-09-26
+updated: 2026-10-09
 ---
 
 # 얕은 불변과 방어적 복사
@@ -76,6 +76,8 @@ record CreatePostRequest(String title, List<String> tags) {
   `String` 이 안전한 요소인 이유는 그 자체가 불변이기 때문이다 ([[string-immutability]]).
 - `List.copyOf` 는 입력이 이미 불변 리스트면 복사 없이 그대로 반환할 수 있다(구현 최적화).
 
+- **`static final` 도 마찬가지다.** `private static final SimpleDateFormat FORMAT` 은 다른 객체를 가리키지 못할 뿐, 내부 `Calendar` 는 호출마다 바뀐다. static 이라 모든 스레드가 공유하므로 경쟁 조건으로 날짜가 뒤섞인다 → 불변 `DateTimeFormatter` 로 ([[race-condition-lost-update]]).
+
 > [!WARNING]
 > **오답 코너**
 > - **"final 은 객체 생성 시점의 무결성을 보장한다"** — 생성 이후에도 계속 **참조 재할당**을 막는다. 다만 **내용**은 못 막는다.
@@ -93,4 +95,4 @@ record CreatePostRequest(String title, List<String> tags) {
 
 ## 관련
 
-[[java-record]] · [[string-immutability]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]]
+[[java-record]] · [[string-immutability]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]]

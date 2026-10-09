@@ -7,7 +7,7 @@ summary: 기본형 지역변수와 참조는 스택에, new 로 만든 객체는
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html
-updated: 2026-10-07
+updated: 2026-10-09
 ---
 
 # JVM 메모리 구조 — 스택과 힙
@@ -124,4 +124,4 @@ Throwable
 
 ## 관련
 
-[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]] · [[race-condition-lost-update]]
+[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]]

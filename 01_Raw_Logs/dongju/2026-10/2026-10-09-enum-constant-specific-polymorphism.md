@@ -6,7 +6,8 @@ tags: [enum, 이넘, 열거형, 상수별 메서드 구현, constant-specific me
 topic: enum 상수마다 다른 동작을 구현하는 것이 왜 다형성인가 — 익명 자식 클래스 + 오버라이딩 + 동적 바인딩, switch 대비 이점과 스프링 빈 한계
 summary: 다형성은 하나의 호출 코드가 점(.) 왼쪽의 실제 객체에 따라 여러 구현 중 하나로 실행되는 것이다. 몸통을 가진 enum 상수는 컴파일 시 enum 을 상속한 익명 자식 클래스(SearchType$1)가 되어 추상 메서드를 오버라이드하므로, searchType.matches() 는 일반 오버라이딩과 똑같이 동적 바인딩된다. switch 대비 새 상수의 구현 누락이 컴파일 에러로 막히고 호출부가 안 바뀌어 OCP 를 만족하지만, enum 상수는 JVM 이 만드는 static 싱글턴이라 스프링 빈 주입이 안 되므로 의존성이 필요한 동작은 전략 패턴 빈으로 옮긴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-09
 ---
 
 ## 배운 개념

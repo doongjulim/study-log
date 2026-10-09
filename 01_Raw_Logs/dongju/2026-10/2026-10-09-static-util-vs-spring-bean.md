@@ -6,7 +6,8 @@ tags: [static, 정적 메서드, static method, 유틸 클래스, utility class,
 topic: 스프링 빈이 아니라 static 유틸 클래스로 빼는 기준 — 의존성·교체 필요·순수성·공유 가변 상태 4가지
 summary: "여러 곳에서 호출된다"는 기준이 아니다(Math.max 도 static). 외부 의존성(설정값·다른 빈·시간)이 필요하면 빈, 구현 교체·공존·테스트 대역이 필요하면 빈이다. static 필드는 클래스에 붙어 JVM 이 로딩하므로 스프링이 @Value/@Autowired 를 넣을 수 없고, static 메서드는 오버라이딩이 안 되는 정적 바인딩(invokestatic)이라 다형성이 없다. 같은 입력에 항상 같은 출력을 내는 순수 계산이고 공유 가변 상태가 없을 때만 static 으로 둔다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-09
 ---
 
 ## 배운 개념
