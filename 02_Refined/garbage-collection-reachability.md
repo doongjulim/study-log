@@ -7,7 +7,7 @@ summary: GC 는 "안 쓸 것 같은 객체"를 예측하지 않고, GC Root 에�
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/gctuning/index.html
-updated: 2026-08-25
+updated: 2026-10-11
 ---
 
 # GC 와 도달 가능성(Reachability)
@@ -67,6 +67,7 @@ GC 알고리즘의 역사는 사실상 **STW 시간을 줄이는 방향의 진�
   ([[jvm-stack-and-heap]]).
 - 힙을 크게 잡으면 GC 빈도는 줄지만 **한 번의 STW 가 길어진다.**
 - GC 는 개발자의 메모리 해제 부담을 없애 주는 대신 **정지 시간과 CPU 를 가져간다.** 공짜가 아니다.
+- 컨테이너에서 힙이 메모리 한도를 넘으면 `OutOfMemoryError` 가 아니라 커널의 **OOMKilled(137)** 로 흔적 없이 죽는다 ([[jvm-container-heap-sizing]]).
 - OOM 진단은 추측이 아니라 **힙 덤프 분석**(`-XX:+HeapDumpOnOutOfMemoryError` → MAT 등)으로 한다.
   "무엇이 참조를 붙들고 있는가"를 찾는 작업이다.
 
@@ -91,4 +92,4 @@ GC 알고리즘의 역사는 사실상 **STW 시간을 줄이는 방향의 진�
 
 ## 관련
 
-[[jvm-stack-and-heap]] · [[jvm-execution-pipeline]] · [[db-pagination]]
+[[jvm-stack-and-heap]] · [[jvm-execution-pipeline]] · [[db-pagination]] · [[jvm-container-heap-sizing]]

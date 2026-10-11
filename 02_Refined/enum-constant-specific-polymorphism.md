@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.9.1
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html#getDeclaringClass()
-updated: 2026-10-09
+updated: 2026-10-11
 ---
 
 # enum 상수별 구현과 다형성
@@ -94,7 +94,7 @@ public boolean matches(SearchType type, Post post, String kw) {
 error: enum constant CONTENT must implement abstract method matches(Post,String)
 ```
 
-- Java 14+ **switch 식**(`return switch (type) { case TITLE -> ...; };`)은 `default` 없이 쓰면 모든 상수를 다뤘는지 컴파일러가 검사한다. 그래도 분기가 여러 곳에 흩어지는 문제는 남는다.
+- Java 14+ **switch 식**(`return switch (type) { case TITLE -> ...; };`)은 `default` 없이 쓰면 모든 상수를 다뤘는지 컴파일러가 검사한다. 그래도 분기가 여러 곳에 흩어지는 문제는 남는다. 빈을 호출해야 하는 분기라면 서비스의 default 없는 switch 식이 현실적인 선택이다 ([[java17-lts-features]]).
 
 ### 스프링 빈을 주입할 수 없다
 
@@ -159,4 +159,4 @@ enum 은 **"무엇을"(타입 식별)**, 빈은 **"어떻게"(의존성이 필�
 
 ## 관련
 
-[[overriding-vs-overloading-binding]] · [[static-util-vs-spring-bean]] · [[stream-vs-for-loop]]
+[[overriding-vs-overloading-binding]] · [[static-util-vs-spring-bean]] · [[stream-vs-for-loop]] · [[java17-lts-features]]

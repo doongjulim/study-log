@@ -6,7 +6,8 @@ tags: [ConcurrentHashMap, 컨커런트해시맵, synchronizedMap, Collections.sy
 topic: ConcurrentHashMap 을 쓴 이유와 HashMap 에 synchronized 를 거는 것(synchronizedMap)과의 차이 — 락 범위(맵 전체 vs 칸), 락 없는 읽기, 순회 중 수정
 summary: study-board 의 SseEmitterRegistry 와 LoginAttemptLimiter 는 싱글턴 빈의 필드라 구독(추가)·타임아웃(삭제)·알림 발송(순회+삭제)이 서로 다른 스레드에서 동시에 일어난다. HashMap 이면 동시 쓰기에서 엔트리가 사라지고, 순회 중 수정은 fail-fast 이터레이터가 ConcurrentModificationException 을 던진다(send 는 단일 스레드에서도 순회 중 스스로 remove). synchronizedMap 은 맵 전체에 락 하나라 순회를 지키려면 맵 전체를 잠근 채 네트워크 전송을 해야 해 모든 회원이 멈춘다. ConcurrentHashMap(Java 8+)은 get 에 락이 없고, 빈 칸은 CAS, 노드가 있는 칸은 첫 노드에만 synchronized 를 걸며, 순회는 약한 일관성이라 예외 없이 돈다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-11
 ---
 
 ## 배운 개념

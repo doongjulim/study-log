@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html
   - https://openjdk.org/jeps/180
-updated: 2026-10-07
+updated: 2026-10-11
 ---
 
 # HashMap 내부 동작
@@ -133,7 +133,7 @@ table[1]  [k1] → [k2] → … → [k100만]   → get = O(n)
 - **평균 O(1) 은 hashCode 품질에 달려 있다.** 분포가 나쁘면 느려질 뿐 틀리지는 않지만, equals/hashCode 규약을 어기면 **데이터를 잃는다** ([[equals-hashcode-contract]]).
 - **순서 보장 없음.** 순회 순서는 칸 번호 순이고 resize 마다 바뀔 수 있다 → 삽입 순서가 필요하면 `LinkedHashMap`, 정렬이 필요하면 `TreeMap`.
 - **가변 키 금지.** 넣은 뒤 해시에 쓰인 필드가 바뀌면 다른 칸을 계산해 영영 못 찾는다 (유령 원소).
-- **스레드 안전하지 않다.** 동시 put 은 데이터 유실 → `ConcurrentHashMap` ([[sse-server-sent-events]]).
+- **스레드 안전하지 않다.** 동시 put 은 데이터 유실 → `ConcurrentHashMap` ([[concurrenthashmap-vs-synchronizedmap]]).
 - 빈 칸과 Node 객체 오버헤드로 메모리를 넉넉히 쓴다 (load factor 0.75 = 25% 이상 빈칸 유지).
 
 > [!WARNING]
@@ -157,4 +157,4 @@ table[1]  [k1] → [k2] → … → [k100만]   → get = O(n)
 
 ## 관련
 
-[[equals-hashcode-contract]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[big-o-notation]] · [[string-immutability]] · [[sse-server-sent-events]]
+[[equals-hashcode-contract]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[big-o-notation]] · [[string-immutability]] · [[sse-server-sent-events]] · [[concurrenthashmap-vs-synchronizedmap]]

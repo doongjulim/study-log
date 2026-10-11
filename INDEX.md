@@ -4,7 +4,7 @@
 
 - [기능별 패키지 구성](02_Refined/package-by-feature.md) — package-by-feature vs 레이어별, 응집도, "같이 바뀌는 것은 같이"
 - [Spring 애플리케이션 이벤트](02_Refined/spring-application-events.md) — ApplicationEventPublisher/@EventListener, 모듈 결합 차단, 명령 vs 사실 통보, OCP
-- [SSE (Server-Sent Events)](02_Refined/sse-server-sent-events.md) — SseEmitter, 연결 유지 스트리밍, 스레드 반납, ConcurrentHashMap, 메모리 누수, 스케일 아웃 pub/sub
+- [SSE (Server-Sent Events)](02_Refined/sse-server-sent-events.md) — SseEmitter, 연결 유지 스트리밍, 스레드 반납, ConcurrentHashMap, 메모리 누수, 스케일 아웃 pub/sub, 순회 중 자기 remove·synchronizedMap 전체 락
 - [@TransactionalEventListener](02_Refined/transactional-event-listener.md) — TransactionPhase, AFTER_COMMIT 조용한 유실 함정, REQUIRES_NEW, 원자성 상실
 - [Transactional Outbox 패턴](02_Refined/transactional-outbox-pattern.md) — outbox 테이블, 반드시 전달, 릴레이 폴링/CDC, at-least-once·멱등성
 - [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기, 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE
@@ -46,10 +46,13 @@
 - [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n)
 - [Stream vs for 문](02_Refined/stream-vs-for-loop.md) — 어디에 쓰고 안 쓰나, 선언형 vs 명령형(≠ 절차/객체지향), 가독성의 구체적 의미, 결과값 vs 행위, break=findFirst, forEach 공유 상태, toList 불변, 면접 답변
 - [Stream 지연 평가·수직 처리·단락](02_Refined/stream-lazy-evaluation.md) — 중간/최종 연산, 최종 연산 없으면 0줄, 일회용 IllegalStateException, 루프 퓨전, 원소 하나씩 끝까지, findFirst 7번, sorted 장벽, count 가 peek 생략
-- [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent, static final SimpleDateFormat·Calendar 덮어쓰기·DateTimeFormatter
+- [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent, static final SimpleDateFormat·Calendar 덮어쓰기·DateTimeFormatter, ConcurrentHashMap get→put 로그인 카운터·compute
 - [람다와 checked 예외](02_Refined/lambda-checked-exception.md) — Predicate.test 에 throws 없음, 오버라이드 규칙, catch 만 남음, UncheckedIOException, 메서드 추출, I/O 루프는 for 문
 - [병렬 Stream 의 함정](02_Refined/parallel-stream-pitfalls.md) — Spliterator 분할, ArrayList O(1) vs LinkedList O(n), commonPool 공유·코어-1, 블로킹 I/O 고갈, 작은 데이터 오버헤드, 전용 Executor
 - [다형성 — 오버라이딩 vs 오버로딩](02_Refined/overriding-vs-overloading-binding.md) — 하나의 호출·실제 객체·여러 구현, 점(.) 왼쪽 받는 객체가 결정, 동적 바인딩 vs 정적 바인딩, invokevirtual/invokestatic, print(Object) 함정, static 은 hiding
 - [enum 상수별 구현과 다형성](02_Refined/enum-constant-specific-polymorphism.md) — constant-specific body, 익명 자식 클래스 SearchType$1, getDeclaringClass, switch default vs 컴파일 에러, switch 식, OCP, @Autowired 불가, 전략 패턴 빈
 - [static 유틸 vs 스프링 빈](02_Refined/static-util-vs-spring-bean.md) — 판단 기준 4가지(의존성·교체·순수성·가변 상태), 여러 곳 호출은 기준 아님, static 주입 불가, PasswordEncoder 공존·테스트, 면접 답변
 - [숨은 입력과 테스트 — now() 를 밖으로](02_Refined/hidden-input-time-testability.md) — LocalDate.now() 숨은 입력, 다음 날 깨지는 테스트, calcDday(today, deadline), 경계에서만 now(), Clock 주입·Clock.fixed
+- [Java 17 — 왜 17 이고 무엇을 썼나](02_Refined/java17-lts-features.md) — Spring Boot 3 최소 요건 + LTS, record 16·switch 식 14·텍스트 블록 15·패턴 매칭 16, 17 신규는 sealed, default 없는 switch 식 누락 검사, 면접 답변
+- [컨테이너 JVM 힙 크기](02_Refined/jvm-container-heap-sizing.md) — MaxRAMPercentage=75, cgroup, 기본 25%, 힙 밖 메모리(Metaspace·스레드 스택·Code Cache·Direct), -Xmx 고정값과 OOMKilled 137, HeapDump, Serial GC 자동 선택
+- [ConcurrentHashMap vs synchronizedMap](02_Refined/concurrenthashmap-vs-synchronizedmap.md) — 맵 전체 락 vs 칸 락, get 무락·CAS, CME·fail-fast vs 약한 일관성, 순회 중 네트워크 I/O, get→put 갱신 유실과 compute/computeIfAbsent, Recursive update, null 금지

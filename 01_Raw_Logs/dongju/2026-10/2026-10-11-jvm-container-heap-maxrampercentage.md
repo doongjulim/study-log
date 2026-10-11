@@ -6,7 +6,8 @@ tags: [JVM 옵션, JVM options, 힙, heap, 최대 힙, max heap, Xmx, Xms, MaxRA
 topic: 컨테이너에서 -Xmx 고정값 대신 -XX:MaxRAMPercentage=75 를 준 이유 — 기본 25% 의 낭비, 100% 의 위험(힙 밖 메모리), 고정값의 OOMKilled
 summary: MaxRAMPercentage 는 cgroup 으로 읽은 컨테이너 메모리 한도의 비율로 최대 힙을 정한다. 옵션이 없으면 기본 25% 라 1GB 컨테이너에서 힙은 약 256MB 이고 나머지 약 750MB 가 논다. 100% 면 Metaspace·스레드 스택·Code Cache·Direct Memory 같은 힙 밖 영역이 들어갈 자리가 없어 커널에 OOMKilled 된다. 75% 는 그 여유분을 남긴 값이다. -Xmx768m 고정값은 운영에서 한도를 512MB 로 낮추면 힙이 한도를 넘어 흔적 없는 OOMKilled(137)로 죽지만, 퍼센트는 한도를 따라 힙이 같이 줄어 최악에도 원인을 볼 수 있는 OutOfMemoryError 로 실패한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-11
 ---
 
 ## 배운 개념

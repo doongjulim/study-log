@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: race-condition-lost-update
-tags: [경쟁조건, race-condition, 레이스컨디션, 갱신유실, lost-update, 데이터유실, 공유가변상태, shared-mutable-state, 스레드안전, thread-safety, 동시성, concurrency, 원자성, atomicity, read-modify-write, check-then-act, size++, ArrayList동시add, ArrayIndexOutOfBoundsException, 병렬, parallel, collect, combiner, synchronizedList, CopyOnWriteArrayList, AtomicInteger, CAS, static, static-final, SimpleDateFormat, DateTimeFormatter, Calendar, 날짜포맷, 간헐적버그]
+tags: [경쟁조건, race-condition, 레이스컨디션, 갱신유실, lost-update, 데이터유실, 공유가변상태, shared-mutable-state, 스레드안전, thread-safety, 동시성, concurrency, 원자성, atomicity, read-modify-write, check-then-act, size++, ArrayList동시add, ArrayIndexOutOfBoundsException, 병렬, parallel, collect, combiner, synchronizedList, CopyOnWriteArrayList, AtomicInteger, CAS, static, static-final, SimpleDateFormat, DateTimeFormatter, Calendar, 날짜포맷, 간헐적버그, ConcurrentHashMap, get-then-put, compute, 로그인카운터, 레이트리밋]
 topic: 공유 가변 상태에 여러 스레드가 "읽고-고치고-쓰기"를 하면 갱신이 조용히 유실된다 — ArrayList 동시 add 로 보는 경쟁 조건
 summary: ArrayList.add 는 elementData[size] 에 넣고 size++ 하는 두 단계라 원자적이지 않다. 두 스레드가 같은 size 를 읽으면 같은 칸을 덮어써 한 값이 사라지고 size 도 실제 add 횟수보다 작아진다(갱신 유실). 에러 없이 데이터만 사라져 찾기 어렵다. 해법은 공유 상태를 없애거나(스레드별 컨테이너 후 합치기 — Stream collect), 원자적으로 만들거나(락, CAS, 동시성 컬렉션)다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ArrayList.html
   - https://docs.oracle.com/javase/tutorial/essential/concurrency/interfere.html
-updated: 2026-10-09
+updated: 2026-10-11
 ---
 
 # 경쟁 조건과 갱신 유실
@@ -74,6 +74,16 @@ public final class DateUtils {
 - `final` 은 참조만 고정할 뿐 **내부 필드 변경**은 못 막는다 ([[shallow-immutability-defensive-copy]]).
 - 해결: 불변 객체 `DateTimeFormatter.ofPattern("yyyy-MM-dd")`. static 필드에는 가변 상태를 두지 않는다 ([[static-util-vs-spring-bean]] 기준 4).
 
+## 사례 3 — `ConcurrentHashMap` 의 get → put
+
+동시성 컬렉션이어도 **호출 사이**는 보호되지 않는다. 같은 IP 의 로그인 실패 2건이 동시에 오면(현재 3회):
+
+```
+ A: get → 3      B: get → 3      A: put 4      B: put 4     → 최종 4, 기대 5
+```
+
+`get`·`put` 각각은 안전하지만 read-modify-write 사이 틈에서 실패 1건이 사라진다. 공격자는 실패를 동시에 몰아 차단 임계값 도달을 늦출 수 있다. 해결은 `compute` — 람다 동안 그 칸의 락을 쥐어 세 단계를 원자화 ([[concurrenthashmap-vs-synchronizedmap]]).
+
 ## 해법 — 두 갈래
 
 | 갈래 | 방법 | 예 |
@@ -94,6 +104,7 @@ public final class DateUtils {
 > - **"여러 스레드가 같은 리스트에 add 하면 순서가 꼬인다"** — 순서만이 아니다. 같은 size 를 읽어 **같은 칸을 덮어쓴다** → 값 소실 + size 불일치(갱신 유실).
 > - **"static SimpleDateFormat 을 동시에 쓰면 값의 동일성이 보장 안 된다"** — 방향은 맞지만 용어 오류. "동일성" 은 `==`(같은 객체인가)다. 정확히는 공유 가변 상태(Calendar)에 대한 **경쟁 조건 → 다른 요청의 날짜로 덮어써짐**.
 > - **"`static final` 이니 안전하다"** — final 은 참조만 고정한다. 내부가 가변이면 똑같이 깨진다.
+> - **"ConcurrentHashMap 이면 get 후 put 도 안전하다"** — 각 호출만 안전하다. 사이 틈에서 갱신 유실 → `compute`/`merge`.
 > - **"`size++` 는 한 줄이니 원자적이다"** — 읽기 → +1 → 쓰기 3단계다.
 > - **"Stream 을 쓰면 스레드 안전하다"** — collect 가 안전한 것이지, 람다 안에서 공유 상태를 바꾸면 똑같다.
 
@@ -105,7 +116,8 @@ public final class DateUtils {
 - [ ] 해법 두 갈래(공유 제거 vs 원자화)와 각각의 예는?
 - [ ] 동시성 컬렉션을 써도 깨지는 복합 연산 예를 들 수 있는가?
 - [ ] `static final SimpleDateFormat` 이 동시 요청에서 깨지는 과정과 해결책은?
+- [ ] ConcurrentHashMap 로그인 카운터를 get→put 으로 짜면 동시 실패 2건(현재 3)의 최종값은? 해결책은?
 
 ## 관련
 
-[[jvm-stack-and-heap]] · [[arraylist-internals]] · [[stream-vs-for-loop]] · [[token-refresh-concurrency]] · [[string-concatenation-cost]] · [[static-util-vs-spring-bean]] · [[shallow-immutability-defensive-copy]]
+[[jvm-stack-and-heap]] · [[arraylist-internals]] · [[stream-vs-for-loop]] · [[token-refresh-concurrency]] · [[string-concatenation-cost]] · [[static-util-vs-spring-bean]] · [[shallow-immutability-defensive-copy]] · [[concurrenthashmap-vs-synchronizedmap]]

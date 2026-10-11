@@ -7,7 +7,7 @@ summary: 인터프리터는 시작이 빠르지만 반복 코드가 느리고, �
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/index.html
-updated: 2026-10-09
+updated: 2026-10-11
 ---
 
 # 인터프리터와 JIT 컴파일러
@@ -77,4 +77,4 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 
 ## 관련
 
-[[jvm-execution-pipeline]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]]
+[[jvm-execution-pipeline]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]] · [[jvm-container-heap-sizing]]

@@ -9,7 +9,7 @@ source_refs:
   - https://docs.oracle.com/en/java/javase/17/language/records.html
   - https://openjdk.org/jeps/395
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#getRecordComponents()
-updated: 2026-09-26
+updated: 2026-10-11
 ---
 
 # record
@@ -86,4 +86,4 @@ record CreatePostRequest(String title, List<String> tags) {
 
 ## 관련
 
-[[shallow-immutability-defensive-copy]] · [[jpa-entity-equality]] · [[equals-hashcode-contract]] · [[string-immutability]]
+[[shallow-immutability-defensive-copy]] · [[jpa-entity-equality]] · [[equals-hashcode-contract]] · [[string-immutability]] · [[java17-lts-features]]

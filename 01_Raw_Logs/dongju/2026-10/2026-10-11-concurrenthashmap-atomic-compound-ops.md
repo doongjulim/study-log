@@ -6,7 +6,8 @@ tags: [ConcurrentHashMap, 복합 연산, compound operation, 원자적 연산, a
 topic: ConcurrentHashMap 이어도 get 후 put 은 원자적이지 않다 — 로그인 실패 카운터의 갱신 유실과 compute/computeIfAbsent 로 읽고-고치고-쓰기를 한 번에
 summary: get 과 put 각각은 스레드 안전하지만 그 사이에 틈이 있어, 같은 IP 의 실패 요청 두 개가 동시에 오면 둘 다 3 을 읽고 4 를 써서 최종값이 5 가 아니라 4 가 된다(갱신 유실, read-modify-write). 공격자는 실패를 동시에 몰아 차단 임계값 도달을 늦출 수 있다. compute 는 람다가 도는 동안 그 키의 칸 락을 쥐어 세 단계를 원자적으로 만들고, computeIfAbsent 는 "없으면 만들어 넣기"를 원자적으로 해 동시 첫 구독에서 내부 맵이 두 번 생기지 않게 한다. 람다는 짧게, 같은 맵 재수정 금지, null 금지, 메모리 맵이라 서버 여러 대면 Redis 로.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-11
 ---
 
 ## 배운 개념

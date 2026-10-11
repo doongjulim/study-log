@@ -1,13 +1,13 @@
 ---
 type: refined
 slug: sse-server-sent-events
-tags: [SSE, server-sent-events, SseEmitter, EventSource, 실시간알림, realtime, 폴링, polling, websocket, text-event-stream, 비동기서블릿, async-servlet, ConcurrentHashMap, 메모리누수, memory-leak, scale-out, redis-pubsub, broadcast]
+tags: [SSE, server-sent-events, SseEmitter, EventSource, 실시간알림, realtime, 폴링, polling, websocket, text-event-stream, 비동기서블릿, async-servlet, ConcurrentHashMap, 메모리누수, memory-leak, scale-out, redis-pubsub, broadcast, synchronizedMap, computeIfAbsent, 약한일관성]
 topic: SSE(Server-Sent Events)와 SseEmitter의 작동 원리·한계
 summary: HTTP 연결을 끊지 않고 응답을 스트림으로 흘려보내 서버→클라이언트 푸시를 구현하는 기법. SseEmitter return 후 스레드 반납·연결 유지, emitter 저장소의 동시성·정리, JVM 로컬이라는 스케일 아웃 한계까지.
 contributors: [dongju]
 source_refs:
   - https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
-updated: 2026-07-10
+updated: 2026-10-11
 ---
 
 # SSE (Server-Sent Events)
@@ -39,6 +39,7 @@ emitter.onError(e -> emitters.remove(id));
 ```
 
 - **왜 ConcurrentHashMap**: `broadcast()`가 map을 순회하는 도중 다른 스레드의 `add()`(새 구독)/`remove()`(타임아웃 콜백)가 끼어든다. 일반 HashMap이면 `ConcurrentModificationException` 또는 내부 구조 파손. ConcurrentHashMap은 순회 중 넣고 빼기, 순회하며 스스로 remove까지 안전.
+- 순회 중 끊긴 연결을 **자기 스스로** `remove` 하는 발송 코드라면, HashMap 은 다른 스레드가 없어도 CME 를 던진다. `synchronizedMap` 으로 순회를 지키려면 맵 전체를 잠근 채 네트워크 전송을 하게 돼 모든 회원이 멈춘다 → ConcurrentHashMap 의 약한 일관성 순회가 답 ([[concurrenthashmap-vs-synchronizedmap]]).
 - **cleanup이 없으면**: ① **메모리 누수** — 탭을 닫아도 map이 죽은 emitter 참조를 쥐고 있어 GC 불가, 무한 누적. ② **broadcast 성능 저하** — 알림 하나에 죽은 emitter 수만 개로 send 시도 + 예외 처리 헛수고.
 
 ## 스케일 아웃 한계
@@ -62,4 +63,4 @@ emitter.onError(e -> emitters.remove(id));
 - [ ] cleanup 부재 시 두 가지 문제(메모리/성능)를 이름 붙여 설명할 수 있다
 - [ ] 다중 서버에서 SSE가 깨지는 이유와 pub/sub 해법을 그림으로 그릴 수 있다
 
-관련: [[spring-application-events]] · [[transactional-event-listener]]
+관련: [[spring-application-events]] · [[transactional-event-listener]] · [[concurrenthashmap-vs-synchronizedmap]]

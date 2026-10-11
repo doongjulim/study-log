@@ -92,3 +92,4 @@ SHA-256 (조회 가능·비가역)
 - [[secret-entropy-and-search-space]] — 완주 가능한 크기인지 판정하는 축
 - [[deterministic-hash-for-lookup]] — 초대 코드에서 BCrypt가 탈락하는 구조적 이유
 - [[secret-hashing-algorithm-choice]] — 두 축을 합친 최종 판단표
+- [[concurrenthashmap-vs-synchronizedmap]] — 메모리 레이트 리밋 카운터의 동시 실패를 compute 로 원자화

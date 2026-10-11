@@ -6,7 +6,8 @@ tags: [Java 17, 자바 17, LTS, 장기 지원, long-term support, Spring Boot 3,
 topic: 왜 Java 17 인가, 그리고 "17 에서 쓴 기능"은 사실 14~16 에서 정식화된 기능을 17 LTS 가 묶은 것 — study-board 실제 사용처와 default 없는 switch 식의 누락 검사
 summary: Java 17 을 고른 이유는 Spring Boot 3.x(Spring 6)의 최소 요건이 Java 17 이고 그중 LTS 가 17 이기 때문이다. study-board 에서 쓴 record·switch 식·텍스트 블록·instanceof 패턴 매칭·Stream.toList 는 14~16 에서 정식화된 기능이고 17 에서 정식화된 대표 기능은 sealed(미사용)이므로, "17 의 신기능"이 아니라 "11 이후 정식화된 기능을 LTS 로 처음 묶은 버전이 17"이라고 말해야 정확하다. SearchType 분기는 리포지토리(빈)를 호출하므로 enum 상수별 구현 대신 서비스의 default 없는 switch 식으로 두어 상수 누락을 컴파일 에러로 잡는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-11
 ---
 
 ## 배운 개념
