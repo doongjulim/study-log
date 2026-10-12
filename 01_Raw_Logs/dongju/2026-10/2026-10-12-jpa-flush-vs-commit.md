@@ -6,7 +6,8 @@ tags: [플러시, flush, 커밋, commit, flush vs commit, 자동 플러시, auto
 topic: 플러시와 커밋은 다르다 — 플러시는 영속성 컨텍스트 → DB 전송, 커밋은 확정. 자동 플러시는 커밋 직전과 JPQL 실행 직전
 summary: 커밋 요청 시 먼저 플러시가 일어나 스냅샷 비교로 UPDATE 를 만들고 쓰기 지연 저장소의 SQL 을 DB 로 보낸 뒤, 마지막에 DB 커밋으로 확정한다. 플러시 후에도 커밋 전이면 롤백 가능하고, 플러시해도 1차 캐시는 비워지지 않는다. JPQL 은 DB 만 보기 때문에 실행 직전에 자동 플러시해 방금 persist 한 엔티티가 조회 결과에서 빠지지 않게 한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-12
 ---
 
 ## 배운 개념

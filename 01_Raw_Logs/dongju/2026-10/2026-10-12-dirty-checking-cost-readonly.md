@@ -6,7 +6,8 @@ tags: [변경 감지 비용, dirty checking cost, 더티 체킹 비용, 스냅�
 topic: 변경 감지의 비용(메모리 두 벌, 플러시마다 전체 엔티티 필드 비교)과 @Transactional(readOnly = true) 로 조회 전용 메서드의 비용을 없애는 방법
 summary: setter 는 Hibernate 에 아무 기록도 남기지 않으므로, 플러시 때 Hibernate 는 수정 여부와 상관없이 모든 영속 엔티티를 스냅샷과 필드 단위로 비교해야 바뀐 걸 안다. 조회만 1만 건이면 엔티티+스냅샷 두 벌이 메모리에 올라가고 약 10만 번 비교 후 UPDATE 0개다. readOnly = true 는 스냅샷 생성 생략 + 플러시 모드 MANUAL 로 이 비용을 없애며, 그 안에서 수정하면 예외 없이 조용히 무시된다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-12
 ---
 
 ## 배운 개념

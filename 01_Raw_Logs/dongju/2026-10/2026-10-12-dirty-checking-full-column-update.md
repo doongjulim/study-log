@@ -6,7 +6,8 @@ tags: [변경 감지, dirty checking, 더티 체킹, 스냅샷, snapshot, 1차 �
 topic: 변경 감지가 UPDATE 를 만드는 흐름과, Hibernate 가 바뀐 컬럼이 아니라 전체 컬럼을 UPDATE 하는 이유(@DynamicUpdate 와의 트레이드오프)
 summary: 조회 시 1차 캐시에 엔티티와 스냅샷이 함께 저장되고, 플러시(커밋 직전·JPQL 직전) 때 스냅샷과 비교해 UPDATE 를 만든다. 기본 UPDATE 는 id 를 뺀 전체 컬럼을 SET 하는데, SQL 모양이 하나라 애플리케이션 시작 시 미리 만들어 재사용할 수 있고 DB 실행 계획 캐시와 JDBC 배치에도 유리하기 때문이다. 바뀐 컬럼만 보내려면 @DynamicUpdate.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-12
 ---
 
 ## 배운 개념

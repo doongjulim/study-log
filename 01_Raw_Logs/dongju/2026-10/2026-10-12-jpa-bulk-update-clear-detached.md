@@ -6,7 +6,8 @@ tags: [벌크 연산, bulk update, bulk operation, executeUpdate, Modifying, cle
 topic: 벌크 연산은 영속성 컨텍스트를 우회해 1차 캐시를 낡게 만든다 — 해결은 clear(), 그 부작용은 준영속. 대량 배치는 N건마다 flush → clear
 summary: 벌크 UPDATE 는 DB 만 직접 고치므로 이미 1차 캐시에 있는 엔티티는 옛 값 그대로이고, 이후 find() 는 DB 를 가지 않아 낡은 값을 돌려준다. 플러시(컨텍스트→DB)나 커밋(원자성 파괴)이 아니라 em.clear() 또는 @Modifying(clearAutomatically = true) 로 비워야 한다. clear 후 기존 참조는 준영속이 되어 동일성 보장과 변경 감지가 끊긴다. 10만 건 배치는 N건마다 flush 후 clear 해야 하며 순서가 바뀌면 변경이 증발한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-12
 ---
 
 ## 배운 개념

@@ -6,7 +6,8 @@ tags: [영속성 컨텍스트, persistence context, EntityManager, 엔티티 매
 topic: 영속성 컨텍스트가 무엇이고 MyBatis 처럼 SQL 을 직접 날리는 방식과 비교해 무엇을 얻는가 — 롤백은 영속성 컨텍스트의 장점이 아니다
 summary: 영속성 컨텍스트는 JPA 스펙이 정의하는 엔티티 저장 공간이며 EntityManager 로 접근하고, 스프링은 그 생명주기를 트랜잭션 범위에 묶어 관리한다. 본질은 SQL 이 아니라 엔티티와 스냅샷을 붙잡고 있는 것이고, 그 덕분에 1차 캐시·동일성 보장·변경 감지·쓰기 지연을 얻는다. 롤백은 DB 트랜잭션 기능이라 MyBatis 도 똑같이 누린다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-12
 ---
 
 ## 배운 개념

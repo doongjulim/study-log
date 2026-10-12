@@ -10,7 +10,10 @@
 - [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기, 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE
 - [지연 로딩과 프록시](02_Refined/lazy-loading-proxy.md) — LAZY/EAGER, 프록시 초기화, LazyInitializationException "no Session", fetch 기본값, equals 안의 프록시, getClass vs instanceof, 컬렉션 연산에서 터지는 예외
 - [N+1 문제와 fetch join](02_Refined/n-plus-1-problem.md) — 1+N 쿼리, join fetch, @EntityGraph, default_batch_fetch_size, 컬렉션 페이징 불가, equals/hashCode 가 만드는 숨은 N+1
-- [변경 감지 (Dirty Checking)](02_Refined/dirty-checking.md) — 스냅샷, flush 시점, 영속 vs 준영속, readOnly 최적화, 쓰기 지연
+- [변경 감지 (Dirty Checking)](02_Refined/dirty-checking.md) — 스냅샷, flush 시점, 영속 vs 준영속, readOnly 최적화(스냅샷 생략·FlushMode.MANUAL·조용한 무시), 쓰기 지연, 전체 엔티티 필드 비교 비용, 전체 컬럼 UPDATE 이유·@DynamicUpdate
+- [영속성 컨텍스트](02_Refined/persistence-context.md) — EntityManager, JPA 스펙 vs 스프링 생명주기, 1차 캐시·동일성 보장·변경 감지·쓰기 지연, JPA vs MyBatis, 롤백은 DB 트랜잭션 기능
+- [플러시 vs 커밋](02_Refined/jpa-flush.md) — 컨텍스트→DB 전송 vs 확정, 커밋 직전·JPQL 직전 자동 플러시, persist 후 JPQL, 플러시 후 롤백, FlushModeType
+- [벌크 연산과 em.clear()](02_Refined/jpa-bulk-update-and-clear.md) — executeUpdate 후 낡은 1차 캐시, clearAutomatically, 준영속 detached, 대량 배치 flush→clear·batch_size
 - [DB 수준 페이징과 Page vs Slice](02_Refined/db-pagination.md) — LIMIT/OFFSET, ORDER BY 전제조건, count 쿼리 비용, Slice limit+1
 - [키셋(커서) 페이징](02_Refined/keyset-pagination.md) — OFFSET 성능 절벽, WHERE 마지막값, 무한 스크롤, 임의 페이지 점프 포기
 - [LIKE '%kw%' 와 B-tree 인덱스](02_Refined/like-search-btree-index.md) — 앞 와일드카드 풀 스캔, 탐색 시작점, Containing vs StartingWith, full-text
