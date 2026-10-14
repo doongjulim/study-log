@@ -6,7 +6,8 @@ tags: [즉시 로딩, EAGER, FetchType.EAGER, 지연 로딩, LAZY, FetchType.LAZ
 topic: EAGER 인데 왜 조인 1번이 아니라 N+1 인가 — JPQL 은 글자 그대로 번역되고 fetch 설정은 조회 이후에 반영된다
 summary: em.find 는 EAGER 설정을 보고 조인 SQL 1번을 만들지만, findAll 같은 JPQL 은 fetch 설정과 무관하게 그대로 SQL 로 번역된 뒤 결과 엔티티를 보고 EAGER 연관을 추가 조회해서 N+1 이 생긴다. 추가 쿼리 수는 서로 다른 연관 엔티티 수이며, 이미 조회한 엔티티는 1차 캐시에서 꺼낸다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-14
 ---
 
 ## 배운 개념

@@ -7,13 +7,15 @@
 - [SSE (Server-Sent Events)](02_Refined/sse-server-sent-events.md) — SseEmitter, 연결 유지 스트리밍, 스레드 반납, ConcurrentHashMap, 메모리 누수, 스케일 아웃 pub/sub, 순회 중 자기 remove·synchronizedMap 전체 락
 - [@TransactionalEventListener](02_Refined/transactional-event-listener.md) — TransactionPhase, AFTER_COMMIT 조용한 유실 함정, REQUIRES_NEW, 원자성 상실
 - [Transactional Outbox 패턴](02_Refined/transactional-outbox-pattern.md) — outbox 테이블, 반드시 전달, 릴레이 폴링/CDC, at-least-once·멱등성
-- [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기, 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE
-- [지연 로딩과 프록시](02_Refined/lazy-loading-proxy.md) — LAZY/EAGER, 프록시 초기화, LazyInitializationException "no Session", fetch 기본값, equals 안의 프록시, getClass vs instanceof, 컬렉션 연산에서 터지는 예외
-- [N+1 문제와 fetch join](02_Refined/n-plus-1-problem.md) — 1+N 쿼리, join fetch, @EntityGraph, default_batch_fetch_size, 컬렉션 페이징 불가, equals/hashCode 가 만드는 숨은 N+1
+- [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기(false 면 트랜잭션 종료 시 닫힘), 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE, 목록 DTO·상세 EntityGraph
+- [지연 로딩과 프록시](02_Refined/lazy-loading-proxy.md) — LAZY/EAGER, 프록시는 자식 클래스·target 위임·필드는 null·메서드만 가로챔, 초기화 시점, LazyInitializationException "no Session", fetch 기본값, 왜 LAZY(켜기 O 끄기 X), equals 안의 프록시, getClass vs instanceof
+- [N+1 문제와 fetch join](02_Refined/n-plus-1-problem.md) — 1+N 정의, MyBatis 도 발생(접근 패턴), EAGER+JPQL 도 N+1, LAZY 는 미룰 뿐, join fetch·@EntityGraph·batch size(1+1)·DTO·반정규화 비교, 1:N 행 뻥튀기와 페이징(HHH90003004), N:1 은 안전, equals/hashCode 숨은 N+1
+- [DTO 조회 (select new)](02_Refined/jpa-dto-projection.md) — 프로젝션, select new 전체 클래스명, Object[] 와 차이, 영속성 컨텍스트 비관리(프록시·변경 감지 없음), OSIV off 안전, size() 로 컬렉션 개수·페이징 유지
 - [변경 감지 (Dirty Checking)](02_Refined/dirty-checking.md) — 스냅샷, flush 시점, 영속 vs 준영속, readOnly 최적화(스냅샷 생략·FlushMode.MANUAL·조용한 무시), 쓰기 지연, 전체 엔티티 필드 비교 비용, 전체 컬럼 UPDATE 이유·@DynamicUpdate
 - [영속성 컨텍스트](02_Refined/persistence-context.md) — EntityManager, JPA 스펙 vs 스프링 생명주기, 1차 캐시·동일성 보장·변경 감지·쓰기 지연, JPA vs MyBatis, 롤백은 DB 트랜잭션 기능
 - [플러시 vs 커밋](02_Refined/jpa-flush.md) — 컨텍스트→DB 전송 vs 확정, 커밋 직전·JPQL 직전 자동 플러시, persist 후 JPQL, 플러시 후 롤백, FlushModeType
 - [벌크 연산과 em.clear()](02_Refined/jpa-bulk-update-and-clear.md) — executeUpdate 후 낡은 1차 캐시, clearAutomatically, 준영속 detached, 대량 배치 flush→clear·batch_size
+- [반정규화 카운터와 원자적 UPDATE](02_Refined/denormalized-counter-atomic-update.md) — likeCount, 카운트 N+1 회피, 정합성 관리 책임, 변경 감지 +1 의 갱신 손실(10→11), like_count + 1, clearAutomatically vs flushAutomatically, 낙관적·비관적 락 비교
 - [DB 수준 페이징과 Page vs Slice](02_Refined/db-pagination.md) — LIMIT/OFFSET, ORDER BY 전제조건, count 쿼리 비용, Slice limit+1
 - [키셋(커서) 페이징](02_Refined/keyset-pagination.md) — OFFSET 성능 절벽, WHERE 마지막값, 무한 스크롤, 임의 페이지 점프 포기
 - [LIKE '%kw%' 와 B-tree 인덱스](02_Refined/like-search-btree-index.md) — 앞 와일드카드 풀 스캔, 탐색 시작점, Containing vs StartingWith, full-text
@@ -34,7 +36,7 @@
 - [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서
 - [오토박싱과 래퍼 캐시](02_Refined/wrapper-cache-autoboxing.md) — Long.valueOf, -128~127 캐시, ID 128 부터 깨지는 == 비교, fail-open vs fail-closed, contains 타입 불일치
 - [equals / hashCode 규약](02_Refined/equals-hashcode-contract.md) — 필수는 한 방향뿐, 비둘기집 원리, HashMap 3단계, 가변 키와 유령 원소, 정확성 vs 성능
-- [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상수 hashCode, 1차 캐시 동일성
+- [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상대 id 는 getId()(필드 직접 접근 null), 상수 hashCode, 1차 캐시 동일성
 - [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
 - [문자열 연결의 비용](02_Refined/string-concatenation-cost.md) — + 는 invokedynamic, 루프에서 O(n²), StringBuilder 분할상환 O(1), StringBuffer 를 안 쓰는 진짜 이유
 - [record](02_Refined/java-record.md) — 요청/응답 DTO, private final 자동, 정규 생성자·컴팩트 생성자, 접근자 title() vs getTitle(), Jackson 생성자 바인딩, getRecordComponents, 엔티티로 못 쓰는 이유

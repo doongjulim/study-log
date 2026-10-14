@@ -82,7 +82,7 @@ public final class DateUtils {
  A: get → 3      B: get → 3      A: put 4      B: put 4     → 최종 4, 기대 5
 ```
 
-`get`·`put` 각각은 안전하지만 read-modify-write 사이 틈에서 실패 1건이 사라진다. 공격자는 실패를 동시에 몰아 차단 임계값 도달을 늦출 수 있다. 해결은 `compute` — 람다 동안 그 칸의 락을 쥐어 세 단계를 원자화 ([[concurrenthashmap-vs-synchronizedmap]]).
+`get`·`put` 각각은 안전하지만 read-modify-write 사이 틈에서 실패 1건이 사라진다. 공격자는 실패를 동시에 몰아 차단 임계값 도달을 늦출 수 있다. 해결은 `compute` — 람다 동안 그 칸의 락을 쥐어 세 단계를 원자화 ([[concurrenthashmap-vs-synchronizedmap]] · [[denormalized-counter-atomic-update]]).
 
 ## 해법 — 두 갈래
 

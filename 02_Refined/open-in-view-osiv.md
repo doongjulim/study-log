@@ -7,7 +7,7 @@ summary: OSIV 는 영속성 컨텍스트를 뷰 렌더링 완료까지 열어두
 contributors: [dongju]
 source_refs:
   - https://vladmihalcea.com/the-open-session-in-view-anti-pattern/
-updated: 2026-08-25
+updated: 2026-10-14
 ---
 
 # Open Session In View (`spring.jpa.open-in-view`)
@@ -106,6 +106,9 @@ public String view(@PathVariable Long id, Model model) {
 > - **"끄면 메모리를 아낀다"** — 메모리는 부수적. 진짜는 **DB 커넥션의 조기 반납**. 커넥션은 풀 크기가
 >   고정된 자원이라 고갈되면 서비스 전체가 죽는다.
 > - **"커넥션 반납은 뷰 렌더링 시점"** — 렌더링 **완료 후**(`afterCompletion`). 렌더링 중에도 지연 로딩이 있다.
+> - **"`false` 면 영속성 컨텍스트가 렌더링 끝 / 컨트롤러 반환 시 닫힌다"** — 그건 `true` 의 동작이다. `false` 면
+>   **서비스 `@Transactional` 종료와 함께** 닫힌다. 컨트롤러도 이미 트랜잭션 밖이고, 템플릿 렌더링은 그 **후**라
+>   `${post.author.nickname}` 같은 프록시 접근은 `LazyInitializationException` 이 된다.
 > - **"커넥션 오버플로우"** — 풀은 넘치지 않는다. 정확한 용어는 **고갈(exhaustion) + 대기(blocking) + 타임아웃**.
 > - **"트랜잭션 밖 변경은 DB 에 반영되지 않는다"** — `true` 면 **반영될 수 있다**. 영속 상태 유지 +
 >   후속 트랜잭션의 flush 조합. 인과의 주어는 "뒤에 열린 남의 트랜잭션"이다.
@@ -119,7 +122,9 @@ public String view(@PathVariable Long id, Model model) {
 - [ ] 커넥션 풀 고갈이 왜 해당 API 하나가 아니라 전체 서비스를 죽이는지 설명할 수 있는가?
 - [ ] 트랜잭션 밖 엔티티 변경이 DB 로 새는 4단계 인과 사슬을 순서대로 말할 수 있는가?
 - [ ] 끈 뒤에 해야 하는 두 계열의 처방을 각각 예시와 함께 댈 수 있는가?
+- [ ] `false` 일 때 요청 흐름(컨트롤러 → 서비스 → 반환 → 렌더링)에서 영속성 컨텍스트가 닫히는 지점을 짚을 수 있는가?
+- [ ] 끈 상태에서 목록은 DTO 조회, 상세는 `@EntityGraph` 를 쓰는 조합이 N+1 과 OSIV 를 함께 푸는 이유는?
 
 ## 관련
 
-[[lazy-loading-proxy]] · [[n-plus-1-problem]] · [[dirty-checking]] · [[db-pagination]]
+[[lazy-loading-proxy]] · [[n-plus-1-problem]] · [[jpa-dto-projection]] · [[dirty-checking]] · [[db-pagination]]

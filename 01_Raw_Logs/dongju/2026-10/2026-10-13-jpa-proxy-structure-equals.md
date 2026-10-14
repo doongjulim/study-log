@@ -6,7 +6,8 @@ tags: [프록시, proxy, HibernateProxy, 지연 로딩, LAZY, 프록시 초기�
 topic: 지연 로딩 프록시의 정체(상속), 초기화 시점, target 위임 구조 — 그리고 그 구조 때문에 equals 에서 getClass·필드 직접 접근이 깨지는 이유
 summary: 프록시는 Hibernate 가 런타임에 만든 엔티티의 자식 클래스로, 처음엔 FK 에서 얻은 id 만 알고 target 은 null 이다. ID 외 값을 처음 읽을 때 영속성 컨텍스트가 DB 를 조회해 target 을 채우고 이후 호출은 target 에 위임하며, 프록시 자신의 필드는 끝까지 null 이다. 프록시는 메서드만 가로챌 수 있으므로 equals 는 getClass 대신 instanceof, 필드 대신 getter 로 비교해야 한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-14
 ---
 
 ## 배운 개념

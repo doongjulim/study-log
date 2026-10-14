@@ -115,4 +115,4 @@ for (int i = 0; i < members.size(); i++) {
 
 ## 관련
 
-[[persistence-context]] · [[jpa-flush]] · [[dirty-checking]] · [[open-in-view-osiv]] · [[lazy-loading-proxy]]
+[[persistence-context]] · [[jpa-flush]] · [[dirty-checking]] · [[open-in-view-osiv]] · [[lazy-loading-proxy]] · [[denormalized-counter-atomic-update]]

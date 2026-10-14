@@ -6,7 +6,8 @@ tags: [지연 로딩, LAZY, 즉시 로딩, EAGER, 왜 LAZY, fetch join, 페치 �
 topic: 연관관계를 왜 항상 LAZY 로 두는가 — LAZY 는 N+1 을 미룰 뿐이고, 해결은 fetch join. EAGER 는 쿼리 단위로 끌 수 없다는 비대칭
 summary: LAZY 에서도 연관 데이터를 루프에서 읽으면 프록시 초기화로 N+1 이 그대로 생긴다(1+20=21번). 일반 join 은 select 절에 루트만 올려 프록시가 남으므로 join fetch(또는 @EntityGraph)로 한 번에 진짜 엔티티를 채워야 한다. fetch join 으로 LAZY 를 "이번만 켜는" 것은 가능하지만 EAGER 를 "이번만 끄는" 방법은 없어서, 쿼리마다 조회 범위를 통제하려고 기본값을 LAZY 로 둔다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-14
 ---
 
 ## 배운 개념
