@@ -5,7 +5,7 @@
 - [기능별 패키지 구성](02_Refined/package-by-feature.md) — package-by-feature vs 레이어별, 응집도, "같이 바뀌는 것은 같이"
 - [Spring 애플리케이션 이벤트](02_Refined/spring-application-events.md) — ApplicationEventPublisher/@EventListener, 모듈 결합 차단, 명령 vs 사실 통보, OCP
 - [SSE (Server-Sent Events)](02_Refined/sse-server-sent-events.md) — SseEmitter, 연결 유지 스트리밍, 스레드 반납, ConcurrentHashMap, 메모리 누수, 스케일 아웃 pub/sub, 순회 중 자기 remove·synchronizedMap 전체 락
-- [@TransactionalEventListener](02_Refined/transactional-event-listener.md) — TransactionPhase, AFTER_COMMIT 조용한 유실 함정, REQUIRES_NEW, 원자성 상실
+- [@TransactionalEventListener](02_Refined/transactional-event-listener.md) — TransactionPhase, AFTER_COMMIT 조용한 유실 함정, REQUIRES_NEW, 원자성 상실, TransactionSynchronization afterCommit 으로 파일 커밋 후 삭제
 - [Transactional Outbox 패턴](02_Refined/transactional-outbox-pattern.md) — outbox 테이블, 반드시 전달, 릴레이 폴링/CDC, at-least-once·멱등성
 - [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기(false 면 트랜잭션 종료 시 닫힘), 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE, 목록 DTO·상세 EntityGraph
 - [지연 로딩과 프록시](02_Refined/lazy-loading-proxy.md) — LAZY/EAGER, 프록시는 자식 클래스·target 위임·필드는 null·메서드만 가로챔, 초기화 시점, LazyInitializationException "no Session", fetch 기본값, 왜 LAZY(켜기 O 끄기 X), equals 안의 프록시, getClass vs instanceof
@@ -13,6 +13,10 @@
 - [DTO 조회 (select new)](02_Refined/jpa-dto-projection.md) — 프로젝션, select new 전체 클래스명, Object[] 와 차이, 영속성 컨텍스트 비관리(프록시·변경 감지 없음), OSIV off 안전, size() 로 컬렉션 개수·페이징 유지
 - [변경 감지 (Dirty Checking)](02_Refined/dirty-checking.md) — 스냅샷, flush 시점, 영속 vs 준영속, readOnly 최적화(스냅샷 생략·FlushMode.MANUAL·조용한 무시), 쓰기 지연, 전체 엔티티 필드 비교 비용, 전체 컬럼 UPDATE 이유·@DynamicUpdate
 - [영속성 컨텍스트](02_Refined/persistence-context.md) — EntityManager, JPA 스펙 vs 스프링 생명주기, 1차 캐시·동일성 보장·변경 감지·쓰기 지연, JPA vs MyBatis, 롤백은 DB 트랜잭션 기능
+- [엔티티 생명주기와 persist / merge](02_Refined/jpa-entity-lifecycle-merge.md) — 비영속·영속·준영속·삭제, persist 는 비영속 전용(준영속이면 예외), merge 는 영속 엔티티에 전체 필드 덮어쓰고 다른 객체 반환, save()=isNew?persist:merge, 수정은 조회+변경 감지(필드 null 덮어쓰기·남의 행 수정 방지)
+- [식별자 생성 전략 — IDENTITY vs SEQUENCE](02_Refined/jpa-id-generation-strategy.md) — IDENTITY 는 persist 즉시 INSERT(1차 캐시 키=id), 쓰기 지연·JDBC 배치 불가, SEQUENCE nextval·allocationSize pooled, 100건 왕복 100 vs 4, batch_size 함께, JdbcTemplate.batchUpdate
+- [연관관계의 주인과 mappedBy](02_Refined/jpa-association-owner.md) — 객체 참조 2개 vs FK 1개, 주인=FK 관리 필드(N 쪽 @JoinColumn), 비주인은 완전히 무시, mappedBy="상대 클래스 필드 이름", 편의 메서드(주인만→INSERT 없음, 비주인만→FK NULL 행)
+- [cascade 와 orphanRemoval](02_Refined/jpa-cascade-orphan-removal.md) — 영속성 전이, CascadeType 5종, 부모 작업 전이 vs 컬렉션에서 빠진 자식 삭제, 둘 다 거는 이유(PERSIST), 생명주기 단독 소유 기준, @ManyToOne cascade 사고, JPA 는 DB 행만 지움
 - [플러시 vs 커밋](02_Refined/jpa-flush.md) — 컨텍스트→DB 전송 vs 확정, 커밋 직전·JPQL 직전 자동 플러시, persist 후 JPQL, 플러시 후 롤백, FlushModeType
 - [벌크 연산과 em.clear()](02_Refined/jpa-bulk-update-and-clear.md) — executeUpdate 후 낡은 1차 캐시, clearAutomatically, 준영속 detached, 대량 배치 flush→clear·batch_size
 - [반정규화 카운터와 원자적 UPDATE](02_Refined/denormalized-counter-atomic-update.md) — likeCount, 카운트 N+1 회피, 정합성 관리 책임, 변경 감지 +1 의 갱신 손실(10→11), like_count + 1, clearAutomatically vs flushAutomatically, 낙관적·비관적 락 비교

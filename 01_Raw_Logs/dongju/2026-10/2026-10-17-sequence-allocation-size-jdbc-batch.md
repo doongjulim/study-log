@@ -6,7 +6,8 @@ tags: [JDBC 배치, JDBC batch, batch insert, hibernate.jdbc.batch_size, 배치 
 topic: IDENTITY 는 INSERT 를 즉시 실행하므로 JDBC 배치로 묶을 수 없다 — SEQUENCE + allocationSize + batch_size 와 왕복 수 비교, 그래도 IDENTITY 를 고른 이유와 바꿀 시점
 summary: hibernate.jdbc.batch_size 는 쓰기 지연 저장소의 INSERT 를 묶어 한 번의 왕복으로 보내는데, IDENTITY 는 persist 마다 INSERT 를 즉시 실행해 묶을 기회가 없으므로 Hibernate 가 INSERT 배치를 끈다. 100건 저장 시 IDENTITY 는 왕복 100번, SEQUENCE + allocationSize=50 + batch_size=50 은 nextval 2번 + 배치 2번. study-board 는 요청당 INSERT 가 한두 건이라 단순성과 DB 이식성을 위해 IDENTITY 를 골랐고, 약점은 CalendarImportService 의 saveAll 같은 대량 적재에서 드러난다. 바꿀 땐 batch_size 도 함께 설정해야 하며, 일부만 JdbcTemplate.batchUpdate 로 처리하는 길도 있다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

@@ -6,7 +6,8 @@ tags: [merge, 변경 감지, dirty checking, 수정 방식, update, 전체 필�
 topic: 수정에 merge(=id 있는 객체 save) 대신 조회 + 변경 감지를 쓰는 이유 — merge 는 모든 필드를 덮어써 폼에 없던 값이 날아가고, id 만 맞으면 남의 글도 덮어쓴다
 summary: 폼 값으로 new Post(id, ...) 를 만들어 save() 하면 merge 가 되어 폼에 없던 viewCount·likeCount 가 0, author 가 null(not null 제약 위반으로 롤백), files 가 빈 리스트(cascade MERGE + orphanRemoval 로 첨부파일 삭제 가능)로 덮어써지고, id 만 바꿔 보내면 남의 글도 수정된다. study-board 는 findOwned(조회 + 소유자 검증) → post.update(title, content, category)(필요한 필드만) → 변경 감지로 수정하며, 프로젝트 전체에 merge 직접 호출은 없고 save() 는 새 엔티티에만 쓴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

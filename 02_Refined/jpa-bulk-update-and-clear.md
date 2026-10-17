@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
   - https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
-updated: 2026-10-12
+updated: 2026-10-17
 ---
 
 # 벌크 연산과 `em.clear()`
@@ -90,6 +90,7 @@ for (int i = 0; i < members.size(); i++) {
 
 - **순서가 바뀌면(clear → flush)**: 수정한 엔티티가 전부 준영속 + 쓰기 지연 저장소도 비워짐 → flush 할 게 없음 → **변경 증발**.
 - **매 건마다** flush 하면 쓰기 지연의 이점(모아 보내기)이 사라지고 DB 왕복이 건수만큼. 실무는 **100~1000건 단위**로, `hibernate.jdbc.batch_size` 와 맞춰 JDBC 배치 전송.
+  - 단, `IDENTITY` 전략 엔티티의 INSERT 는 `persist` 순간 즉시 나가므로 **배치되지 않는다** ([[jpa-id-generation-strategy]]).
 
 ## 트레이드오프 / 한계
 
@@ -115,4 +116,4 @@ for (int i = 0; i < members.size(); i++) {
 
 ## 관련
 
-[[persistence-context]] · [[jpa-flush]] · [[dirty-checking]] · [[open-in-view-osiv]] · [[lazy-loading-proxy]] · [[denormalized-counter-atomic-update]]
+[[jpa-id-generation-strategy]] · [[jpa-entity-lifecycle-merge]] · [[persistence-context]] · [[jpa-flush]] · [[dirty-checking]] · [[open-in-view-osiv]] · [[lazy-loading-proxy]] · [[denormalized-counter-atomic-update]]

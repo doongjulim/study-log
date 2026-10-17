@@ -6,7 +6,8 @@ tags: [엔티티 생명주기, entity lifecycle, 엔티티 상태, 비영속, tr
 topic: 엔티티의 네 가지 상태와 전이 — persist 는 비영속을 영속으로 등록(준영속이면 예외), merge 는 id 로 영속 엔티티를 얻어 값을 덮어쓴 다른 객체를 반환, Spring Data save() 는 id 가 있으면 merge
 summary: 엔티티는 비영속 → persist → 영속 → 트랜잭션 종료·detach·clear → 준영속, 영속에서 remove → 삭제 상태가 된다. 준영속은 id 는 있지만 영속성 컨텍스트가 관리하지 않아 변경 감지·지연 로딩이 없고 setTitle 은 무시된다. persist 는 비영속 객체 자체를 영속으로 등록하며 준영속에 쓰면 PersistentObjectException 이 난다. merge 는 인자의 id 로 1차 캐시나 DB(SELECT)에서 영속 엔티티를 얻어 모든 필드를 덮어쓴 뒤 그 영속 객체를 반환하고, 인자는 준영속 그대로다. Spring Data save() 는 isNew(id null)면 persist, 아니면 merge 를 호출한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

@@ -6,7 +6,8 @@ tags: [cascade, orphanRemoval, 생명주기, lifecycle, 단일 소유, single ow
 topic: cascade·orphanRemoval 을 거는 기준(부모가 자식 생명주기를 단독 소유)과 @ManyToOne 에 걸면 생기는 사고, 그리고 JPA 가 지우지 못하는 디스크 파일을 커밋 후에 지우는 이유
 summary: cascade·orphanRemoval 은 부모가 자식의 생명주기를 단독으로 소유할 때만 건다. Post.author 같은 @ManyToOne 에 cascade 를 걸면 글 삭제가 회원 DELETE 로 전이되어, 다른 글이 있으면 FK 위반으로 글 삭제까지 롤백되고 참조가 없으면 회원이 조용히 삭제된다. JPA 가 지우는 건 DB 행뿐이라 디스크 파일은 TransactionalFileRemover 가 커밋 후에 지우고 실패분은 OrphanFileCleanupScheduler 가 치운다 — DB 는 롤백되지만 파일 시스템은 롤백되지 않기 때문.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

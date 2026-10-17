@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
   - https://jakarta.ee/specifications/persistence/
-updated: 2026-10-12
+updated: 2026-10-17
 ---
 
 # 영속성 컨텍스트 (Persistence Context)
@@ -46,6 +46,7 @@ public void test() {
 2. **동일성 보장** — 같은 영속성 컨텍스트 안에서 같은 id 는 항상 **같은 인스턴스**. `==` 는 참조 비교라 true ([[reference-vs-value-equality]], [[jpa-entity-equality]]).
 3. **변경 감지** — 조회 시점의 스냅샷과 현재 값을 플러시 때 비교해 UPDATE 생성 ([[dirty-checking]]).
 4. **쓰기 지연** — `persist()`/`remove()` 의 INSERT/DELETE 를 쓰기 지연 SQL 저장소에 모았다가 플러시 때 전송 ([[jpa-flush]]).
+   - 예외: `@GeneratedValue(strategy = IDENTITY)` 는 INSERT 해야 id 가 생기는데 1차 캐시의 키가 id 라서, `persist()` 순간 INSERT 가 **즉시** 나간다 → 쓰기 지연·JDBC 배치 불가 ([[jpa-id-generation-strategy]]).
 
 ### 네 가지는 하나의 뿌리에서 나온다
 
@@ -83,4 +84,4 @@ public void test() {
 
 ## 관련
 
-[[dirty-checking]] · [[jpa-flush]] · [[jpa-bulk-update-and-clear]] · [[open-in-view-osiv]] · [[jpa-entity-equality]] · [[transactional-rollback-rules]] · [[lazy-loading-proxy]]
+[[jpa-entity-lifecycle-merge]] · [[jpa-id-generation-strategy]] · [[dirty-checking]] · [[jpa-flush]] · [[jpa-bulk-update-and-clear]] · [[open-in-view-osiv]] · [[jpa-entity-equality]] · [[transactional-rollback-rules]] · [[lazy-loading-proxy]]

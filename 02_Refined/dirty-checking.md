@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
   - https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html
-updated: 2026-10-12
+updated: 2026-10-17
 ---
 
 # 변경 감지 (Dirty Checking)
@@ -69,7 +69,11 @@ update member set name=?, age=?, email=?, address=?, ... where id=?
 | 비영속 (transient) | X | 아무 일도 안 일어남 |
 
 트랜잭션이 끝나며 영속성 컨텍스트가 닫히면 엔티티는 **준영속**이 된다. 준영속 엔티티를 다시
-관리 대상으로 만들려면 `merge()`(복사본을 새로 영속화)를 쓰거나, 다시 조회해서 값을 옮긴다.
+관리 대상으로 만들려면 `merge()` 를 쓰거나, 다시 조회해서 값을 옮긴다.
+
+> **정정 (2026-10-17)** — 이전 표현 "merge = 복사본을 새로 영속화"는 부정확했다. `merge()` 는 인자를 영속화하지 않는다.
+> 인자의 id 로 1차 캐시나 DB 에서 **영속 엔티티를 얻고**, 거기에 인자의 **모든 필드를 덮어쓴 뒤** 그 영속 객체를 반환한다.
+> 인자는 준영속 그대로다. 폼에 없던 필드까지 null·0 으로 덮이므로, 수정은 **조회 + 엔티티 메서드 + 변경 감지**가 안전하다 ([[jpa-entity-lifecycle-merge]]).
 
 ## 트레이드오프 / 한계
 
@@ -136,4 +140,4 @@ update member set name=?, age=?, email=?, address=?, ... where id=?
 
 ## 관련
 
-[[persistence-context]] · [[jpa-flush]] · [[jpa-bulk-update-and-clear]] · [[open-in-view-osiv]] · [[lazy-loading-proxy]] · [[transactional-event-listener]] · [[db-pagination]]
+[[jpa-entity-lifecycle-merge]] · [[persistence-context]] · [[jpa-flush]] · [[jpa-bulk-update-and-clear]] · [[open-in-view-osiv]] · [[lazy-loading-proxy]] · [[transactional-event-listener]] · [[db-pagination]]

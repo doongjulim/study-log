@@ -6,7 +6,8 @@ tags: [cascade, 영속성 전이, CascadeType, CascadeType.ALL, PERSIST, MERGE, 
 topic: cascade 와 orphanRemoval 은 발동 조건이 다르다 — cascade 는 부모에 한 영속성 작업을 전이하고, orphanRemoval 은 컬렉션에서 빠진 자식을 삭제한다. Post-AttachedFile 에 둘 다 건 이유
 summary: cascade(영속성 전이)는 부모 엔티티에 한 persist·remove·merge·detach·refresh 를 연관 엔티티에 똑같이 적용하는 JPA 기능이고, orphanRemoval 은 자식이 부모의 컬렉션에서 빠지면 그 자식을 DELETE 한다. 1:N 의 FK 는 자식(attached_file.post_id)에만 있어 mappedBy 컬렉션에서 빼는 것만으로는 SQL 이 나가지 않으므로 파일 하나 삭제에는 orphanRemoval 이 필요하다. orphanRemoval 은 부모 삭제 시에도 자식을 지우므로 삭제는 두 옵션이 겹치고, cascade 만 해 주는 건 PERSIST(글 저장 시 파일 함께 저장)다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

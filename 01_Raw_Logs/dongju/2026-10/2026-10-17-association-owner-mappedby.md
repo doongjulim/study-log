@@ -6,7 +6,8 @@ tags: [연관관계의 주인, owning side, 주인, owner, 비주인, inverse si
 topic: 연관관계의 주인은 양방향에서 두 참조 필드 중 FK 를 관리하는 쪽 — 객체 참조 2개 vs FK 1개 불일치를 해소하는 규칙, mappedBy 는 "상대 클래스의 그 필드가 주인"이라는 선언
 summary: 양방향이면 객체는 서로를 가리키는 참조가 2개(Post.files, AttachedFile.post)인데 테이블 FK 는 1개(attached_file.post_id)라, 두 참조 값이 다를 때 FK 에 무엇을 쓸지 하나를 기준으로 정해야 한다. 그 기준이 연관관계의 주인이며, 주인만 FK 를 등록·수정하고 비주인은 조회만 한다(우선순위가 아니라 완전히 무시). 보통 FK 가 있는 N 쪽(@JoinColumn)이 주인이다. mappedBy = "post" 는 "이 컬렉션은 AttachedFile 의 post 필드에 의해 매핑되므로 주인이 아니다"라는 선언으로, 값은 상대 클래스의 필드 이름이다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

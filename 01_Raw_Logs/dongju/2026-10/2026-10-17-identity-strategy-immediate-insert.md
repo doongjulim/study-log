@@ -6,7 +6,8 @@ tags: [식별자 생성 전략, id generation strategy, GeneratedValue, Generati
 topic: IDENTITY 는 INSERT 를 해야 id 가 생기는데 1차 캐시는 id 를 키로 쓰므로, Hibernate 는 persist 순간 INSERT 를 즉시 실행한다 — 그래서 쓰기 지연이 동작하지 않는다
 summary: IDENTITY 는 DB 가 INSERT 시점에 id 를 만들고, SEQUENCE 는 persist 때 INSERT 전에 DB 시퀀스 객체에서 nextval 로 받아 온다. 1차 캐시는 id 를 키로 엔티티를 저장하므로 IDENTITY 에서는 persist 순간 키를 알 수 없어, Hibernate 가 INSERT 를 즉시 실행하고 getGeneratedKeys 로 id 를 받아 온다. 그래서 persist 직후 getId() 는 값이 있고, 그 엔티티의 INSERT 는 쓰기 지연되지 않는다. 즉시 나간 INSERT 도 커밋 전이면 롤백되지만 소비된 id 는 돌아오지 않아 구멍이 생긴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

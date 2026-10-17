@@ -6,7 +6,8 @@ tags: [연관관계 편의 메서드, convenience method, addFile, setPost, 양�
 topic: 주인만 보면 된다면서 왜 양쪽을 다 세팅하나 — 반대쪽만 세팅하면 post_id NULL 행, 주인만 세팅하면 cascade 통로가 비어 아예 저장 안 됨. 그래서 연관관계 편의 메서드
 summary: FK 는 주인만 보고 쓰지만 비주인 컬렉션도 쓸모가 있다. study-board 의 create() 는 cascade PERSIST 로 파일을 저장하는데 cascade 는 Post.files 컬렉션을 따라 전이되므로, files.add 를 빼면(주인만 세팅) 파일이 비영속으로 남아 INSERT 가 없고, file.setPost 를 빼면(반대쪽만 세팅) INSERT 는 되지만 post_id 가 NULL 인 주인 없는 행이 생긴다. 같은 트랜잭션의 메모리 상태(post.getFiles().size())도 비주인 쪽이 책임지므로 addFile 에서 양쪽을 함께 세팅한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-17
 ---
 
 ## 배운 개념

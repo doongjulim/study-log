@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-5.html#jls-5.1.7
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html#valueOf(long)
-updated: 2026-09-10
+updated: 2026-10-17
 ---
 
 # 오토박싱과 래퍼 캐시
@@ -114,4 +114,4 @@ if (!Objects.equals(loginUser.getId(), notice.getWriterId())) {
 
 ## 관련
 
-[[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[jpa-entity-equality]]
+[[jpa-entity-lifecycle-merge]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[jpa-entity-equality]]

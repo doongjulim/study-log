@@ -1,13 +1,13 @@
 ---
 type: refined
 slug: transactional-event-listener
-tags: [TransactionalEventListener, 트랜잭션이벤트리스너, TransactionPhase, AFTER_COMMIT, BEFORE_COMMIT, AFTER_ROLLBACK, AFTER_COMPLETION, TransactionSynchronization, TransactionSynchronizationManager, 전파속성, propagation, REQUIRES_NEW, REQUIRED, 정합성, consistency]
+tags: [TransactionalEventListener, 트랜잭션이벤트리스너, TransactionPhase, AFTER_COMMIT, BEFORE_COMMIT, AFTER_ROLLBACK, AFTER_COMPLETION, TransactionSynchronization, TransactionSynchronizationManager, 전파속성, propagation, REQUIRES_NEW, REQUIRED, 정합성, consistency, afterCommit, registerSynchronization, 파일삭제, 파일 시스템 롤백 불가, 고아파일, 커밋후삭제]
 topic: "@TransactionalEventListener — 트랜잭션 phase에 맞춘 이벤트 처리"
 summary: 이벤트 리스너 실행을 트랜잭션 커밋/롤백 시점에 맞추는 메커니즘. ThreadLocal 동기화 콜백으로 지연 실행되며, AFTER_COMMIT 리스너 안의 DB 쓰기는 REQUIRES_NEW 없이는 예외 없이 조용히 유실된다.
 contributors: [dongju]
 source_refs:
   - https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html
-updated: 2026-07-10
+updated: 2026-10-17
 ---
 
 # @TransactionalEventListener
@@ -55,6 +55,32 @@ public void notify(...) { ... }
 
 또는 리스너에 `@Async` — 새 스레드에는 끝난 트랜잭션이 바인딩되어 있지 않다.
 
+### 응용 — DB 밖 부수효과(파일 삭제)도 커밋 후에
+
+DB 는 롤백되지만 **파일 시스템은 롤백되지 않는다.** 게시글·첨부파일 삭제처럼 DB 행과 디스크 파일을 함께 지울 때:
+
+| 순서 | 실패 시 | 결과 |
+|---|---|---|
+| 디스크 먼저 → DB 나중 | DB 롤백 | DB 행은 살아 있는데 파일 없음 → 목록엔 보이고 다운로드 불가 (**데이터 소실**) |
+| DB 커밋 → 디스크 나중 | 디스크 삭제 실패 | 안 쓰이는 파일이 남을 뿐 → 스케줄러로 정리 (**감당 가능**) |
+
+```java
+// 트랜잭션 안에서는 "지워도 된다"는 예약만, 실제 삭제는 커밋 확정 후
+public void removeAfterCommit(String storedName) {
+    if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+        fileStore.deleteFile(storedName);          // 트랜잭션 밖이면 미룰 곳이 없으니 즉시
+        return;
+    }
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        @Override public void afterCommit() { fileStore.deleteFile(storedName); }
+    });
+}
+```
+
+- `@TransactionalEventListener(AFTER_COMMIT)` 와 같은 발상을 이벤트 없이 `TransactionSynchronization` 으로 직접 쓴 형태.
+- 커밋 후 삭제가 실패해 남은 파일은 **고아 파일 정리 스케줄러**가 치운다 — 두 실패 중 감당할 수 있는 쪽을 고른 설계.
+- JPA cascade/orphanRemoval 이 지우는 건 DB 행뿐이다 ([[jpa-cascade-orphan-removal]]).
+
 ## 트레이드오프와 한계
 
 - **원자성 상실**: 커밋은 되돌릴 수 없으므로, 커밋 후 리스너가 실패해도 원본에 영향 불가. "둘 다 성공 or 둘 다 실패"의 세계에서 벗어나 재시도 기반 **최종적 일관성(eventual consistency)** 설계로 전환된다.
@@ -75,5 +101,6 @@ public void notify(...) { ... }
 - [ ] AFTER_COMMIT 리스너 안 DB 쓰기가 유실되는 3단계 이유를 설명할 수 있다
 - [ ] REQUIRES_NEW와 @Async가 각각 왜 해법이 되는지 설명할 수 있다
 - [ ] 이 방식이 치르는 대가(원자성 → 최종적 일관성)를 말할 수 있다
+- [ ] DB 행과 디스크 파일을 함께 지울 때 파일을 **커밋 후에** 지우는 이유를 두 실패 시나리오로 비교할 수 있다
 
-관련: [[spring-application-events]] · [[transactional-outbox-pattern]]
+관련: [[spring-application-events]] · [[transactional-outbox-pattern]] · [[jpa-cascade-orphan-removal]]
