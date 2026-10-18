@@ -6,7 +6,8 @@ tags: [값 타입, value type, 임베디드 타입, embedded type, Embedded, Emb
 topic: @Embedded 값 타입은 주인 테이블의 컬럼으로 저장되므로 이점은 객체 쪽에 있다 — 응집도와 불변식 보장. 공유 시 앨리어싱이 생기므로 setter 없이 새 객체로 교체(불변)한다
 summary: @Embeddable 클래스의 필드는 별도 테이블 없이 주인 엔티티 테이블(member)의 컬럼으로 저장되어 DB 차이는 없다. 묶어서 얻는 것은 ① 응집도(알림 설정 데이터와 remindsAt 같은 행동을 한 클래스에, Member 비대화 방지) ② 불변식 보장(ProfileImage 생성자가 빈 파일 이름을 거부해 잘못된 조합이 존재할 수 없음)이다. 값 타입은 id 가 없어 같은 인스턴스를 두 엔티티가 공유하면 setter 수정이 양쪽에 번지고(앨리어싱) 변경 감지로 UPDATE 가 둘 나가므로, setter 없이 change() 가 새 객체를 반환해 교체하는 불변 설계로 막는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념

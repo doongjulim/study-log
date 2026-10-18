@@ -86,4 +86,4 @@ record CreatePostRequest(String title, List<String> tags) {
 
 ## 관련
 
-[[shallow-immutability-defensive-copy]] · [[jpa-entity-equality]] · [[equals-hashcode-contract]] · [[string-immutability]] · [[java17-lts-features]]
+[[jpa-entity-default-constructor]] · [[shallow-immutability-defensive-copy]] · [[jpa-entity-equality]] · [[equals-hashcode-contract]] · [[string-immutability]] · [[java17-lts-features]]

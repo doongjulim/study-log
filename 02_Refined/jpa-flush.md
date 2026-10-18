@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: jpa-flush
-tags: [플러시, flush, em.flush, 커밋, commit, flush vs commit, 플러시와 커밋 차이, 자동 플러시, auto flush, FlushModeType, FlushModeType.AUTO, FlushModeType.COMMIT, FlushMode.MANUAL, JPQL, JPQL 실행 전 플러시, 쓰기 지연 SQL 저장소, write-behind, 쓰기지연, 스냅샷, snapshot, 변경 감지, dirty checking, 영속성 컨텍스트, persistence context, 동기화, synchronization, 롤백, rollback, show-sql]
+tags: [플러시, flush, em.flush, 커밋, commit, flush vs commit, 플러시와 커밋 차이, 자동 플러시, auto flush, FlushModeType, FlushModeType.AUTO, FlushModeType.COMMIT, FlushMode.MANUAL, JPQL, JPQL 실행 전 플러시, 쓰기 지연 SQL 저장소, write-behind, 쓰기지연, 스냅샷, snapshot, 변경 감지, dirty checking, 영속성 컨텍스트, persistence context, 동기화, synchronization, 롤백, rollback, show-sql, flush-vs-clear, em.find, readOnly, 플러시가 일어나지 않는 곳, IDENTITY 즉시 INSERT]
 topic: 플러시는 영속성 컨텍스트 → DB 전송, 커밋은 확정. 자동 플러시가 일어나는 두 시점과 JPQL 직전에 플러시하는 이유
-summary: 플러시는 스냅샷 비교로 UPDATE 를 만들고 쓰기 지연 저장소의 SQL 을 DB 로 보내는 동기화 작업이며, 커밋은 보낸 내용을 확정하는 것이다. 플러시 후에도 커밋 전이면 롤백되고, 플러시해도 1차 캐시는 그대로 남는다. 자동 플러시는 커밋 직전과 JPQL 실행 직전에 일어나며, 후자는 DB 만 보는 JPQL 이 방금 persist 한 엔티티를 놓치지 않게 하기 위해서다.
+summary: 플러시는 스냅샷 비교로 UPDATE 를 만들고 쓰기 지연 저장소의 SQL 을 DB 로 보내는 동기화 작업이며, 커밋은 보낸 내용을 확정하는 것이다. 플러시 후에도 커밋 전이면 롤백되고, 플러시해도 1차 캐시는 그대로 남는다. 자동 플러시는 커밋 직전과 JPQL 실행 직전에 일어나며, 후자는 DB 만 보는 JPQL 이 방금 persist 한 엔티티를 놓치지 않게 하기 위해서다. em.find(1차 캐시 먼저)·readOnly(FlushMode.MANUAL)·롤백에서는 플러시하지 않고, IDENTITY 의 persist 즉시 INSERT 는 그 한 건만 실행하는 것이라 플러시가 아니다.
 contributors: [dongju]
 source_refs:
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
   - https://jakarta.ee/specifications/persistence/
-updated: 2026-10-12
+updated: 2026-10-18
 ---
 
 # 플러시 (Flush) vs 커밋
@@ -77,6 +77,33 @@ throw RuntimeException    → 롤백 → 이미 나간 INSERT 도 취소
 
 `spring.jpa.show-sql=true` 로 실행하면 INSERT 가 SELECT 보다 **먼저** 찍히는 걸 직접 볼 수 있다.
 
+### 플러시가 일어나지 않는 곳
+
+| 상황 | 이유 |
+|---|---|
+| `em.find()` 직전 | 1차 캐시를 먼저 본다 → 방금 persist 한 엔티티도 캐시에서 찾으니 DB 와 맞출 필요가 없다 |
+| `@Transactional(readOnly = true)` | Hibernate `FlushMode.MANUAL` — 자동 플러시가 없고 `em.flush()` 를 직접 불러야 한다. 스냅샷도 생략돼 `setXxx()` 가 **예외 없이 조용히 무시**된다 ([[dirty-checking]]) |
+| 롤백으로 끝나는 트랜잭션 | 보낼 이유가 없다 |
+
+### IDENTITY 의 즉시 INSERT 는 플러시가 아니다
+
+```java
+@Transactional
+public void write(Long postId) {
+    Post post = postRepository.findById(postId).get();
+    post.setTitle("새 제목");          // ① 변경
+    em.persist(new Comment(...));     // ② IDENTITY → 그 INSERT 한 건만 즉시 실행
+}                                     // ③ 커밋 직전 플러시 → post 의 UPDATE 는 여기서
+```
+
+| | IDENTITY `persist` (②) | 플러시 (③) |
+|---|---|---|
+| 변경 감지 | ❌ | ✅ |
+| 보내는 것 | 그 엔티티의 INSERT **한 건** (쓰기 지연 저장소에 쌓이지도 않음) | 쌓인 SQL **전부** |
+| 이유 | id 를 받아 1차 캐시에 넣으려고 ([[jpa-id-generation-strategy]]) | 영속성 컨텍스트와 DB 의 동기화 |
+
+②가 플러시였다면 ①의 UPDATE 도 그 순간 함께 나갔어야 한다.
+
 ## 트레이드오프 / 한계
 
 - JPQL 마다 자동 플러시가 일어나므로, 쓰기 지연으로 모아 두려던 SQL 이 중간에 흩어져 나갈 수 있다. (Hibernate 는 쿼리 대상 테이블과 관련 있을 때만 플러시하는 최적화를 한다.)
@@ -91,6 +118,11 @@ throw RuntimeException    → 롤백 → 이미 나간 INSERT 도 취소
 > - **"자동 플러시는 트랜잭션 시작과 커밋 때"** — 시작이 아니라 **커밋 직전과 JPQL 실행 직전**.
 > - **"persist 직후 JPQL 의 결과에 memberA 는 없다 / 있다면 JPA 가 list 에 끼워 넣은 것"** — JPQL 직전 자동 플러시로 INSERT 가 먼저 DB 로 나가서 SELECT 결과에 포함된다. list 는 순전히 DB 결과다.
 > - **"그 INSERT 는 DB 로 안 나가서 안 남는다"** — 나가지만 **커밋되지 않아서** 안 남는다. 결론만 같고 이유가 다르면 꼬리 질문에 무너진다.
+> - **"플러시하면 1차 캐시가 초기화된다"** — **그대로**다. 비우는 건 `clear()`. 플러시가 캐시를 비운다면 JPQL 한 번에 영속 엔티티가 전부 준영속이 되어 수정이 사라지는 모순이 생긴다.
+> - **"clear 할 때 플러시된다"** — **반대**. clear 는 플러시하지 않은 변경을 **버린다** (그래서 배치는 flush → clear 순서, [[jpa-bulk-update-and-clear]]).
+> - **"트랜잭션이 끝날 때 플러시"** — **커밋 직전**이다. 롤백으로 끝나면 플러시하지 않는다.
+> - **"readOnly 는 플러시를 읽기 전용으로 바꾼다"** — `FlushMode.MANUAL`.
+> - **"IDENTITY 의 persist 즉시 INSERT 도 플러시"** — 아니다. 변경 감지 없이 그 한 건만 실행한다.
 > - **"간극을 메꿔준다"** 처럼 추상적으로 끝내지 말 것 — "영속성 컨텍스트에만 있는 변경을 JPQL 전에 DB 로 보내 조회 결과에 포함되게 한다".
 
 ## 복습 체크
@@ -101,7 +133,11 @@ throw RuntimeException    → 롤백 → 이미 나간 INSERT 도 취소
 - [ ] 자동 플러시 시점 두 가지는? 트랜잭션 시작 때 플러시하지 않는 이유는?
 - [ ] persist → JPQL → 예외 코드에서 INSERT 가 언제 나가고 최종적으로 남는지 설명할 수 있는가?
 - [ ] JPQL 직전에 왜 플러시하는가?
+- [ ] 플러시의 두 단계(변경 감지 → 전송)와 방향을 말할 수 있는가?
+- [ ] 플러시 / clear 의 차이와, 대량 배치에서 순서가 중요한 이유는?
+- [ ] `em.find`, `readOnly`, 롤백에서 플러시가 일어나지 않는 이유를 각각 말할 수 있는가?
+- [ ] IDENTITY 의 즉시 INSERT 가 플러시가 아닌 이유를, 다른 엔티티의 UPDATE 시점으로 설명할 수 있는가?
 
 ## 관련
 
-[[persistence-context]] · [[dirty-checking]] · [[jpa-bulk-update-and-clear]] · [[transactional-rollback-rules]] · [[open-in-view-osiv]]
+[[persistence-context]] · [[dirty-checking]] · [[jpa-bulk-update-and-clear]] · [[jpa-id-generation-strategy]] · [[jpa-jpql-vs-native-query]] · [[transactional-rollback-rules]] · [[open-in-view-osiv]]

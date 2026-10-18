@@ -6,7 +6,8 @@ tags: [프록시, proxy, HibernateProxy, 상속, inheritance, final 클래스, f
 topic: 지연 로딩 프록시가 엔티티를 "상속"해 메서드를 "가로채는" 방식에서 나오는 금지 사항 — final 클래스(프록시 불가), final 메서드(조용히 null), record(엔티티 불가)
 summary: 프록시는 엔티티를 상속하고 메서드를 재정의해 가로챈다. 그래서 엔티티 클래스가 final 이면 상속할 수 없어 프록시를 만들 수 없고 지연 로딩이 불가하다. 메서드가 final 이면 프록시가 가로채지 못해 초기화 없이 부모 코드가 실행되고, 그 코드가 읽는 this 는 프록시 자신이라 필드가 null — 에러 없이 조용히 null 이 나온다. record 는 final 클래스이고 기본 생성자 없이 정규 생성자뿐이며 필드도 final 이라, 프록시도 JPA 의 생성(기본 생성자 + 필드 주입)·변경(변경 감지) 방식도 불가해 엔티티 대신 DTO 로 쓴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념

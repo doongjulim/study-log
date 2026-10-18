@@ -7,7 +7,7 @@ summary: LAZY 연관은 원본을 상속한 프록시로 채워지고, ID 외의
 contributors: [dongju]
 source_refs:
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html
-updated: 2026-10-14
+updated: 2026-10-18
 ---
 
 # 지연 로딩과 프록시
@@ -162,6 +162,10 @@ class Notice { @Id Long id; String title; @ManyToOne(fetch = LAZY) Member writer
 엔티티 `equals` 에서 `instanceof` 를 쓰는 이유가 이것이다. 대가로 상속 계층에서 대칭성이 깨질 여지를 받아들인다.
 Hibernate 6 라면 `Hibernate.getClass(o)` 로 프록시를 벗겨낼 수도 있다.
 
+### 프록시는 상속이라서 — 엔티티 설계 제약
+
+기본 생성자를 `private` 으로 둘 수 없고(`super()` 접근 불가), 엔티티 클래스·메서드를 `final` 로 두면 프록시를 못 만들거나 가로채지 못해 **조용히 null** 이 나온다. record 를 엔티티로 못 쓰는 것도 같은 뿌리 ([[jpa-entity-default-constructor]]).
+
 ## 복습 체크
 
 - [ ] LAZY 연관 필드에 처음 담기는 것이 무엇인지, 원본과 어떤 관계(상속)이고 무엇을 알고 있는지 말할 수 있는가?
@@ -179,4 +183,4 @@ Hibernate 6 라면 `Hibernate.getClass(o)` 로 프록시를 벗겨낼 수도 있
 
 ## 관련
 
-[[open-in-view-osiv]] · [[n-plus-1-problem]] · [[jpa-dto-projection]] · [[dirty-checking]] · [[jpa-entity-equality]]
+[[open-in-view-osiv]] · [[n-plus-1-problem]] · [[jpa-entity-default-constructor]] · [[jpa-dto-projection]] · [[dirty-checking]] · [[jpa-entity-equality]]

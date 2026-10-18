@@ -6,7 +6,8 @@ tags: [Specification, Criteria API, CriteriaBuilder, JpaSpecificationExecutor, �
 topic: 선택 조건이 여러 개 자유롭게 조합되면 Specification 으로 조건을 조각내 이어 붙인다(5개 → 2⁵=32 조합). 선택 조건이 하나면 JPQL + is null or 로 충분. 약점은 필드 이름이 문자열이라 컴파일 때 못 잡는 것
 summary: 계획 검색은 키워드·카테고리·완료 여부·시작일·종료일 다섯 조건이 있거나 없을 수 있어 조합이 2⁵=32 가지다. 조합마다 JPQL 을 만들거나 :param is null or 를 다섯 줄 늘어놓는 대신, PlanSpecifications 가 조건 하나를 메서드 하나로 떼어 있을 때만 and() 로 이어 붙인다. 게시글 검색은 검색 종류를 메서드 4개로 가르고 선택 조건은 카테고리 하나뿐이라 JPQL 의 is null or 한 줄로 충분했다. Criteria 는 JPQL 을 자바로 조립하는 객체 레벨 API 라 root.get("title") 의 "title" 은 DB 컬럼이 아니라 엔티티 필드 이름 문자열이고, 이름이 바뀌어도 컴파일러가 못 잡아 실행 시 에러가 난다 → 정적 메타모델(Plan_.title)이나 Querydsl 로 컴파일 시점 검사.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념

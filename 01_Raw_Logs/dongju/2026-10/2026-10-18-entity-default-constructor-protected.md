@@ -6,7 +6,8 @@ tags: [기본 생성자, default constructor, no-arg constructor, NoArgsConstruc
 topic: JPA 는 리플렉션으로 기본 생성자를 호출해 빈 엔티티를 만들고 필드를 채우므로 기본 생성자가 필요하다 — private 이면 프록시(상속)가 super() 를 못 부르고, public 이면 검증 생성자를 우회해 불변식이 깨지므로 protected
 summary: Hibernate 는 엔티티 클래스를 모르는 라이브러리라 new 를 쓸 수 없고, 인자 있는 생성자는 파라미터와 컬럼을 짝지을 수 없어서, 리플렉션으로 기본 생성자를 호출해 빈 객체를 만든 뒤 매핑 정보를 보고 private 필드까지 리플렉션으로 채운다. 지연 로딩 프록시는 엔티티를 상속하므로 생성자 첫 줄의 super() 가 부모 기본 생성자에 접근할 수 있어야 해 private 은 안 되고, public 이면 서비스 코드에서 new Post() 로 제목·작성자 없는 엔티티를 만들어 불변식이 깨진다. 그래서 자식(프록시)에게만 열고 외부 new 는 막는 가장 좁은 범위인 protected 를 쓴다(JPA 명세도 public 또는 protected 요구). study-board 는 엔티티 17개와 값 타입 2개 모두 @NoArgsConstructor(access = PROTECTED).
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념

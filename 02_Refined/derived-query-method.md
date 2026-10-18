@@ -79,4 +79,4 @@ Page<Post> findByTitel(String kw);   // 오타
 
 ## 관련
 
-[[spring-data-repository-proxy]] · [[like-search-btree-index]] · [[db-pagination]] · [[keyset-pagination]]
+[[jpa-specification-dynamic-query]] · [[jpa-jpql-vs-native-query]] · [[spring-data-repository-proxy]] · [[like-search-btree-index]] · [[db-pagination]] · [[keyset-pagination]]

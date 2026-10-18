@@ -6,7 +6,8 @@ tags: [JPQL, 객체 쿼리, object query, Native Query, nativeQuery, 네이티�
 topic: JPQL 은 엔티티·필드 대상 객체 쿼리로 Hibernate 가 Dialect 로 SQL 번역해 DB 독립적이라 기본값, Native 는 테이블·컬럼 SQL 그대로라 JPQL 로 표현 불가하거나 막힐 때만 — study-board 의 유일한 Native insertForAll
 summary: JPQL 의 from Post p, p.author.nickname 은 엔티티와 필드 이름이고, JDBC 드라이버가 아니라 Hibernate 가 매핑 정보와 Dialect 로 DB 에 맞는 SQL 로 번역하므로 H2→PostgreSQL 이전에도 그대로 동작한다. Native 는 테이블·컬럼을 직접 쓰는 SQL 그대로라 DB 에 묶이므로 JPQL 로 표현할 수 없거나 막힐 때만 쓴다. study-board 의 insertForAll 은 전체 공개 계획 알림을 회원 수만큼 넣는데, save() 반복은 IDENTITY 라 1만 번 왕복이고 JPQL insert-select 는 IDENTITY 엔티티라 Hibernate 가 막아(생성된 id 를 돌려받을 수 없음) Native insert-select 한 문장으로 처리하고, 벌크 연산이라 clearAutomatically 로 1차 캐시를 비운다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념

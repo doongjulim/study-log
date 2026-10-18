@@ -17,7 +17,9 @@
 - [식별자 생성 전략 — IDENTITY vs SEQUENCE](02_Refined/jpa-id-generation-strategy.md) — IDENTITY 는 persist 즉시 INSERT(1차 캐시 키=id), 쓰기 지연·JDBC 배치 불가, SEQUENCE nextval·allocationSize pooled, 100건 왕복 100 vs 4, batch_size 함께, JdbcTemplate.batchUpdate
 - [연관관계의 주인과 mappedBy](02_Refined/jpa-association-owner.md) — 객체 참조 2개 vs FK 1개, 주인=FK 관리 필드(N 쪽 @JoinColumn), 비주인은 완전히 무시, mappedBy="상대 클래스 필드 이름", 편의 메서드(주인만→INSERT 없음, 비주인만→FK NULL 행)
 - [cascade 와 orphanRemoval](02_Refined/jpa-cascade-orphan-removal.md) — 영속성 전이, CascadeType 5종, 부모 작업 전이 vs 컬렉션에서 빠진 자식 삭제, 둘 다 거는 이유(PERSIST), 생명주기 단독 소유 기준, @ManyToOne cascade 사고, JPA 는 DB 행만 지움
-- [플러시 vs 커밋](02_Refined/jpa-flush.md) — 컨텍스트→DB 전송 vs 확정, 커밋 직전·JPQL 직전 자동 플러시, persist 후 JPQL, 플러시 후 롤백, FlushModeType
+- [@Embedded 값 타입](02_Refined/jpa-embedded-value-type.md) — Embeddable, 주인 테이블 컬럼, 응집도·불변식, 공유 시 앨리어싱 → 불변·교체, 불변식 vs 불변성, 값 타입 vs 엔티티(식별자·개수), ElementCollection 한계
+- [엔티티의 기본 생성자와 protected](02_Refined/jpa-entity-default-constructor.md) — 리플렉션으로 기본 생성자 → 필드 채우기, private=프록시 super() 불가, public=불변식 우회, PROTECTED, final 클래스·메서드(조용한 null)·record 금지
+- [플러시 vs 커밋](02_Refined/jpa-flush.md) — 컨텍스트→DB 전송 vs 확정, 커밋 직전·JPQL 직전 자동 플러시, persist 후 JPQL, 플러시 후 롤백, 1차 캐시 유지 vs clear, find·readOnly(MANUAL)·롤백은 플러시 없음, IDENTITY 즉시 INSERT 는 플러시 아님
 - [벌크 연산과 em.clear()](02_Refined/jpa-bulk-update-and-clear.md) — executeUpdate 후 낡은 1차 캐시, clearAutomatically, 준영속 detached, 대량 배치 flush→clear·batch_size
 - [반정규화 카운터와 원자적 UPDATE](02_Refined/denormalized-counter-atomic-update.md) — likeCount, 카운트 N+1 회피, 정합성 관리 책임, 변경 감지 +1 의 갱신 손실(10→11), like_count + 1, clearAutomatically vs flushAutomatically, 낙관적·비관적 락 비교
 - [DB 수준 페이징과 Page vs Slice](02_Refined/db-pagination.md) — LIMIT/OFFSET, ORDER BY 전제조건, count 쿼리 비용, Slice limit+1
@@ -25,6 +27,8 @@
 - [LIKE '%kw%' 와 B-tree 인덱스](02_Refined/like-search-btree-index.md) — 앞 와일드카드 풀 스캔, 탐색 시작점, Containing vs StartingWith, full-text
 - [리포지토리 동적 프록시](02_Refined/spring-data-repository-proxy.md) — 구현 없는 인터페이스, 구동 시 1회 생성 싱글턴, SimpleJpaRepository, @Transactional AOP, 프록시가 롤백 결정, self-invocation
 - [파생 쿼리 메서드](02_Refined/derived-query-method.md) — 메서드 이름이 쿼리, 엔티티 필드명, 구동 시점 파싱 fail-fast, PropertyReferenceException
+- [JPQL vs Native Query](02_Refined/jpa-jpql-vs-native-query.md) — 엔티티·필드 객체 쿼리, Hibernate+Dialect 번역 DB 독립, Native 는 표현 불가·막힐 때만, IDENTITY 벌크 insert-select, clearAutomatically, 쿼리 선택 기준표
+- [Specification 과 동적 쿼리](02_Refined/jpa-specification-dynamic-query.md) — 선택 조건 n개 → 2ⁿ 조합, 조건 하나=메서드 하나 and 조립, is null or 로 충분한 경우, root.get 필드 이름 문자열 → 실행 시 에러, 정적 메타모델·Querydsl
 - [HandlerMethodArgumentResolver](02_Refined/handler-method-argument-resolver.md) — 컨트롤러 파라미터 바인딩, PageableHandlerMethodArgumentResolver, 0-based page, 커스텀 리졸버
 - [JVM 실행 파이프라인과 WORA](02_Refined/jvm-execution-pipeline.md) — javac→바이트코드→JVM, 플랫폼 독립성, 클래스로더·런타임데이터영역·실행엔진
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 호출 카운터·임계값, 핫스팟, 워밍업, 역최적화

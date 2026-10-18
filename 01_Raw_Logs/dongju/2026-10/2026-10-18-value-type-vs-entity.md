@@ -6,7 +6,8 @@ tags: [값 타입, value type, 엔티티, entity, 값 타입 vs 엔티티, Embed
 topic: 값 타입과 엔티티를 가르는 기준 — 식별자로 하나씩 가리킬 일이 있나, 주인당 몇 개인가. ProfileImage(값 타입)와 AttachedFile(엔티티)은 같은 필드를 들고도 다르게 설계됐다
 summary: ProfileImage 와 AttachedFile 은 둘 다 저장된 파일 이름과 형식을 들지만, 프로필 이미지는 회원당 하나이고 통째로 교체하면 되므로 member 테이블 컬럼(값 타입)으로 두었고, 첨부파일은 글당 여러 개인 데다 deleteFile(postId, fileId) 처럼 id 로 하나씩 골라 삭제·다운로드해야 하므로 별도 테이블의 엔티티로 만들었다. 값 타입은 식별자가 없고 생명주기가 주인과 완전히 같으며, 공유 시 앨리어싱 때문에 불변으로 둔다. @ElementCollection 은 값 타입 여러 개를 별도 테이블에 담지만 식별자가 없어 수정 시 전체 삭제 후 재삽입이 일어나기 쉽고 개별로 가리킬 수 없다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념

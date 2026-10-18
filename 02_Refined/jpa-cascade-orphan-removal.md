@@ -136,4 +136,4 @@ private Member author;
 
 ## 관련
 
-[[jpa-association-owner]] · [[jpa-entity-lifecycle-merge]] · [[persistence-context]] · [[dirty-checking]] · [[transactional-event-listener]] · [[transactional-rollback-rules]]
+[[jpa-embedded-value-type]] · [[jpa-association-owner]] · [[jpa-entity-lifecycle-merge]] · [[persistence-context]] · [[dirty-checking]] · [[transactional-event-listener]] · [[transactional-rollback-rules]]

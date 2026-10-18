@@ -6,7 +6,8 @@ tags: [플러시, flush, 커밋, commit, flush vs commit, 자동 플러시, auto
 topic: 10/12 flush vs commit 의 6일 뒤 복습 — 방향은 고쳐졌고 시점·clear 구분이 약점. 확장: 플러시가 일어나지 않는 곳(find, readOnly=MANUAL, 롤백)과 IDENTITY 즉시 INSERT 는 플러시가 아니라는 점
 summary: 플러시는 변경 감지로 UPDATE 를 만들고 쓰기 지연 저장소의 SQL 을 영속성 컨텍스트에서 DB 로 보내는 동기화이고, 커밋은 그 내용을 확정한다. 플러시 후 커밋 전 예외면 롤백되며 1차 캐시는 그대로 남는다(비우는 건 clear, clear 는 오히려 미플러시 변경을 버린다). 자동 플러시는 커밋 직전과 JPQL 실행 직전이고, 후자는 DB 만 보는 JPQL 이 영속성 컨텍스트에만 있는 엔티티를 놓치지 않게 하려는 것이다. em.find 는 1차 캐시를 먼저 봐서, readOnly 는 FlushMode.MANUAL 이라서, 롤백 종료는 보낼 이유가 없어서 플러시하지 않는다. IDENTITY 의 persist 즉시 INSERT 는 변경 감지 없이 그 한 건만 실행하는 것이라 플러시가 아니며, 다른 엔티티의 UPDATE 는 커밋 직전에 나간다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-18
 ---
 
 ## 배운 개념
