@@ -3,10 +3,11 @@ date: 2026-10-19
 type: raw
 author: dongju
 tags: [Transactional, 트랜잭션, transaction, AOP, 관점 지향 프로그래밍, aspect-oriented programming, 공통 관심사, cross-cutting concern, 프록시, proxy, CGLIB, 다형성, polymorphism, 업캐스팅, 동적 디스패치, dynamic dispatch, PlatformTransactionManager, setAutoCommit, 자동 커밋, autocommit, 커넥션 풀, connection pool, HikariCP, connectionTimeout, SQLTransientConnectionException, self-invocation, 자기 호출, 내부 호출, this 호출, 프록시 우회, REQUIRES_NEW, 전파, propagation, 트랜잭션 범위, 외부 API, 별도 빈 분리, 면접 답변]
-topic: @Transactional 은 AOP 프록시가 원본 호출 전후로 트랜잭션을 여닫는 것 — 같은 클래스 내부 호출(this)은 프록시를 우회해 어노테이션이 무시되고, 정석 해법은 별도 빈으로 분리해 주입받는 것
+topic: "@Transactional 은 AOP 프록시가 원본 호출 전후로 트랜잭션을 여닫는 것 — 같은 클래스 내부 호출(this)은 프록시를 우회해 어노테이션이 무시되고, 정석 해법은 별도 빈으로 분리해 주입받는 것"
 summary: 스프링은 원본 대신 CGLIB 프록시(원본 상속·오버라이드)를 빈으로 등록하고, 프록시가 PlatformTransactionManager 로 커넥션 획득·setAutoCommit(false)·commit/rollback·풀 반환을 원본 호출 전후에 수행한다. 같은 클래스 안의 this.saveOrder() 는 원본에서 직접 호출되므로 프록시를 거치지 않아 @Transactional 이 무시된다. 바깥 메서드에 @Transactional 을 다는 건 범위만 넓히고(외부 API 대기 중 커넥션 점유 → 풀 고갈) 내부 메서드의 REQUIRES_NEW 같은 속성은 여전히 무시하므로, 별도 빈으로 분리해 생성자 주입받아 프록시를 거치게 해야 한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-19
 ---
 
 ## 배운 개념

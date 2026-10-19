@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html
   - https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-decl-explained.html
-updated: 2026-09-26
+updated: 2026-10-19
 ---
 
 # @Transactional 롤백 규칙
@@ -40,7 +40,7 @@ Controller (이후 try-catch 하든 말든 결정에 영향 없음)
 
 - 판단 근거는 **통과한 예외의 타입 하나**. 이후 호출자가 처리하는지는 무관하다.
 - 롤백 단위는 **트랜잭션 전체** — 전부 아니면 전무. try 블록 단위가 아니다.
-- 프록시를 거쳐야 하므로 같은 클래스 안의 self-invocation 에는 적용되지 않는다 ([[spring-data-repository-proxy]]).
+- 프록시를 거쳐야 하므로 같은 클래스 안의 self-invocation 에는 적용되지 않는다 ([[transactional-proxy-self-invocation]]).
 
 ## 트레이드오프 / 한계
 
@@ -88,6 +88,7 @@ public void useCoupon(Long memberId, Long couponId) {
 
 > 주의: 삼킨 예외가 **다른 빈의 `@Transactional` 메서드**(같은 트랜잭션에 참여, REQUIRED)에서 났다면 이야기가 다르다.
 > 안쪽 프록시가 이미 rollback-only 로 표시해 두어, 바깥에서 커밋하려는 순간 `UnexpectedRollbackException` 이 난다.
+> 물리/논리 트랜잭션 구조와 REQUIRES_NEW 로 분리하는 법은 [[transaction-propagation]].
 
 > [!WARNING]
 > **오답 코너**
@@ -105,4 +106,4 @@ public void useCoupon(Long memberId, Long couponId) {
 
 ## 관련
 
-[[checked-vs-unchecked-exception]] · [[spring-data-repository-proxy]] · [[transactional-event-listener]] · [[transactional-outbox-pattern]] · [[dirty-checking]]
+[[checked-vs-unchecked-exception]] · [[spring-data-repository-proxy]] · [[transactional-proxy-self-invocation]] · [[transaction-propagation]] · [[transactional-event-listener]] · [[transactional-outbox-pattern]] · [[dirty-checking]]

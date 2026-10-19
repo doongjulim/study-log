@@ -151,4 +151,4 @@ LoginAttempts updated = attemptsByKey.compute(key, (ignored, existing) ->
 
 ## 관련
 
-[[race-condition-lost-update]] · [[hashmap-internals]] · [[sse-server-sent-events]] · [[jvm-stack-and-heap]] · [[offline-vs-online-attack]] · [[static-util-vs-spring-bean]]
+[[race-condition-lost-update]] · [[hashmap-internals]] · [[sse-server-sent-events]] · [[jvm-stack-and-heap]] · [[offline-vs-online-attack]] · [[static-util-vs-spring-bean]] · [[singleton-bean-stateful]]

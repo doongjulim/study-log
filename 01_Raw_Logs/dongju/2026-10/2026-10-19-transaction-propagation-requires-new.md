@@ -6,7 +6,8 @@ tags: [트랜잭션 전파, transaction propagation, propagation, 전파 속성,
 topic: 트랜잭션 전파 — 참여(REQUIRED)한 쪽의 예외는 rollback-only 로 전체를 롤백시키고(UnexpectedRollbackException), REQUIRES_NEW 는 트랜잭션만 분리할 뿐 예외는 삼키지 않으며 요청당 커넥션 2개로 풀 데드락을 부를 수 있다
 summary: 전파 속성은 이미 트랜잭션이 진행 중일 때 다른 @Transactional 메서드가 참여·새로 시작·트랜잭션 없이·예외 중 무엇을 할지 고르는 설정이다. 기본값 REQUIRED 로 참여한 내부 메서드가 RuntimeException 을 던지면 프록시가 물리 트랜잭션 전체에 rollback-only 를 표시하므로, 바깥에서 catch 해도 커밋 시점에 전체 롤백 + UnexpectedRollbackException 이 난다. 독립 커밋이 필요한 로그는 REQUIRES_NEW 로 분리하되 예외는 그대로 전파되므로 바깥 try-catch 가 필수이고, 바깥 트랜잭션이 커넥션을 쥔 채 보류되어 요청당 커넥션 2개가 필요하므로 풀 크기만큼 동시 요청이 몰리면 커넥션 풀 데드락 → 30초 후 CannotCreateTransactionException 이 난다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-19
 ---
 
 ## 배운 개념

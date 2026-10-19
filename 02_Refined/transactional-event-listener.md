@@ -103,4 +103,4 @@ public void removeAfterCommit(String storedName) {
 - [ ] 이 방식이 치르는 대가(원자성 → 최종적 일관성)를 말할 수 있다
 - [ ] DB 행과 디스크 파일을 함께 지울 때 파일을 **커밋 후에** 지우는 이유를 두 실패 시나리오로 비교할 수 있다
 
-관련: [[spring-application-events]] · [[transactional-outbox-pattern]] · [[jpa-cascade-orphan-removal]]
+관련: [[spring-application-events]] · [[transactional-outbox-pattern]] · [[jpa-cascade-orphan-removal]] · [[transaction-propagation]]

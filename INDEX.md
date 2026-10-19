@@ -4,7 +4,7 @@
 
 - [기능별 패키지 구성](02_Refined/package-by-feature.md) — package-by-feature vs 레이어별, 응집도, "같이 바뀌는 것은 같이"
 - [Spring 애플리케이션 이벤트](02_Refined/spring-application-events.md) — ApplicationEventPublisher/@EventListener, 모듈 결합 차단, 명령 vs 사실 통보, OCP
-- [SSE (Server-Sent Events)](02_Refined/sse-server-sent-events.md) — SseEmitter, 연결 유지 스트리밍, 스레드 반납, ConcurrentHashMap, 메모리 누수, 스케일 아웃 pub/sub, 순회 중 자기 remove·synchronizedMap 전체 락
+- [SSE (Server-Sent Events)](02_Refined/sse-server-sent-events.md) — SseEmitter, 연결 유지 스트리밍, 스레드 반납, ConcurrentHashMap, 메모리 누수, 스케일 아웃 pub/sub, 순회 중 자기 remove·synchronizedMap 전체 락, emitter 는 Redis 에 못 넣음, 스티키 세션 무효, 조용한 유실, Last-Event-ID 재연결 재전송
 - [@TransactionalEventListener](02_Refined/transactional-event-listener.md) — TransactionPhase, AFTER_COMMIT 조용한 유실 함정, REQUIRES_NEW, 원자성 상실, TransactionSynchronization afterCommit 으로 파일 커밋 후 삭제
 - [Transactional Outbox 패턴](02_Refined/transactional-outbox-pattern.md) — outbox 테이블, 반드시 전달, 릴레이 폴링/CDC, at-least-once·멱등성
 - [Open Session In View (open-in-view)](02_Refined/open-in-view-osiv.md) — OSIV, 영속성 컨텍스트 생명주기(false 면 트랜잭션 종료 시 닫힘), 커넥션 점유 ③~⑦, 풀 고갈, 의도치 않은 UPDATE, 목록 DTO·상세 EntityGraph
@@ -52,7 +52,7 @@
 - [Optional](02_Refined/java-optional.md) — 시그니처가 전달하는 "없을 수 있음", 인지 강제 vs 처리 강제, get() → NoSuchElementException, orElseThrow(), 파라미터 상태 3개·필드·Optional<List> 안티패턴
 - [orElse vs orElseGet](02_Refined/optional-orelse-vs-orelseget.md) — 인자 먼저 평가, 즉시 평가 vs 지연 평가, Supplier, 부수효과로 인한 중복 저장·불필요 호출
 - [Checked vs Unchecked 예외](02_Refined/checked-vs-unchecked-exception.md) — RuntimeException 상속 여부가 유일 기준, catch or declare, throws 전파, IOException 설계 의도, DataAccessException 예외 전환
-- [@Transactional 롤백 규칙](02_Refined/transactional-rollback-rules.md) — 기본 RuntimeException·Error 롤백 / Checked 커밋, 프록시가 통과 예외 타입으로 결정, rollbackFor vs RuntimeException 상속, catch 로 삼키면 전체 커밋, UnexpectedRollbackException
+- [@Transactional 롤백 규칙](02_Refined/transactional-rollback-rules.md) — 기본 RuntimeException·Error 롤백 / Checked 커밋, 프록시가 통과 예외 타입으로 결정, rollbackFor vs RuntimeException 상속, catch 로 삼키면 전체 커밋, UnexpectedRollbackException, 전파·self-invocation 노트 연결
 - [빅오 표기법](02_Refined/big-o-notation.md) — 시간복잡도, 숫자 대입 금지·상수 제거, 2배 판별법(1배 O(1)/2배 O(n)/4배 O(n²)), O(1) 의 1 은 '고정', O(0) 없음, 분할상환 O(1)
 - [ArrayList 내부 동작](02_Refined/arraylist-internals.md) — Object[] elementData, 랜덤 접근 O(1), 1.5배 grow·Arrays.copyOf, +1 확장은 O(n²), 맨 앞 shift O(n), 확장 vs shift, Vector/Hashtable 증가율
 - [LinkedList 내부 동작](02_Refined/linkedlist-internals.md) — 이중 연결 Node(prev/next), first/last, node(index) 가까운 끝 순회, 중간 삽입 O(1) 함정, 맨 앞 O(1), 메모리 4~6배·캐시 미스, ArrayDeque
@@ -69,3 +69,7 @@
 - [Java 17 — 왜 17 이고 무엇을 썼나](02_Refined/java17-lts-features.md) — Spring Boot 3 최소 요건 + LTS, record 16·switch 식 14·텍스트 블록 15·패턴 매칭 16, 17 신규는 sealed, default 없는 switch 식 누락 검사, 면접 답변
 - [컨테이너 JVM 힙 크기](02_Refined/jvm-container-heap-sizing.md) — MaxRAMPercentage=75, cgroup, 기본 25%, 힙 밖 메모리(Metaspace·스레드 스택·Code Cache·Direct), -Xmx 고정값과 OOMKilled 137, HeapDump, Serial GC 자동 선택
 - [ConcurrentHashMap vs synchronizedMap](02_Refined/concurrenthashmap-vs-synchronizedmap.md) — 맵 전체 락 vs 칸 락, get 무락·CAS, CME·fail-fast vs 약한 일관성, 순회 중 네트워크 I/O, get→put 갱신 유실과 compute/computeIfAbsent, Recursive update, null 금지
+- [생성자 주입 vs 필드 주입](02_Refined/constructor-vs-field-injection.md) — 주입 시점(생성 중 vs 생성 후 리플렉션), final 불가, new 시 null·NPE vs 컴파일 에러, Mock, 순환 참조 BeanCurrentlyInCreationException·조기 참조·StackOverflowError, Boot 2.6 기본 금지, 긴 생성자 = SRP 신호, 면접 답변
+- [@Transactional 프록시와 self-invocation](02_Refined/transactional-proxy-self-invocation.md) — JDBC setAutoCommit 반복 코드, AOP·CGLIB 프록시, 다형성(업캐스팅·동적 디스패치), this 호출은 프록시 우회, 바깥에 @Transactional 은 범위 확대·속성 무시, 별도 빈 분리 + 주입
+- [트랜잭션 전파](02_Refined/transaction-propagation.md) — REQUIRED/REQUIRES_NEW/NESTED 표, 물리·논리 트랜잭션, rollback-only, catch 해도 UnexpectedRollbackException, REQUIRES_NEW 는 예외를 안 삼킴(try-catch 필수), 요청당 커넥션 2개 → 풀 데드락·CannotCreateTransactionException
+- [싱글톤 빈과 상태](02_Refined/singleton-bean-stateful.md) — JVM 당 1개 공유, final 은 참조만, 상태가 필요한 싱글톤(LoginAttemptLimiter·SseEmitterRegistry), 판단 2축: 원자성(compute·AtomicLong) / 멀티 서버(정확도 저하 vs 기능 파손), Redis vs pub/sub

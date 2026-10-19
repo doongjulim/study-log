@@ -6,7 +6,8 @@ tags: [생성자 주입, constructor injection, 필드 주입, field injection, 
 topic: 생성자 주입과 필드 주입의 차이 — 주입 시점(생성 중 vs 생성 후)이 final·테스트·순환 참조·SRP 차이의 뿌리다
 summary: 생성자 주입은 빈 인스턴스를 만드는 순간 생성자 인자로 의존성을 받고, 필드 주입은 기본 생성자로 빈 객체를 먼저 만든 뒤 리플렉션으로 private 필드를 채운다. 이 시점 차이 때문에 필드 주입은 final 을 못 쓰고, 스프링 없이 new 하면 의존성이 null 인 불완전한 객체가 되어 런타임 NPE 로만 문제를 알게 되며, 순환 참조도 조기 참조로 통과시켜 운영 중 StackOverflowError 로 숨긴다. 생성자 주입은 이 문제들을 컴파일·기동 시점에 드러내고, 의존성이 많으면 긴 생성자로 SRP 위반을 드러낸다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-19
 ---
 
 ## 배운 개념

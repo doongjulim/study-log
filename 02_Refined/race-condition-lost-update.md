@@ -120,4 +120,4 @@ public final class DateUtils {
 
 ## 관련
 
-[[jvm-stack-and-heap]] · [[arraylist-internals]] · [[stream-vs-for-loop]] · [[token-refresh-concurrency]] · [[string-concatenation-cost]] · [[static-util-vs-spring-bean]] · [[shallow-immutability-defensive-copy]] · [[concurrenthashmap-vs-synchronizedmap]]
+[[jvm-stack-and-heap]] · [[arraylist-internals]] · [[stream-vs-for-loop]] · [[token-refresh-concurrency]] · [[string-concatenation-cost]] · [[static-util-vs-spring-bean]] · [[shallow-immutability-defensive-copy]] · [[concurrenthashmap-vs-synchronizedmap]] · [[singleton-bean-stateful]]

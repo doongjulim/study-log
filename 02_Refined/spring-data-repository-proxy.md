@@ -84,4 +84,4 @@ public interface PostRepository extends JpaRepository<Post, Long> { }
 
 ## 관련
 
-[[derived-query-method]] · [[handler-method-argument-resolver]] · [[open-in-view-osiv]] · [[spring-application-events]] · [[transactional-rollback-rules]]
+[[derived-query-method]] · [[handler-method-argument-resolver]] · [[open-in-view-osiv]] · [[spring-application-events]] · [[transactional-rollback-rules]] · [[transactional-proxy-self-invocation]]

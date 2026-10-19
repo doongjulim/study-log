@@ -113,4 +113,4 @@ private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyy
 
 ## 관련
 
-[[hidden-input-time-testability]] · [[overriding-vs-overloading-binding]] · [[enum-constant-specific-polymorphism]] · [[race-condition-lost-update]] · [[shallow-immutability-defensive-copy]] · [[secret-hashing-algorithm-choice]] · [[jvm-stack-and-heap]]
+[[hidden-input-time-testability]] · [[overriding-vs-overloading-binding]] · [[enum-constant-specific-polymorphism]] · [[race-condition-lost-update]] · [[shallow-immutability-defensive-copy]] · [[secret-hashing-algorithm-choice]] · [[jvm-stack-and-heap]] · [[singleton-bean-stateful]] · [[constructor-vs-field-injection]]
