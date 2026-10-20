@@ -6,7 +6,8 @@ tags: [필터, filter, 서블릿필터, servlet-filter, jakarta.servlet, FilterC
 topic: 필터·인터셉터·AOP 는 요청 흐름의 어디서·누가·무엇을 들고 가로채느냐가 다르고, 인증은 시큐리티의 인가 검사(AuthorizationFilter)보다 앞이어야 해서 필터로 둔다 (study-board JwtAuthenticationFilter)
 summary: 필터는 서블릿 컨테이너가 DispatcherServlet 앞에서, 인터셉터는 스프링 MVC 가 DispatcherServlet 과 컨트롤러 사이에서(handler 를 앎), AOP 는 스프링 컨테이너가 프록시로 빈 메서드 호출을 가로챈다. 스프링 시큐리티의 인가 검사는 필터 체인 안의 AuthorizationFilter 가 하므로, JWT 로 SecurityContext 를 채우는 인증은 그보다 앞의 필터여야 한다. 인터셉터로 옮기면 유효한 쿠키가 있어도 익명으로 판단돼 로그인 페이지로 튕긴다. 또 @Component 필터는 톰캣 필터 목록에도 자동 등록돼 두 번 실행될 수 있는데, 리프레시 토큰 rotation 과 맞물리면 두 번째 refresh 가 실패해 쿠키를 지우는 조용한 로그아웃이 생기며, OncePerRequestFilter 가 이를 막는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-20
 ---
 
 ## 배운 개념

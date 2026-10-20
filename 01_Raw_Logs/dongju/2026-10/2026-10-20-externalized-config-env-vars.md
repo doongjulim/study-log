@@ -6,7 +6,8 @@ tags: [외부설정, externalized-configuration, 설정우선순위, property-pr
 topic: "외부 설정은 실행 시점에 가까울수록 이기고(커맨드라인 > 시스템 프로퍼티 > 환경변수 > 프로필 yml > 기본 yml), 환경변수 이름을 ${이름:기본값} 으로 명시하는 건 완화된 바인딩 규칙과 사람의 직관 사이의 틈을 없애고 기본값 정책을 한 줄에 드러내기 위해서다"
 summary: "설정을 코드·yml 에 박으면 값마다 재빌드가 필요해 같은 jar 를 모든 환경에서 쓸 수 없고 시크릿이 git 에 남는다. 스프링은 실행 시점에 가까운 소스가 이기도록 커맨드라인 > -D 시스템 프로퍼티 > OS 환경변수 > jar 밖 프로필/기본 yml > jar 안 프로필/기본 yml 순으로 덮어쓴다. 환경변수는 완화된 바인딩(점→밑줄, 대시 제거, 대문자)으로 프로퍼티에 연결되는데 file.upload-dir 은 FILE_UPLOADDIR 이 되어 사람이 쓰는 FILE_UPLOAD_DIR 과 어긋난다. 그래서 study-board 는 ${FILE_UPLOAD_DIR:...} 처럼 이름을 직접 정해 배포와의 약속으로 삼고, yml 이 받는 환경변수 목록이자 기본값 정책 문서가 되게 했다. 기본값은 깜빡했을 때 안전한 쪽이면 두고(H2_CONSOLE_ENABLED:false), 기본값 자체가 위험하면 없애 부팅을 실패시킨다(JWT_SECRET)."
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-20
 ---
 
 ## 배운 개념

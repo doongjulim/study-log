@@ -6,7 +6,8 @@ tags: [ConditionalOnProperty, 조건부빈, conditional-bean, Conditional, Profi
 topic: "@ConditionalOnProperty 로 H2 콘솔 보안 예외 체인을 콘솔과 같은 프로퍼티에 묶은 이유 — 스위치를 하나로 만들어 콘솔과 예외의 수명을 같게 하고, @Profile 이면 두 스위치가 어긋난다"
 summary: "@ConditionalOnProperty 는 앱이 뜰 때 한 번 프로퍼티를 보고 빈을 등록할지 말지를 정한다(조건이 거짓이면 @Bean 메서드가 호출조차 안 됨). study-board 는 CSRF 해제·프레임 허용·인증 면제를 푸는 H2 콘솔 전용 SecurityFilterChain 을 콘솔을 켜는 바로 그 프로퍼티(spring.h2.console.enabled)에 묶었다. @Profile(\"local\") 로 묶으면 콘솔은 프로퍼티가, 체인은 프로필이 결정해서 콘솔 없이 인증 면제 규칙만 남거나, 콘솔은 켰는데 메인 체인에 막혀 쓸 수 없는 어긋남이 생긴다. 운영 안전은 이 어노테이션이 아니라 기본값 false 가 맡는다."
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-20
 ---
 
 ## 배운 개념

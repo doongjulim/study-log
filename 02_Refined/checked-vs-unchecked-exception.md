@@ -86,4 +86,4 @@ public Coupon findCoupon(Long id) throws CouponNotFoundException {   // Checked 
 
 ## 관련
 
-[[transactional-rollback-rules]] · [[jvm-stack-and-heap]] · [[java-optional]] · [[lambda-checked-exception]]
+[[transactional-rollback-rules]] · [[jvm-stack-and-heap]] · [[java-optional]] · [[lambda-checked-exception]] · [[exception-status-code-mapping]]

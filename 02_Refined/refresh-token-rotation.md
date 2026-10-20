@@ -3,11 +3,12 @@ type: refined
 slug: refresh-token-rotation
 topic: 리프레시 토큰 회전 — 탈취를 막는 장치가 아니라 탈취를 탐지하는 장치
 summary: 회전은 공격자를 차단하지 못한다. 먼저 쓴 쪽이 새 토큰을 가지므로 밀려나는 건 오히려 정상 사용자다. 회전의 값은 "이미 소비된 토큰의 재유입"이라는 정상 클라이언트에서 발생 불가능한 사건을 만들어내는 데 있고, 그 신호를 살리려면 이전 토큰을 삭제하지 말고 폐기 상태로 남겨 체인 단위로 무효화해야 한다.
-tags: [리프레시토큰, refresh-token, 토큰회전, token-rotation, rotation, 회전, 재사용탐지, reuse-detection, 토큰재사용, token-reuse, 토큰체인, token-family, family, 세션무효화, revocation, 폐기, used-마킹, 탈취, 토큰탈취, stolen-token, 액세스토큰, access-token, JWT, 인증, authentication]
+tags: [리프레시토큰, refresh-token, 토큰회전, token-rotation, rotation, 회전, 재사용탐지, reuse-detection, 토큰재사용, token-reuse, 토큰체인, token-family, family, 세션무효화, revocation, 폐기, used-마킹, 탈취, 토큰탈취, stolen-token, 액세스토큰, access-token, JWT, 인증, authentication, 필터이중등록, OncePerRequestFilter, 조용한로그아웃]
 contributors: [dongju]
 source_refs:
   - https://datatracker.ietf.org/doc/html/rfc9700
   - https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
+updated: 2026-10-20
 ---
 
 # 리프레시 토큰 회전 (Refresh Token Rotation)
@@ -92,6 +93,18 @@ R1 (used) ─ R2 (used) ─ R3 (active, 공격자 보유)
 
 이 오탐을 제거하는 것이 유예 구간(grace period)과 단일 갱신 경로 설계이며, 별도 노트로 다룬다 → [[token-refresh-concurrency]]
 
+### 서버 안의 중복 실행도 "두 번째 소비"로 보인다
+
+동시 요청이 아니어도, **요청 하나** 안에서 재발급 로직이 두 번 돌면 같은 일이 생긴다. 대표적인 경우가 `@Component` 로 등록한 인증 필터가 시큐리티 체인(`addFilterBefore`)과 톰캣 필터 목록(자동 등록)에 **이중 등록**된 경우다.
+
+```
+1회차: 리프레시 토큰 소비(회전) → 새 토큰 쌍을 response 에 Set-Cookie
+2회차: 바뀌지 않은 같은 request 에서 같은 리프레시 토큰을 다시 읽음 → 이미 소비됨 → 실패 → 쿠키 삭제 Set-Cookie
+결과: 뒤쪽 Set-Cookie 가 이겨 액세스 토큰이 만료될 때마다 조용한 로그아웃 (탐지 구현이면 family 폐기까지)
+```
+
+`OncePerRequestFilter` 로 요청당 1회 실행을 보장하거나 `FilterRegistrationBean#setEnabled(false)` 로 서블릿 자동 등록을 끈다 → [[filter-interceptor-aop]]
+
 > [!WARNING]
 > **오답 코너**
 >
@@ -116,3 +129,4 @@ R1 (used) ─ R2 (used) ─ R3 (active, 공격자 보유)
 - [[token-storage-httponly-cookie]]
 - [[secret-hashing-algorithm-choice]]
 - [[deterministic-hash-for-lookup]]
+- [[filter-interceptor-aop]]

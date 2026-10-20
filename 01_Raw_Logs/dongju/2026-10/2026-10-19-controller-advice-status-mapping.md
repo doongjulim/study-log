@@ -6,7 +6,8 @@ tags: [ControllerAdvice, RestControllerAdvice, ExceptionHandler, 예외처리, e
 topic: "@ControllerAdvice 의 상태 코드 매핑 기준 — 자바 표준 예외 \"타입\"이 아니라 실패의 \"의미\"(누구의 잘못·재시도)로 정하고, 내가 의도한 실패만 4xx 로, 나머지는 5xx 로 (study-board GlobalExceptionHandler·ApiExceptionHandler)"
 summary: 4xx 는 요청(클라이언트)의 잘못이라 고치지 않으면 재시도해도 실패하고, 5xx 는 서버의 잘못이라 나중에 성공할 수 있으며 모니터링 알람 대상이다. study-board 는 IllegalArgumentException→404, IllegalStateException→409 처럼 표준 예외 타입으로 매핑해, 규칙 위반(시간 순서·자기 응원)이 404 로, 서버 버그(SHA-256 없음)가 로그 없이 409 + 내부 메시지 노출로 나간다. 표준 예외는 의미가 아니라 현상을 담고 JDK·라이브러리도 던지기 때문이다. 의미가 드러나는 커스텀 BusinessException 계층만 4xx 로 보내고, 나머지 Exception 은 log.error + 500 + 일반 안내 문구로 처리한다. @ExceptionHandler 는 DispatcherServlet 의 HandlerExceptionResolver 가 호출하므로 필터(시큐리티)의 접근 거부는 ExceptionTranslationFilter 가 따로 처리한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-20
 ---
 
 ## 배운 개념

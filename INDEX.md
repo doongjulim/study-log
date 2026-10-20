@@ -38,7 +38,7 @@
 - [비밀값의 엔트로피와 탐색 공간](02_Refined/secret-entropy-and-search-space.md) — 엔트로피, 탐색 공간, 무차별 대입, 비트는 자릿수, SecureRandom, 사전 공격
 - [결정적 해시와 DB 조회](02_Refined/deterministic-hash-for-lookup.md) — salt 랜덤성, 인덱스를 못 타는 이유, 토큰 갱신 조회, 전체 스캔, 찾기와 검증의 분리
 - [오프라인 공격 vs 온라인 공격](02_Refined/offline-vs-online-attack.md) — 레이트 리밋, 초대 코드, 인증번호, 시도 횟수 통제, 느린 해시의 DoS 역효과
-- [리프레시 토큰 회전](02_Refined/refresh-token-rotation.md) — 회전은 차단이 아니라 탐지, 재사용 탐지, family 체인 폐기, 삭제하면 안 되는 이유
+- [리프레시 토큰 회전](02_Refined/refresh-token-rotation.md) — 회전은 차단이 아니라 탐지, 재사용 탐지, family 체인 폐기, 삭제하면 안 되는 이유, 필터 이중 등록으로 요청 하나에서 두 번 소비 → 조용한 로그아웃
 - [토큰 갱신의 동시성](02_Refined/token-refresh-concurrency.md) — 필터에서 회전 금지, 고아 토큰, 동시 요청 경합, single-flight, grace period 멱등 재응답
 - [토큰 저장 위치 — localStorage vs HttpOnly 쿠키](02_Refined/token-storage-httponly-cookie.md) — XSS 유출, CSRF, SameSite/Secure/Path, 액세스·리프레시 저장 분리
 - [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서
@@ -73,3 +73,7 @@
 - [@Transactional 프록시와 self-invocation](02_Refined/transactional-proxy-self-invocation.md) — JDBC setAutoCommit 반복 코드, AOP·CGLIB 프록시, 다형성(업캐스팅·동적 디스패치), this 호출은 프록시 우회, 바깥에 @Transactional 은 범위 확대·속성 무시, 별도 빈 분리 + 주입
 - [트랜잭션 전파](02_Refined/transaction-propagation.md) — REQUIRED/REQUIRES_NEW/NESTED 표, 물리·논리 트랜잭션, rollback-only, catch 해도 UnexpectedRollbackException, REQUIRES_NEW 는 예외를 안 삼킴(try-catch 필수), 요청당 커넥션 2개 → 풀 데드락·CannotCreateTransactionException
 - [싱글톤 빈과 상태](02_Refined/singleton-bean-stateful.md) — JVM 당 1개 공유, final 은 참조만, 상태가 필요한 싱글톤(LoginAttemptLimiter·SseEmitterRegistry), 판단 2축: 원자성(compute·AtomicLong) / 멀티 서버(정확도 저하 vs 기능 파손), Redis vs pub/sub
+- [필터 · 인터셉터 · AOP](02_Refined/filter-interceptor-aop.md) — 위치·관리 주체(톰캣/스프링 MVC/스프링 컨테이너), handler 는 인터셉터만, 인증 vs 인가, JWT 인증은 AuthorizationFilter 보다 앞이라 필터·addFilterBefore, @Component 필터 이중 등록과 OncePerRequestFilter·FilterRegistrationBean
+- [예외 → HTTP 상태 코드 매핑](02_Refined/exception-status-code-mapping.md) — @ControllerAdvice, 4xx/5xx 기준(누구의 잘못·재시도·모니터링), 표준 예외 타입 매핑의 함정(IAE→404, NumberFormatException 위장), BusinessException 계층 + Exception 폴백(log.error·500·일반 문구), 존재 숨김 404, 필터 예외는 ExceptionTranslationFilter
+- [@ConditionalOnProperty](02_Refined/conditional-on-property.md) — 부팅 시 한 번 빈 등록 여부 결정, H2 콘솔 보안 체인(CSRF·프레임·인증 면제), @Profile 이면 스위치 2개로 어긋남, 기능과 보안 예외의 수명 일치, 운영 안전은 기본값 false
+- [외부 설정](02_Refined/externalized-configuration.md) — 우선순위(커맨드라인 > -D > 환경변수 > 프로필 yml > 기본 yml, 실행 시점에 가까울수록), 완화된 바인딩(FILE_UPLOADDIR 함정), ${이름:기본값} 명시 이유 3가지, 기본값 기준(안전한가·티가 나는가), JWT_SECRET fail fast
