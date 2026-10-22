@@ -7,6 +7,7 @@ tags: [오프라인공격, offline-attack, 온라인공격, online-attack, 레�
 contributors: [dongju]
 source_refs:
   - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+updated: 2026-10-22
 ---
 
 # 오프라인 공격 vs 온라인 공격
@@ -78,6 +79,7 @@ SHA-256 (조회 가능·비가역)
 > - **"저엔트로피면 무조건 BCrypt"** — 오프라인 공격이 가능할 때만이다. 온라인이면 레이트 리밋이 답이고, 조회 요구가 있으면 BCrypt는 애초에 못 쓴다.
 > - **"레이트 리밋은 탐색 공간을 늘려준다"** — 공간은 그대로다. 늘어나는 건 **1회 시도 비용**이다. 이 구분이 흐려지면 "그럼 코드 길이를 늘리면 되지"로 잘못 새어나간다.
 > - **"해시를 씌웠으니 초대 코드는 안전하다"** — 해시는 DB 유출에만 대응한다. 온라인 무차별 대입은 해시와 무관하게 그대로 뚫린다.
+> - **"bcrypt 가 느린 건 짧은 시간의 반복 요청을 해킹으로 감지하려고"** — 그건 **레이트 리밋**(온라인 방어)이다. 느린 해시는 레이트 리밋이 **작동하지 않는** 오프라인 대입의 1회 비용을 올리려는 것. 두 장치는 지키는 전장이 다르다.
 
 ## 복습 체크
 
@@ -92,4 +94,6 @@ SHA-256 (조회 가능·비가역)
 - [[secret-entropy-and-search-space]] — 완주 가능한 크기인지 판정하는 축
 - [[deterministic-hash-for-lookup]] — 초대 코드에서 BCrypt가 탈락하는 구조적 이유
 - [[secret-hashing-algorithm-choice]] — 두 축을 합친 최종 판단표
+- [[encoding-encryption-hashing]] — 애초에 왜 암호화가 아니라 해시로 저장하는가
+- [[session-vs-token-auth]] — 느린 해시를 매 요청 돌릴 수 없어서 세션·토큰이 필요하다
 - [[concurrenthashmap-vs-synchronizedmap]] — 메모리 레이트 리밋 카운터의 동시 실패를 compute 로 원자화

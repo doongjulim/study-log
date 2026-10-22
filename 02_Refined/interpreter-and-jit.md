@@ -1,13 +1,13 @@
 ---
 type: refined
 slug: interpreter-and-jit
-tags: [실행엔진, execution-engine, 인터프리터, interpreter, JIT, JIT컴파일러, just-in-time, 핫스팟, HotSpot, HotSpot-JVM, 호출카운터, invocation-counter, 임계값, threshold, 워밍업, warm-up, 최적화, 인라이닝, 역최적화, deoptimization, AOT]
+tags: [실행엔진, execution-engine, 인터프리터, interpreter, JIT, JIT컴파일러, just-in-time, 핫스팟, HotSpot, HotSpot-JVM, 호출카운터, invocation-counter, 임계값, threshold, 워밍업, warm-up, 최적화, 인라이닝, 역최적화, deoptimization, AOT, Ahead-Of-Time, GraalVM, native-image, 네이티브이미지, 코드캐시, code-cache, CPU시간, 해석, interpret, 오토스케일링, autoscaling, 스케일아웃, scale-out, 콜드스타트, cold-start]
 topic: JVM 이 인터프리터와 JIT 을 함께 쓰는 이유 — 시작 속도와 반복 성능의 교환
-summary: 인터프리터는 시작이 빠르지만 반복 코드가 느리고, 전면 JIT 은 시작이 느리고 1회성 코드에 컴파일 비용을 낭비한다. JVM 은 호출 카운터로 핫스팟만 골라 컴파일하는 하이브리드로 양쪽 이점을 취한다.
+summary: 인터프리터는 시작이 빠르지만 반복 코드가 느리고, 전면 JIT 은 시작이 느리고 1회성 코드에 컴파일 비용을 낭비한다. JVM 은 호출 카운터로 핫스팟만 골라 컴파일하는 하이브리드로 양쪽 이점을 취한다. 대가로 기동 직후 워밍업 구간이 생기는데, 이는 오토스케일링으로 새 서버가 뜨는 가장 바쁜 순간에 드러나고, 이를 없애는 AOT(GraalVM Native Image)는 WORA 를 포기하는 선택이다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/index.html
-updated: 2026-10-11
+updated: 2026-10-22
 ---
 
 # 인터프리터와 JIT 컴파일러
@@ -21,6 +21,9 @@ JVM 실행 엔진이 바이트코드를 실행하는 **두 가지 방식**.
 | 방식 | 바이트코드를 **한 줄씩** 읽어 즉시 실행 | 코드 구간을 **통째로 기계어로 컴파일**해 캐싱 |
 | 시작 | 빠름 | 느림 (컴파일 비용 선지불) |
 | 반복 실행 | 느림 (매번 다시 해석) | 빠름 (캐싱된 기계어 재사용) |
+| 쓰는 자원 | 반복 번역에 **CPU 시간** (번역 결과는 버리므로 메모리는 안 쌓임) | 컴파일 **CPU** + 코드 캐시 **메모리** |
+
+인터프리터는 컴파일하지 않는다 — 바이트코드를 **해석(interpret)** 해서 바로 실행한다. "인터프리터로 컴파일"은 섞인 표현이다.
 
 ## 작동 원리
 
@@ -54,8 +57,13 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 
 - **워밍업(warm-up) 구간이 존재한다.** 기동 직후는 아직 인터프리터라 느리다.
   → 성능 벤치마크에서 초반 측정치를 버리는 이유. 배포 직후 순간적으로 응답이 느려지는 것도 이 때문.
+  - 기동 직후 JVM 은 대부분을 **인터프리터로 해석**하면서, 동시에 백그라운드에서 JIT 이 핫스팟을 컴파일하느라 CPU 를 쓴다 → 느리고 CPU 사용률도 높다.
+  - **오토스케일링 함정**: 트래픽 폭주(타임세일 등)로 새 서버가 뜨면, 그 서버는 **가장 바쁜 순간에 가장 느린 상태**로 투입된다. 늘린 서버가 오히려 응답 지연을 키울 수 있다.
+  - 완화책(추가 학습 대상): 워밍업 트래픽 후 readiness 통과, CDS/AppCDS, CRaC, Tiered Compilation(C1/C2) 튜닝.
 - **짧게 살고 죽는 프로세스에는 불리하다** — CLI 도구, 서버리스 함수처럼 수명이 짧으면
   JIT 이 이득을 볼 기회 자체가 없다. → AOT 컴파일(GraalVM 네이티브 이미지)이 이 지점을 공략한다.
+  - AOT 는 실행 **전에** 바이트코드를 특정 CPU + OS 용 실행 파일로 통째로 컴파일한다 → 시작이 빠르고 워밍업이 거의 없다.
+  - 대가: 결과물이 C 프로그램처럼 다시 **CPU + OS 에 묶인다 = WORA 포기** ([[jvm-execution-pipeline]]). 런타임 프로파일 기반 최적화도 잃는다.
 - **컴파일된 코드와 메타데이터가 메모리를 차지**한다(코드 캐시).
 - JIT 최적화 결과가 실행마다 달라질 수 있어 **성능이 완전히 결정론적이지 않다.**
 
@@ -66,6 +74,9 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 >   보는 사후 판정이다.
 > - **"인터프리터는 이제 안 쓴다"** — 시작 구간과 역최적화 이후에 여전히 쓰인다.
 > - **"JIT 은 바이트코드를 기계어로 번역만 한다"** — 런타임 정보 기반 최적화(인라이닝 등)까지 수행한다.
+> - **"인터프리터의 문제는 용량(메모리)이 늘어나는 것"** — 번역 결과를 버리므로 쌓이지 않는다. 낭비되는 건 **CPU 시간 → 속도**다. 메모리를 쓰는 쪽은 오히려 JIT(코드 캐시).
+> - **"인터프리터로 컴파일한다", "배포 직후엔 코드를 계속 컴파일한다"** — 인터프리터는 **해석**한다. 해석 ≠ 컴파일. 직후엔 대부분 해석, JIT 은 핫스팟만 백그라운드 컴파일.
+> - **"AOT 면 워밍업도 없고 다 좋다"** — WORA 를 포기한다. 플랫폼별로 따로 빌드해야 한다.
 
 ## 복습 체크
 
@@ -74,7 +85,10 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 - [ ] JVM 이 "자주 실행되는 코드"를 판정하는 구체적 방법은?
 - [ ] "HotSpot JVM" 이라는 이름의 유래를 설명할 수 있는가?
 - [ ] 워밍업 구간이 실무에서 문제가 되는 상황 두 가지는?
+- [ ] 인터프리터가 낭비하는 자원은 메모리인가 CPU 시간인가? 이유는?
+- [ ] 오토스케일링으로 막 뜬 서버가 왜 하필 가장 바쁜 순간에 문제가 되는가?
+- [ ] GraalVM Native Image 가 얻는 것과 포기하는 것은?
 
 ## 관련
 
-[[jvm-execution-pipeline]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]] · [[jvm-container-heap-sizing]]
+[[jvm-execution-pipeline]] · [[jdk-jre-jvm]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]] · [[jvm-container-heap-sizing]]

@@ -6,7 +6,8 @@ tags: [JDK, JRE, JVM, Java Development Kit, Java Runtime Environment, 자바가�
 topic: JDK·JRE·JVM 포함 관계와 WORA 의 정확한 의미 — 플랫폼 종속성은 사라진 게 아니라 JVM 으로 옮겨갔다
 summary: C 실행 파일은 CPU(ISA)와 OS(실행 파일 형식·시스템 콜·라이브러리) 조합에 묶이지만, 자바는 가상 CPU용 기계어인 바이트코드를 만들고 플랫폼별 JVM 이 이를 실행해 종속성을 대신 흡수한다. JVM 은 인터프리터로 시작해 핫스팟만 JIT 컴파일하므로 워밍업 비용이 있고, 이를 없애는 AOT(GraalVM Native Image)는 WORA 를 포기하는 선택이다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

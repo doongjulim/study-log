@@ -6,7 +6,8 @@ tags: [쿠키, cookie, 세션, session, 토큰, token, JWT, json-web-token, 무�
 topic: "쿠키는 저장·전송 수단이고 세션/토큰은 인증 상태를 어디에 두느냐(서버 vs 클라이언트)의 차이다. HttpOnly 는 XSS 의 쿠키 탈취를, Secure 는 평문 HTTP 노출을, SameSite 는 CSRF 를 막는다"
 summary: "HTTP 는 무상태라 요청 사이를 기억하지 못하고, 매 요청 비밀번호 검증은 일부러 느린 해시(bcrypt)를 매번 돌리는 일이라 비싸다. 그래서 로그인 때 한 번만 검증하고 결과를 세션 ID 나 토큰으로 들고 다닌다. 쿠키는 그 값을 담아 자동 전송하는 수단이라 세션·토큰과 같은 층위가 아니고, 세션 vs 토큰의 진짜 축은 상태를 서버가 갖느냐(stateful) 클라이언트가 갖느냐(stateless)다. JWT 서명은 위조를 막지만 payload 는 Base64Url 인코딩이라 누구나 읽는다. HttpOnly 는 JS 의 쿠키 읽기(탈취)만 막고 페이지 안 요청(악용)은 못 막으며, SameSite 는 다른 사이트발 요청의 쿠키를 제한해 CSRF 를 막는다(Lax 는 최상위 GET 이동만 허용)."
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

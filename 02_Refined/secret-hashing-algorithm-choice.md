@@ -110,4 +110,6 @@ BCrypt는 매번 랜덤 salt를 써서 **비결정적**이다. 조회 키가 비
 - [[secret-entropy-and-search-space]]
 - [[deterministic-hash-for-lookup]]
 - [[offline-vs-online-attack]]
+- [[encoding-encryption-hashing]]
+- [[session-vs-token-auth]]
 - [[static-util-vs-spring-bean]]

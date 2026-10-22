@@ -127,6 +127,9 @@ R1 (used) ─ R2 (used) ─ R3 (active, 공격자 보유)
 
 - [[token-refresh-concurrency]]
 - [[token-storage-httponly-cookie]]
+- [[session-vs-token-auth]]
+- [[jwt-structure-signature]]
+- [[csrf-conditions-and-defenses]]
 - [[secret-hashing-algorithm-choice]]
 - [[deterministic-hash-for-lookup]]
 - [[filter-interceptor-aop]]

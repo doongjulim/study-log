@@ -2,13 +2,14 @@
 type: refined
 slug: token-storage-httponly-cookie
 topic: 토큰 저장 위치 — localStorage 와 HttpOnly 쿠키는 "어떤 공격을 받아들일지"의 선택이다
-summary: localStorage 는 JS 가 읽을 수 있으므로 XSS 한 번에 토큰이 통째로 유출된다. HttpOnly 쿠키는 JS 가 값을 읽을 수 없어 유출을 막지만, 브라우저가 자동으로 실어 보내는 성질 때문에 CSRF 표면이 열린다. 다만 CSRF 는 SameSite 속성으로 닫을 수 있고 XSS 로 인한 값 유출은 localStorage 에서 닫을 방법이 없다는 비대칭이 선택을 결정한다.
-tags: [토큰저장, token-storage, 저장위치, localStorage, 로컬스토리지, sessionStorage, 쿠키, cookie, HttpOnly, Secure, SameSite, Strict, Lax, Path, XSS, 크로스사이트스크립팅, cross-site-scripting, CSRF, 크로스사이트요청위조, cross-site-request-forgery, 리프레시토큰, refresh-token, 액세스토큰, access-token, 자동전송, ambient-authority]
+summary: localStorage 는 JS 가 읽을 수 있으므로 XSS 한 번에 토큰이 통째로 유출된다. HttpOnly 쿠키는 JS 가 값을 읽을 수 없어 유출을 막지만, 브라우저가 자동으로 실어 보내는 성질 때문에 CSRF 표면이 열린다. 다만 CSRF 는 SameSite 속성(과 서브도메인 틈을 메우는 CSRF 토큰)으로 닫을 수 있고 XSS 로 인한 값 유출은 localStorage 에서 닫을 방법이 없다는 비대칭이 선택을 결정한다.
+tags: [토큰저장, token-storage, 저장위치, localStorage, 로컬스토리지, sessionStorage, 쿠키, cookie, HttpOnly, Secure, SameSite, Strict, Lax, Path, XSS, 크로스사이트스크립팅, cross-site-scripting, CSRF, 크로스사이트요청위조, cross-site-request-forgery, 리프레시토큰, refresh-token, 액세스토큰, access-token, 자동전송, ambient-authority, 탈취vs악용, theft-vs-abuse, 최상위GET, top-level-navigation, CSP, 출력이스케이프, 쿠키보안속성, cookie-attributes]
 contributors: [dongju]
 source_refs:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
   - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
   - https://datatracker.ietf.org/doc/html/rfc9700
+updated: 2026-10-22
 ---
 
 # 토큰 저장 위치 — localStorage vs HttpOnly 쿠키
@@ -18,9 +19,11 @@ source_refs:
 > **저장 위치를 고르는 것은 "어떤 공격을 받아들일지"를 고르는 것이다. 그리고 그 둘은 대칭이 아니다.**
 
 - `localStorage` → **XSS 로 인한 값 유출**을 받아들인다. 이건 **닫을 방법이 없다.**
-- `HttpOnly` 쿠키 → **CSRF 표면**을 받아들인다. 이건 **속성 하나로 닫힌다.**
+- `HttpOnly` 쿠키 → **CSRF 표면**을 받아들인다. 이건 **`SameSite` 로 대부분 닫히고**, 같은 사이트 안 다른 서브도메인이라는 남은 틈은 **CSRF 토큰**으로 메운다.
 
-닫을 수 있는 위험과 닫을 수 없는 위험 중 하나를 고르는 문제이므로, 답은 정해져 있다.
+> 정정 (2026-10-22): 이전 판은 "CSRF 는 속성 하나(SameSite)로 닫힌다"고 적었다. SameSite 는 **사이트(eTLD+1)** 단위라 `blog.bank.com` → `www.bank.com` 요청에도 쿠키를 싣는다. 따라서 "한 줄로 닫힌다"는 과장이고, 출처 단위로 동작하는 CSRF 토큰과 두 겹이어야 한다. 근거와 시나리오: [[csrf-conditions-and-defenses]], OWASP CSRF Prevention Cheat Sheet(SameSite 는 defense in depth 로 다른 방어와 함께 쓰라고 권고).
+
+닫을 수 있는 위험과 닫을 수 없는 위험 중 하나를 고르는 문제이므로, 답은 정해져 있다. (단, "닫을 수 있다"는 SameSite + CSRF 토큰 두 겹 기준이다.)
 
 ## 두 저장소의 성질
 
@@ -69,11 +72,23 @@ Set-Cookie: refreshToken=...; HttpOnly; Secure; SameSite=Strict; Path=/auth/refr
 | `Lax` | 톱레벨 GET 내비게이션에만 첨부. POST·서브리소스에는 미첨부 (요즘 브라우저 기본값) |
 | `None` | 항상 첨부 — `Secure` 필수. 크로스도메인 구성에서만, CSRF 토큰 등 별도 방어와 함께 |
 
+두 상황으로 고정해 두면 헷갈리지 않는다 — (가) 악성 사이트의 **링크 클릭**(최상위 GET 이동), (나) 악성 사이트의 **숨은 `<form method="POST">`**.
+
+| 값 | (가) 링크 이동 | (나) 숨은 POST | 비고 |
+|---|---|---|---|
+| `Strict` | ❌ 안 실림 | ❌ 안 실림 | 메일·검색 결과 링크로 들어오면 로그아웃 상태로 보이는 UX 불편 |
+| `Lax` | ⭕ 실림 | ❌ 안 실림 | 상태를 바꾸는 cross-site POST 만 막고 링크 이동은 살리는 절충 → 기본값 |
+| `None` | ⭕ | ⭕ | `Secure` 필수 |
+
+⚠️ `Lax` 의 전제는 **"GET 은 읽기 전용"** 이다. `GET /transfer?to=...` 처럼 GET 으로 상태를 바꾸는 API 가 있으면 Lax 로는 못 막는다.
+
+`SameSite` 는 요청을 막는 게 아니라 **쿠키를 빼고 보낸다** — 요청은 서버에 도달하고 익명 요청이 된다. 같은 사이트 안 다른 출처에는 쿠키가 실리므로 CSRF 토큰과 함께 쓴다 ([[csrf-conditions-and-defenses]]).
+
 ## HttpOnly 가 XSS 를 "해결"하지는 않는다
 
 정확히 해둘 것: `HttpOnly` 가 막는 것은 **토큰 값의 유출**이지 XSS 자체가 아니다.
 
-XSS 가 성립한 페이지에서 공격자 스크립트는 여전히 그 페이지 안에서 `fetch('/api/transfer', …)` 를 호출할 수 있고, 쿠키는 자동으로 붙는다. 즉 **값은 못 훔쳐도 그 세션으로 행동은 할 수 있다.**
+XSS 가 성립한 페이지에서 공격자 스크립트는 여전히 그 페이지 안에서 `fetch('/api/transfer', …)` 를 호출할 수 있고, 쿠키는 자동으로 붙는다. 즉 **값은 못 훔쳐도 그 세션으로 행동은 할 수 있다.** 한 쌍으로 기억할 것: HttpOnly 는 **탈취**를 막고 **악용**은 못 막는다.
 
 차이는 **지속성과 범위**다.
 
@@ -102,7 +117,11 @@ XSS 가 성립한 페이지에서 공격자 스크립트는 여전히 그 페이
 > - **"쿠키는 다른 사이트에서 온 요청에는 안 실린다"** — **기본적으로 실린다.** 그래서 CSRF 가 성립한다. 안 실리게 만드는 것이 `SameSite` 속성이다.
 > - **"HttpOnly 를 걸면 XSS 가 막힌다"** — 막히는 건 **값의 유출**이다. 공격자 스크립트는 그 페이지 안에서 여전히 인증된 요청을 보낼 수 있다. XSS 는 이스케이프·CSP 로 막는다.
 > - **"localStorage 는 같은 오리진만 접근하니 안전하다"** — XSS 로 주입된 스크립트도 **같은 오리진에서 실행된다.** 오리진 격리는 XSS 앞에서 아무 보호도 되지 않는다.
-> - **"쿠키는 CSRF 때문에 위험하니 localStorage 가 낫다"** — 비대칭을 놓친 판단이다. CSRF 는 `SameSite` 한 줄로 닫히지만, localStorage 의 XSS 유출은 닫을 방법이 없다.
+> - **"쿠키는 CSRF 때문에 위험하니 localStorage 가 낫다"** — 비대칭을 놓친 판단이다. CSRF 는 `SameSite` + CSRF 토큰으로 닫히지만, localStorage 의 XSS 유출은 닫을 방법이 없다.
+> - **"SameSite 한 줄이면 CSRF 끝"** — 사이트 단위라 형제 서브도메인발 요청엔 쿠키가 실린다. CSRF 토큰과 두 겹. (이전 판의 표현을 정정함)
+> - **"Strict 는 허용, Lax 가 엄격"** — 반대다. **Strict 가 가장 엄격**(링크 이동도 차단), Lax 는 최상위 GET 이동만 허용하는 절충.
+> - **"Secure = 지정된 안전장치가 마련된 경우에만 전송"** — 구체적으로: **HTTPS 연결에서만** 전송. 노출은 Secure 가 **없을 때**의 문제다.
+> - ⚠️ 답변 습관: 보안 속성은 **무엇을 막고 무엇은 못 막는가**를 짝으로 답한다. "안전장치", "막힌다"로 끝내지 않는다.
 > - **"토큰은 하나니까 저장 위치도 하나"** — 액세스 토큰과 리프레시 토큰은 수명과 접근 주체가 달라 저장 위치도 갈라야 한다.
 > - **"`SameSite=None` 이 제일 호환성이 좋으니 그걸로"** — CSRF 방어를 스스로 끄는 선택이다. 크로스도메인이 불가피할 때만, 별도 CSRF 방어와 함께 쓴다.
 
@@ -111,12 +130,17 @@ XSS 가 성립한 페이지에서 공격자 스크립트는 여전히 그 페이
 - [ ] `localStorage` 와 `HttpOnly` 쿠키가 각각 받아들이는 위험이 무엇이고, 왜 그 둘이 대칭이 아닌가?
 - [ ] `HttpOnly`, `Secure`, `SameSite`, `Path` 가 각각 무엇을 막는지 말할 수 있는가?
 - [ ] CSRF 가 성립하는 원리를 공격자 폼 예시로 설명할 수 있는가?
-- [ ] `SameSite=Strict` 와 `Lax` 의 차이는?
+- [ ] `SameSite=Strict` 와 `Lax` 의 차이를 (가) 링크 이동 / (나) 숨은 POST 두 상황으로 말할 수 있는가?
+- [ ] `Lax` 가 기본값인 이유와, Lax 로 못 막는 API 설계는?
+- [ ] SameSite 만으로 CSRF 가 끝나지 않는 이유는?
 - [ ] `HttpOnly` 하에서 XSS 가 발생하면 공격자는 무엇을 할 수 있고 무엇을 할 수 없는가?
 - [ ] 액세스 토큰과 리프레시 토큰의 저장 위치를 다르게 가져가는 근거는?
 
 ## 관련
 
+- [[csrf-conditions-and-defenses]]
+- [[sop-vs-cors]]
+- [[session-vs-token-auth]]
 - [[refresh-token-rotation]]
 - [[token-refresh-concurrency]]
 - [[filter-interceptor-aop]]

@@ -6,7 +6,8 @@ tags: [CSRF, 사이트간요청위조, cross-site-request-forgery, CSRF토큰, c
 topic: "CSRF 는 세 조건(유효한 인증 정보·브라우저 자동 첨부·요청 값 예측 가능)이 겹칠 때 성립하고, SameSite 는 조건 2 를, CSRF 토큰은 조건 3 을 깬다. 토큰 방식이 안전한 이유는 토큰이 아니라 전송 방식(헤더 수동 첨부)이고, CORS 는 CSRF 방어가 아니다"
 summary: "CSRF 는 다른 사이트에서 시작된 요청에 브라우저가 인증 쿠키를 자동으로 붙이는 점을 악용해 피해자 권한으로 상태를 바꾸는 공격이며, 공격자는 응답을 볼 필요가 없다. 성립 조건은 ① 유효한 인증 정보 ② 브라우저 자동 첨부 ③ 요청 값 예측 가능. SameSite 는 다른 사이트발 요청에 쿠키를 빼고 보내 ②를, CSRF 토큰은 공격자가 직접 넣어야 하지만 SOP 때문에 읽을 수 없는 값을 요구해 ③을 깬다. Authorization 헤더 토큰은 자동 첨부가 없어 안전하지만 쿠키에 담으면 다시 노출된다. SOP 는 읽기만 막고 보내기는 막지 않으며 CORS 는 그 예외를 허락하는 장치라 CSRF 를 못 막는다. SameSite 는 사이트(eTLD+1) 단위라 형제 서브도메인을 구별 못 하므로 출처 단위 SOP 에 기대는 CSRF 토큰과 두 겹으로 쓴다."
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

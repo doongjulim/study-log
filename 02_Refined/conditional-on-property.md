@@ -82,4 +82,4 @@ spring.h2.console.enabled: ${H2_CONSOLE_ENABLED:false}
 
 ## 관련
 
-[[externalized-configuration]] · [[filter-interceptor-aop]] · [[singleton-bean-stateful]] · [[token-storage-httponly-cookie]]
+[[externalized-configuration]] · [[filter-interceptor-aop]] · [[singleton-bean-stateful]] · [[token-storage-httponly-cookie]] · [[csrf-conditions-and-defenses]]
