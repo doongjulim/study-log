@@ -6,7 +6,8 @@ tags: [클래스로딩, class-loading, 클래스로더, class-loader, 로딩, lo
 topic: java 명령부터 main() 실행 직전까지 — 클래스 로딩 → 링킹(검증·준비·해석) → 초기화, 그리고 초기화가 한 번만·실패도 기록된다는 성질
 summary: java com.study.Hello 를 실행하면 JVM 은 클래스패스 루트에서 패키지를 폴더 경로로 바꿔 .class 를 찾아 로딩하고, 바이트코드가 안전 규칙을 지키는지 검증한 뒤, static 변수에 타입별 기본값(0/0L/false/null)을 채우는 준비를 거쳐, 클래스를 처음 쓸 때 내 코드(static 대입·static 블록)를 실행하는 초기화를 클래스당 딱 한 번 한다. 클래스는 처음 쓰일 때 로딩되므로 배포 직후 첫 요청이 느리고, 초기화가 실패하면 그 상태가 기록돼 이후엔 원인 없는 NoClassDefFoundError 가 난다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

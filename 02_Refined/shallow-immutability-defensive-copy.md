@@ -95,4 +95,4 @@ record CreatePostRequest(String title, List<String> tags) {
 
 ## 관련
 
-[[jpa-embedded-value-type]] · [[java-record]] · [[string-immutability]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]] · [[singleton-bean-stateful]] · [[constructor-vs-field-injection]]
+[[jpa-embedded-value-type]] · [[java-pass-by-value]] · [[java-record]] · [[string-immutability]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]] · [[singleton-bean-stateful]] · [[constructor-vs-field-injection]]

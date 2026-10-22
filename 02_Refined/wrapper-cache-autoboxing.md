@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-5.html#jls-5.1.7
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html#valueOf(long)
-updated: 2026-10-17
+updated: 2026-10-22
 ---
 
 # 오토박싱과 래퍼 캐시
@@ -63,7 +63,7 @@ Spring Data JPA 의 `AbstractEntityInformation.isNew()` 는 ID 가 `null` 이거
 **원시 숫자이면서 값이 `0`** 일 때 새 엔티티로 판단하므로, `0` 은 "미할당"인지 "진짜 0번 행"인지 구분이 불가능해진다.
 작성자가 없는 익명 글 같은 상태도 표현할 수 없다.
 
-→ **`Long` 선택은 트레이드오프다.** `null` 표현력을 얻는 대신 캐시 함정을 떠안는다.
+→ **`Long` 선택은 트레이드오프다.** `null` 표현력을 얻는 대신 캐시 함정을 떠안는다. 그 null 을 기본형으로 언박싱하는 순간의 NPE 도 함께 따라온다(요청 DTO 의 `int` vs `Integer` 선택도 같은 축: [[unboxing-npe-wrapper-null]]).
 
 ### 권한 검사에서의 실패 방향
 
@@ -102,6 +102,7 @@ if (!Objects.equals(loginUser.getId(), notice.getWriterId())) {
 > - **"128 이상이면 변수에 값 대신 참조가 저장된다"** — 래퍼면 **항상** 참조가 저장된다.
 >   달라지는 것은 그 참조가 같은 객체를 가리키느냐 다른 객체를 가리키느냐다.
 > - **"-128~127 은 원시타입의 범위"** — `valueOf` 의 **캐시 범위**일 뿐이다.
+> - **"`int` 변수도 미리 만들어 둔 값을 참조한다"** — 캐시는 **래퍼(참조형)** 의 이야기다. 기본형 변수에는 값 자체가 들어 있다 ([[primitive-vs-reference-type]]).
 
 ## 복습 체크
 
@@ -114,4 +115,4 @@ if (!Objects.equals(loginUser.getId(), notice.getWriterId())) {
 
 ## 관련
 
-[[jpa-entity-lifecycle-merge]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[jpa-entity-equality]]
+[[primitive-vs-reference-type]] · [[unboxing-npe-wrapper-null]] · [[jpa-entity-lifecycle-merge]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[jpa-entity-equality]]

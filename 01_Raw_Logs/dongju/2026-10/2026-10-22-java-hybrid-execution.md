@@ -6,7 +6,8 @@ tags: [컴파일언어, compiled-language, 인터프리터언어, interpreted-la
 topic: 자바는 컴파일 언어인가 인터프리터 언어인가 — 언어가 아니라 실행 방식의 성질이며, 자바는 하이브리드다
 summary: 컴파일 언어냐 인터프리터 언어냐는 언어의 딱지가 아니라 그 언어를 실행하는 방식(구현)의 성질이다. 자바는 실행 전에 javac(JDK 도구, JVM 밖)가 소스를 바이트코드로 컴파일하고, 실행 중에는 JVM 이 바이트코드를 인터프리터로 해석하거나 핫스팟만 JIT 으로 기계어 컴파일한다. 그래서 컴파일 언어도 인터프리터 언어도 아닌 하이브리드다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

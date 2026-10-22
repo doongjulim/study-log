@@ -1,7 +1,7 @@
 ---
 type: refined
 slug: interpreter-and-jit
-tags: [실행엔진, execution-engine, 인터프리터, interpreter, JIT, JIT컴파일러, just-in-time, 핫스팟, HotSpot, HotSpot-JVM, 호출카운터, invocation-counter, 임계값, threshold, 워밍업, warm-up, 최적화, 인라이닝, 역최적화, deoptimization, AOT, Ahead-Of-Time, GraalVM, native-image, 네이티브이미지, 코드캐시, code-cache, CPU시간, 해석, interpret, 오토스케일링, autoscaling, 스케일아웃, scale-out, 콜드스타트, cold-start]
+tags: [실행엔진, execution-engine, 인터프리터, interpreter, JIT, JIT컴파일러, just-in-time, 핫스팟, HotSpot, HotSpot-JVM, 호출카운터, invocation-counter, 임계값, threshold, 워밍업, warm-up, 최적화, 인라이닝, 역최적화, deoptimization, AOT, Ahead-Of-Time, GraalVM, native-image, 네이티브이미지, 코드캐시, code-cache, CPU시간, 해석, interpret, 오토스케일링, autoscaling, 스케일아웃, scale-out, 콜드스타트, cold-start, 클래스로딩비용, class-loading-cost, DispatcherServlet, load-on-startup]
 topic: JVM 이 인터프리터와 JIT 을 함께 쓰는 이유 — 시작 속도와 반복 성능의 교환
 summary: 인터프리터는 시작이 빠르지만 반복 코드가 느리고, 전면 JIT 은 시작이 느리고 1회성 코드에 컴파일 비용을 낭비한다. JVM 은 호출 카운터로 핫스팟만 골라 컴파일하는 하이브리드로 양쪽 이점을 취한다. 대가로 기동 직후 워밍업 구간이 생기는데, 이는 오토스케일링으로 새 서버가 뜨는 가장 바쁜 순간에 드러나고, 이를 없애는 AOT(GraalVM Native Image)는 WORA 를 포기하는 선택이다.
 contributors: [dongju]
@@ -58,6 +58,7 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 - **워밍업(warm-up) 구간이 존재한다.** 기동 직후는 아직 인터프리터라 느리다.
   → 성능 벤치마크에서 초반 측정치를 버리는 이유. 배포 직후 순간적으로 응답이 느려지는 것도 이 때문.
   - 기동 직후 JVM 은 대부분을 **인터프리터로 해석**하면서, 동시에 백그라운드에서 JIT 이 핫스팟을 컴파일하느라 CPU 를 쓴다 → 느리고 CPU 사용률도 높다.
+  - 첫 요청에는 여기에 **클래스 로딩 비용**도 붙는다. 클래스는 처음 쓰일 때 로딩·검증·초기화되므로, 그 요청 경로에서 처음 쓰이는 클래스들의 비용을 첫 요청이 치른다(예: Spring Boot `DispatcherServlet` 은 기본적으로 첫 요청 때 초기화되고, `spring.mvc.servlet.load-on-startup=1` 로 당길 수 있다) ([[class-loading-lifecycle]]).
   - **오토스케일링 함정**: 트래픽 폭주(타임세일 등)로 새 서버가 뜨면, 그 서버는 **가장 바쁜 순간에 가장 느린 상태**로 투입된다. 늘린 서버가 오히려 응답 지연을 키울 수 있다.
   - 완화책(추가 학습 대상): 워밍업 트래픽 후 readiness 통과, CDS/AppCDS, CRaC, Tiered Compilation(C1/C2) 튜닝.
 - **짧게 살고 죽는 프로세스에는 불리하다** — CLI 도구, 서버리스 함수처럼 수명이 짧으면
@@ -91,4 +92,4 @@ JIT 은 단순 번역을 넘어 **런타임 정보를 활용한 최적화**를 �
 
 ## 관련
 
-[[jvm-execution-pipeline]] · [[jdk-jre-jvm]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]] · [[jvm-container-heap-sizing]]
+[[jvm-execution-pipeline]] · [[jdk-jre-jvm]] · [[class-loading-lifecycle]] · [[jvm-stack-and-heap]] · [[overriding-vs-overloading-binding]] · [[jvm-container-heap-sizing]]

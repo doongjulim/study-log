@@ -6,7 +6,8 @@ tags: [call-by-value, pass-by-value, 값에의한호출, 값전달, call-by-refe
 topic: 자바는 항상 Call by Value이고 참조형은 참조값을 복사한다 — 메서드 호출은 숨은 대입문 한 줄이다
 summary: 대입은 변수 칸의 내용을 복사하는 것이라 int b = a 는 값을, Member m2 = m1 은 참조를 복사해 같은 객체를 공유(앨리어싱)한다. 메서드 호출은 매개변수라는 새 지역변수에 인자의 내용을 복사하는 숨은 대입문(Member p = m)과 같아서, 복사된 참조로 객체 필드를 바꾸면 호출한 쪽에도 보이지만 매개변수에 새 객체를 재대입해도 호출한 쪽 변수는 바뀌지 않는다. 그래서 자바는 항상 Call by Value다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

@@ -6,7 +6,8 @@ tags: [오토언박싱, auto-unboxing, 언박싱, unboxing, 오토박싱, autobo
 topic: 래퍼 타입의 null — 자동 언박싱 NPE 는 컴파일이 아니라 실행 중에 터지고, DTO 에 Integer 를 쓰면 "안 보냄"을 구별하는 대신 null 처리 책임이 생긴다
 summary: int c = map.get("없는키") 는 타입상 Integer→int 가 합법이라 컴파일은 되지만, 컴파일러가 intValue() 호출로 바꿔 쓰므로 null 이 오면 실행 중 NullPointerException 이 난다. 컴파일러는 타입만 보고 값은 모르기 때문이다. 요청 DTO 필드를 int 로 두면 미전송이 0 이 되어 0 으로 바꾸려는 요청과 구별할 수 없고, Integer 로 두면 null 로 구별되지만 그 null 을 int 로 바꾸는 순간 같은 NPE 가 나므로 부분 수정은 null 체크, 필수 값은 @NotNull 로 명시 처리한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-22
 ---
 
 ## 배운 개념

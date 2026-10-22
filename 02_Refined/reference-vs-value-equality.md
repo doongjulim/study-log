@@ -90,4 +90,4 @@ if (!loginUser.getId().equals(notice.getWriterId())) { ... }   // 로그인 사�
 
 ## 관련
 
-[[equals-hashcode-contract]] · [[wrapper-cache-autoboxing]] · [[jpa-entity-equality]] · [[string-immutability]] · [[jvm-stack-and-heap]] · [[java-optional]]
+[[equals-hashcode-contract]] · [[wrapper-cache-autoboxing]] · [[primitive-vs-reference-type]] · [[jpa-entity-equality]] · [[string-immutability]] · [[jvm-stack-and-heap]] · [[java-optional]]

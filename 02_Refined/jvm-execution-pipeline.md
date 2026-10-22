@@ -1,7 +1,7 @@
 ---
 type: refined
 slug: jvm-execution-pipeline
-tags: [JVM, 자바가상머신, 실행파이프라인, javac, 컴파일, 바이트코드, bytecode, class파일, WORA, Write-Once-Run-Anywhere, 플랫폼독립성, 클래스로더, class-loader, 런타임데이터영역, runtime-data-area, 실행엔진, execution-engine, JRE, JDK, 플랫폼종속성, platform-dependency, ISA, 명령어세트, instruction-set, 기계어, machine-code, CPU아키텍처, x64, aarch64, 시스템콜, system-call, PE, ELF, Mach-O, JNI, 경로하드코딩, 대소문자, case-sensitivity, Runtime.exec, AOT, GraalVM, native-image]
+tags: [JVM, 자바가상머신, 실행파이프라인, javac, 컴파일, 바이트코드, bytecode, class파일, WORA, Write-Once-Run-Anywhere, 플랫폼독립성, 클래스로더, class-loader, 런타임데이터영역, runtime-data-area, 실행엔진, execution-engine, JRE, JDK, 플랫폼종속성, platform-dependency, ISA, 명령어세트, instruction-set, 기계어, machine-code, CPU아키텍처, x64, aarch64, 시스템콜, system-call, PE, ELF, Mach-O, JNI, 경로하드코딩, 대소문자, case-sensitivity, Runtime.exec, AOT, GraalVM, native-image, 하이브리드, hybrid, 컴파일언어, compiled-language, 인터프리터언어, interpreted-language, 실행방식, 클래스로딩, class-loading]
 topic: .java 가 실행되기까지의 경로와 JVM 3대 구성요소, WORA 가 성립하는 구조
 summary: C 실행 파일은 CPU(명령어 세트)와 OS(실행 파일 형식·시스템 콜·라이브러리) 조합에 묶인다. 자바는 javac 가 소스를 가상 CPU(JVM)용 기계어인 바이트코드(.class)로 컴파일하고, OS × CPU 아키텍처 조합마다 따로 빌드된 JVM 이 이를 읽어 실행한다. 플랫폼 종속성이 사라진 게 아니라 내 프로그램에서 JVM 으로 옮겨간 것이 WORA 의 실체이며, JVM 이 보장하는 범위 밖(OS 명령·파일 시스템 규칙·네이티브 코드)으로 나가면 종속성이 다시 돌아온다.
 contributors: [dongju]
@@ -65,11 +65,23 @@ JDK 를 내려받을 때 **OS(Windows/Linux/macOS) × 아키텍처(x64/aarch64)*
 
 | 구성요소 | 역할 |
 |---|---|
-| **클래스 로더** | `.class` 파일을 읽어 메모리에 적재 (로딩 → 링킹 → 초기화) |
+| **클래스 로더** | `.class` 파일을 읽어 메모리에 적재 (로딩 → 링킹 → 초기화, 상세는 [[class-loading-lifecycle]]) |
 | **런타임 데이터 영역** | 적재된 코드·데이터가 놓이는 메모리 공간 (스택, 힙, 메서드 영역 등) |
 | **실행 엔진** | 바이트코드를 기계어로 변환해 실행 (인터프리터 + JIT) |
 
-각각의 심화는 [[jvm-stack-and-heap]], [[interpreter-and-jit]] 참고.
+각각의 심화는 [[class-loading-lifecycle]], [[jvm-stack-and-heap]], [[interpreter-and-jit]] 참고.
+
+### 자바는 컴파일 언어인가, 인터프리터 언어인가
+
+"컴파일 언어 / 인터프리터 언어"는 **언어가 아니라 실행 방식(구현)의 성질**이다. 같은 자바 코드도 HotSpot JVM 에서는 인터프리터 + JIT 으로, GraalVM Native Image 에서는 실행 전에 통째로 기계어로(AOT) 실행된다.
+
+| 변환 | 누가 | 언제 |
+|---|---|---|
+| 소스 → 바이트코드 | `javac`, **JDK 의 개발 도구이고 JVM 밖에 있다** ([[jdk-jre-jvm]]) | 실행 **전** (개발 PC / CI) |
+| 바이트코드 → 기계어 | ① 인터프리터(해석) ② JIT(핫스팟만 컴파일·캐싱) | 실행 **중** (JVM 안) |
+
+→ 자바는 **하이브리드**다. JVM 안에도 컴파일러가 있지만 그것은 JIT 이고, 바꾸는 대상은 소스가 아니라 **바이트코드 → 기계어**다.
+`javac` 와 JIT 은 **어느 상자에 있나(JDK vs JVM) / 언제(실행 전 vs 실행 중) / 무엇을 무엇으로** 세 축으로 구분한다.
 
 ## 트레이드오프 / 한계
 
@@ -101,7 +113,9 @@ JDK 를 내려받을 때 **OS(Windows/Linux/macOS) × 아키텍처(x64/aarch64)*
 > - **"C 컴파일러도 바이트코드를 만든다"** — C 는 **CPU 기계어**를, `javac` 가 **바이트코드**를 만든다.
 > - **"플랫폼 종속성 = OS 차이"** — **CPU(ISA) + OS** 두 축이다. OS 가 같아도 x86 실행 파일은 ARM 에서 네이티브로 안 돈다.
 > - **"JVM 이 운영체제에 맞게 번역한다"** — 번역 대상은 **CPU 기계어**다. OS 쪽은 JVM 이 시스템 콜을 대신 호출해 흡수한다.
-> - **"JVM 이 자바 프로그램을 컴파일한다"** — 소스 → 바이트코드 컴파일은 **javac**. JVM 은 바이트코드를 **실행**한다(인터프리터 + JIT).
+> - **"JVM 이 자바 프로그램을 컴파일한다" / "JVM 의 컴파일러가 소스를 바이트코드로 바꾼다"** — 소스 → 바이트코드 컴파일은 **javac**(JDK 도구, 실행 전). JVM 안의 컴파일러는 **JIT** 이고 바이트코드 → 기계어를 실행 중에 한다. (반복해서 나오는 오개념)
+> - **"자바는 컴파일러 방식으로 실행한다"** — 반대쪽 극단이다. 실행 전 컴파일 + 실행 중 해석·JIT 인 하이브리드다.
+> - **"컴파일 언어 / 인터프리터 언어는 언어의 성질"** — 실행 방식(구현)의 성질이다. 같은 자바도 AOT 로 실행할 수 있다.
 > - **"자바니까 어디서나 그대로 돈다"** — 경로 하드코딩·OS 명령·파일명 대소문자·JNI 에서 깨진다.
 
 ## 복습 체크
@@ -113,8 +127,10 @@ JDK 를 내려받을 때 **OS(Windows/Linux/macOS) × 아키텍처(x64/aarch64)*
 - [ ] "종속성이 사라진 게 아니라 옮겨갔다"는 말을 JDK 다운로드 화면을 예로 설명할 수 있는가?
 - [ ] 자바인데 Windows 에선 되고 Linux 에선 깨지는 코드 세 가지는?
 - [ ] JVM 3대 구성요소와 각 역할을 댈 수 있는가?
+- [ ] "자바는 컴파일 언어인가 인터프리터 언어인가"에 변환 표(누가·언제)를 근거로 답할 수 있는가?
+- [ ] `javac` 와 JIT 을 세 축(상자·시점·변환 대상)으로 구분할 수 있는가?
 - [ ] C/C++ 대비 자바가 치르는 대가 두 가지는?
 
 ## 관련
 
-[[jdk-jre-jvm]] · [[interpreter-and-jit]] · [[jvm-stack-and-heap]] · [[garbage-collection-reachability]] · [[externalized-configuration]]
+[[jdk-jre-jvm]] · [[class-loading-lifecycle]] · [[interpreter-and-jit]] · [[jvm-stack-and-heap]] · [[garbage-collection-reachability]] · [[externalized-configuration]]

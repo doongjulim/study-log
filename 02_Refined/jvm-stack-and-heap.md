@@ -3,11 +3,11 @@ type: refined
 slug: jvm-stack-and-heap
 tags: [스택, stack, 힙, heap, 런타임데이터영역, 메모리구조, 스택프레임, stack-frame, 지역변수, 기본형, 참조, reference, 참조변수, 스레드별, thread-private, 공유메모리, shared-memory, 스레드안전, thread-safety, 동시성, concurrency, StackOverflowError, 메서드영역, Error, Exception, Throwable, ExceptionHandler, 무한재귀, infinite-recursion]
 topic: 스택은 스레드마다 하나, 힙은 전체가 공유하는 하나 — 이 비대칭이 자바 동시성 문제의 뿌리
-summary: 기본형 지역변수와 참조는 스택에, new 로 만든 객체는 힙에 놓인다. 스택은 스레드마다 독립이라 지역변수는 태생적으로 스레드 안전하고, 힙은 공유되기에 객체 교환이 가능한 대신 동시성 문제가 발생한다.
+summary: 기본형 지역변수와 참조 지역변수는 스택에, new 로 만든 객체는 힙에 놓인다(객체의 필드는 기본형이라도 객체와 함께 힙에 있다). 스택은 스레드마다 독립이라 지역변수는 태생적으로 스레드 안전하고, 힙은 공유되기에 객체 교환이 가능한 대신 동시성 문제가 발생한다.
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html
-updated: 2026-10-11
+updated: 2026-10-22
 ---
 
 # JVM 메모리 구조 — 스택과 힙
@@ -63,15 +63,19 @@ public void order() {
   스택 크기는 힙보다 훨씬 작고 `-Xss` 로 조정한다.
 - **힙 크기**는 `-Xms`(초기) / `-Xmx`(최대) 로 지정한다. 크게 잡으면 GC 주기가 길어지는 대신
   한 번의 정지 시간이 길어지는 교환이 있다.
-- 참조가 스택에 있다는 점 때문에 **참조를 넘겨도 객체는 복사되지 않는다.**
+- 변수에 담긴 것이 **참조**이기 때문에 **참조를 넘겨도 객체는 복사되지 않는다.**
   자바의 인자 전달은 언제나 값 전달(pass-by-value)이지만, 그 "값"이 참조라서 호출된 메서드가
-  같은 힙 객체를 수정할 수 있다.
+  같은 힙 객체를 수정할 수 있다. 반대로 매개변수에 새 객체를 대입해도 호출한 쪽 변수는 바뀌지 않는다 ([[java-pass-by-value]]).
+
+  > 정정 (2026-10-22): 이전 판은 "참조가 **스택에 있다는 점 때문에**"라고 적었다. 객체가 복사되지 않는 원인은 위치가 아니라 **변수의 내용이 참조**라는 점이다. 참조가 객체 필드로 힙에 있어도(예: `order.member`) 넘기면 똑같이 참조만 복사된다 ([[primitive-vs-reference-type]]).
 
 > [!WARNING]
 > **오답 코너**
 > - **"힙이 스레드마다 있다"** — 정반대다. **스택이 스레드마다 1개씩, 힙은 공유 1개.**
 >   힙이 스레드별로 분리되면 객체 공유 자체가 불가능해진다.
 > - **"참조 변수 안에 객체가 들어있다"** — 들어있는 것은 **힙 객체의 주소**다.
+> - **"기본형은 스택에 저장된다"** — 지역변수일 때만이다. 객체의 필드는 기본형이라도 **힙**(객체 안)에 있다. 위치는 변수를 담은 그릇을 따라간다 ([[primitive-vs-reference-type]]).
+> - **"참조 변수에는 프록시가 들어 있다"** — **참조**가 들어 있다. 프록시는 호출을 가로채는 대리 객체로 전혀 다른 개념이다.
 > - **"메서드가 끝나면 객체도 사라진다"** — 스택 프레임은 사라지지만 힙 객체는 남는다.
 >   참조가 하나도 남지 않았을 때 GC 대상이 될 뿐이다.
 > - **"지역변수도 동기화해야 안전하다"** — 다른 스레드가 접근할 경로가 없어 이미 안전하다.
@@ -113,6 +117,7 @@ Throwable
 ## 복습 체크
 
 - [ ] `int count` 와 `new Pizza()` 와 `p` 가 각각 어디에 놓이는지 말할 수 있는가?
+- [ ] `Pizza` 객체 안의 `int price` 필드는 스택과 힙 중 어디에 있는가?
 - [ ] 스레드가 3개일 때 스택과 힙은 각각 몇 개인가?
 - [ ] 지역변수가 스레드 안전한 이유를 "구조적 도달 불가"로 설명할 수 있는가?
 - [ ] 힙이 공유되지 않으면 무엇이 불가능해지는가?
@@ -124,4 +129,4 @@ Throwable
 
 ## 관련
 
-[[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]] · [[jvm-container-heap-sizing]] · [[concurrenthashmap-vs-synchronizedmap]]
+[[primitive-vs-reference-type]] · [[java-pass-by-value]] · [[garbage-collection-reachability]] · [[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[db-pagination]] · [[jpa-entity-equality]] · [[string-concatenation-cost]] · [[checked-vs-unchecked-exception]] · [[transactional-rollback-rules]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]] · [[jvm-container-heap-sizing]] · [[concurrenthashmap-vs-synchronizedmap]]

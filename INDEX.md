@@ -31,9 +31,12 @@
 - [Specification 과 동적 쿼리](02_Refined/jpa-specification-dynamic-query.md) — 선택 조건 n개 → 2ⁿ 조합, 조건 하나=메서드 하나 and 조립, is null or 로 충분한 경우, root.get 필드 이름 문자열 → 실행 시 에러, 정적 메타모델·Querydsl
 - [HandlerMethodArgumentResolver](02_Refined/handler-method-argument-resolver.md) — 컨트롤러 파라미터 바인딩, PageableHandlerMethodArgumentResolver, 0-based page, 커스텀 리졸버
 - [JDK · JRE · JVM](02_Refined/jdk-jre-jvm.md) — 포함 관계 JDK ⊃ JRE ⊃ JVM, JRE = JVM + 표준 클래스 라이브러리, 개발 PC 는 JDK·운영은 JRE, Java 11 JRE 배포 중단·jlink, JDK 빌드 → JRE 실행 멀티스테이지 Docker
-- [JVM 실행 파이프라인과 WORA](02_Refined/jvm-execution-pipeline.md) — javac→바이트코드→JVM, C 실행 파일의 CPU(ISA)+OS 두 축, JVM 은 OS × CPU 조합별, 종속성은 사라진 게 아니라 JVM 으로 이동, WORA 가 깨지는 코드(경로·Runtime.exec·대소문자·JNI), 클래스로더·런타임데이터영역·실행엔진
-- [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 인터프리터는 CPU 시간 낭비(해석 ≠ 컴파일), 호출 카운터·임계값, 핫스팟, 워밍업·오토스케일링 함정, AOT(GraalVM Native Image)는 WORA 포기, 역최적화
-- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것
+- [클래스 로딩 생명주기](02_Refined/class-loading-lifecycle.md) — 로딩(클래스패스·FQCN·확장자 없음) → 링킹(검증=안전 규칙≠변조·준비=기본값 0L·해석) → 초기화(static 대입·블록, 클래스당 한 번·상태 기록), 지연 로딩, 첫 요청 지연·DispatcherServlet load-on-startup, ExceptionInInitializerError → NoClassDefFoundError: Could not initialize class
+- [JVM 실행 파이프라인과 WORA](02_Refined/jvm-execution-pipeline.md) — javac→바이트코드→JVM, C 실행 파일의 CPU(ISA)+OS 두 축, JVM 은 OS × CPU 조합별, 종속성은 사라진 게 아니라 JVM 으로 이동, WORA 가 깨지는 코드(경로·Runtime.exec·대소문자·JNI), 클래스로더·런타임데이터영역·실행엔진, 자바는 하이브리드(컴파일/인터프리터는 실행 방식의 성질), javac(JDK·실행 전) vs JIT(JVM·실행 중)
+- [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 인터프리터는 CPU 시간 낭비(해석 ≠ 컴파일), 호출 카운터·임계값, 핫스팟, 워밍업·오토스케일링 함정, AOT(GraalVM Native Image)는 WORA 포기, 역최적화, 첫 요청엔 클래스 로딩 비용도
+- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것, 객체 필드의 기본형은 힙
+- [기본형 vs 참조형](02_Refined/primitive-vs-reference-type.md) — 변수 안에 값 자체 vs 참조, 기본형 8개, "기본형은 스택"은 틀린 일반화(위치는 그릇을 따라감), 기본값은 필드만·지역변수는 컴파일 에러, int[] 4MB vs Integer[] 20MB(헤더·간접 참조·GC), 프록시 ≠ 참조
+- [Call by Value](02_Refined/java-pass-by-value.md) — 대입은 칸의 내용 복사, 앨리어싱, 메서드 호출 = 숨은 대입문(Member p = m), 필드 변경은 보이고 재대입은 안 보임, 항상 Call by Value·참조값 복사, C++ & / C# ref 와 비교, swap 불가
 - [GC 와 도달 가능성](02_Refined/garbage-collection-reachability.md) — GC Root, reachability, OOM 이 나는 이유, 메모리 누수 정의, Stop-the-World, 세대별은 별개 축
 - [세션 vs 토큰](02_Refined/session-vs-token-auth.md) — HTTP 무상태 + 느린 bcrypt 라 로그인 1회 검증, 쿠키는 운반 수단(층위 다름), stateful vs stateless, 쿠키 자동(CSRF) vs localStorage 수동(XSS), 수평 확장 vs 즉시 무효화
 - [JWT 구조와 서명](02_Refined/jwt-structure-signature.md) — header.payload.signature, HMAC 재계산으로 위조 방지, payload 는 Base64Url 인코딩(누구나 읽음), sub·권한·만료 O 민감정보 X
@@ -48,7 +51,8 @@
 - [CSRF — 성립 조건과 방어](02_Refined/csrf-conditions-and-defenses.md) — 세 조건(인증 정보·자동 첨부·예측 가능), SameSite→조건2·CSRF 토큰→조건3, 요청은 도달·쿠키만 빠짐, CsrfFilter 403, 토큰 방식 안전은 전송 방식 덕, 쿠키에 담으면 재노출, 사이트 vs 출처 두 겹, 서브도메인, CORS 는 방어 아님, study-board
 - [SOP 와 CORS](02_Refined/sop-vs-cors.md) — SOP 는 읽기만 막고 보내기는 안 막음, CORS 는 예외 허락 장치, 단순 요청 preflight 없음, 출처(프로토콜+호스트+포트) vs 사이트(eTLD+1), localStorage 출처별 분리, CORS 는 CSRF 방어 아님
 - [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서
-- [오토박싱과 래퍼 캐시](02_Refined/wrapper-cache-autoboxing.md) — Long.valueOf, -128~127 캐시, ID 128 부터 깨지는 == 비교, fail-open vs fail-closed, contains 타입 불일치
+- [오토박싱과 래퍼 캐시](02_Refined/wrapper-cache-autoboxing.md) — Long.valueOf, -128~127 캐시, ID 128 부터 깨지는 == 비교, fail-open vs fail-closed, contains 타입 불일치, int 는 캐시 대상 아님
+- [래퍼 타입의 null — 언박싱 NPE](02_Refined/unboxing-npe-wrapper-null.md) — 언박싱 = intValue() 호출, map.get 없는 키 → 런타임 NPE(컴파일러는 타입만 봄), getOrDefault, 요청 DTO int(미전송=0) vs Integer(null 구별·NPE 책임), 부분 수정 null 체크·@NotNull 400
 - [equals / hashCode 규약](02_Refined/equals-hashcode-contract.md) — 필수는 한 방향뿐, 비둘기집 원리, HashMap 3단계, 가변 키와 유령 원소, 정확성 vs 성능
 - [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상대 id 는 getId()(필드 직접 접근 null), 상수 hashCode, 1차 캐시 동일성
 - [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
