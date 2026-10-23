@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html#copyOf(java.util.Collection)
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collections.html#unmodifiableList(java.util.List)
-updated: 2026-10-09
+updated: 2026-10-23
 ---
 
 # 얕은 불변과 방어적 복사
@@ -67,6 +67,27 @@ record CreatePostRequest(String title, List<String> tags) {
 }
 ```
 
+### 배열 필드도 똑같다 — 들어올 때와 나갈 때 모두 복사
+
+```java
+public class Order {
+    private final int[] quantities;
+
+    public Order(int[] quantities) { this.quantities = quantities; }
+    public int[] getQuantities()   { return quantities; }
+}
+
+Order order = new Order(new int[]{1, 2, 3});
+order.getQuantities()[0] = 999;   // 주문 내부의 첫 수량이 999 로 바뀜
+```
+
+`final` 은 `quantities` 칸의 참조만 고정한다. 게터가 참조를 그대로 내보내면 바깥이 **같은 배열 객체**를 쥔다(배열 앨리어싱: [[java-array]]). 생성자도 복사해야 하는 이유는, 호출한 쪽이 넘긴 배열을 계속 들고 있다가 바꿀 수 있기 때문이다.
+
+```java
+public Order(int[] quantities) { this.quantities = quantities.clone(); }   // 들어올 때
+public int[] getQuantities()   { return quantities.clone(); }             // 나갈 때
+```
+
 ## 트레이드오프 / 한계
 
 - `List.copyOf` 는 리스트 자체나 **요소가 `null` 이면 `NullPointerException`**. 없을 수 있는 입력이면
@@ -82,6 +103,7 @@ record CreatePostRequest(String title, List<String> tags) {
 > **오답 코너**
 > - **"final 은 객체 생성 시점의 무결성을 보장한다"** — 생성 이후에도 계속 **참조 재할당**을 막는다. 다만 **내용**은 못 막는다.
 > - **"①② 후 결과는 `["spring", "jpa"]`"** — **`["java", "spring", "jpa"]`**. 처음 넣은 값은 그대로이고, 같은 객체에 계속 쌓인다.
+> - **"`private final int[]` 이니 내부 배열은 안전하다"** — 게터가 참조를 내보내면 바깥에서 칸을 바꿀 수 있다. 생성자·게터에서 `clone()`.
 > - **"readonly 를 적용한다"** — Java 에 `readonly` 키워드는 없다(C#/TypeScript). `unmodifiableList` 또는 `List.copyOf`.
 > - **"unmodifiableList 는 원본 주소를 가지므로 외부 수정을 막는다"** — 이유는 맞고 결론이 반대. 원본 주소를 가지니까 **원본 변경이 그대로 보인다.** 외부 수정까지 막는 건 `List.copyOf`.
 
@@ -92,7 +114,8 @@ record CreatePostRequest(String title, List<String> tags) {
 - [ ] `unmodifiableList` 와 `List.copyOf` 중 외부 원본 수정까지 막는 것은 무엇이고 왜인가? (CCTV vs 사진)
 - [ ] record 에서 방어적 복사를 넣는 위치와 코드는?
 - [ ] `List.copyOf` 의 null 동작과 대응 방법은?
+- [ ] `private final int[]` 필드를 게터로 그대로 내보내면 무슨 일이 생기고, 어디서 복사해야 하는가?
 
 ## 관련
 
-[[jpa-embedded-value-type]] · [[java-pass-by-value]] · [[java-record]] · [[string-immutability]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]] · [[singleton-bean-stateful]] · [[constructor-vs-field-injection]]
+[[jpa-embedded-value-type]] · [[java-pass-by-value]] · [[java-array]] · [[arrays-aslist-pitfalls]] · [[java-record]] · [[string-immutability]] · [[reference-vs-value-equality]] · [[equals-hashcode-contract]] · [[race-condition-lost-update]] · [[static-util-vs-spring-bean]] · [[singleton-bean-stateful]] · [[constructor-vs-field-injection]]

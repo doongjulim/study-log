@@ -50,7 +50,7 @@ List<String> titles = posts.stream()
 | 컬렉션을 변환·필터·집계해 **결과값**을 얻을 때 | 결과가 아니라 **행위(부수효과)** 가 목적인 반복 (고정 N회 실행, 알림 전송) |
 | 조건 맞는 첫 원소 (`filter` + `findFirst` = `break`) | 람다 안 **checked 예외**가 많은 I/O 로직 ([[lambda-checked-exception]]) |
 | 큰 데이터 + CPU 연산 + ArrayList/배열 소스의 병렬 | `parallel()` + 블로킹 I/O / 작은 데이터 / LinkedList 소스 ([[parallel-stream-pitfalls]]) |
-| | 람다 안에서 **바깥 변수·리스트를 수정**해야 할 때 |
+| | 람다 안에서 **바깥 변수·리스트를 수정**해야 할 때 (지역 변수는 effectively final 이라 아예 컴파일 에러: [[lambda-capture-effectively-final]]) |
 
 - 고정 10번 반복이 for 문이 나은 이유는 성능(무시할 수준)이 아니라 **목적이 행위**이기 때문이다. `IntStream.range(0, 10).forEach(...)` 도 동작은 한다.
 - `break` 는 단락 연산으로 표현할 수 있다:
@@ -101,4 +101,4 @@ posts.parallelStream()
 
 ## 관련
 
-[[stream-lazy-evaluation]] · [[race-condition-lost-update]] · [[lambda-checked-exception]] · [[parallel-stream-pitfalls]] · [[java-optional]]
+[[stream-lazy-evaluation]] · [[race-condition-lost-update]] · [[lambda-checked-exception]] · [[lambda-capture-effectively-final]] · [[parallel-stream-pitfalls]] · [[java-optional]]

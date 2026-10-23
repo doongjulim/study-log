@@ -6,7 +6,8 @@ tags: [배열, array, 자바배열, java-array, 참조형, reference-type, 배�
 topic: 배열은 원소가 int 여도 참조형 객체다 — 대입은 참조를 복사해 앨리어싱이 생기고, length 는 final 필드라 크기가 고정이며, equals·toString·hashCode 를 재정의하지 않는다
 summary: 배열 변수에는 힙의 배열 객체를 가리키는 참조가 들어 있어 null 이 가능하고 new 로 만든다. 칸의 내용은 원소 타입이 정해 int[] 칸엔 값 자체, String[] 칸엔 참조가 들어 있고, 객체 안의 칸이라 기본값(0/false/null)을 받는다. int[] b = a 는 숫자가 아니라 참조를 복사하므로 b[0] = 99 가 a[0] 도 바꾸며(a == b 는 true), 따로 복사하려면 Arrays.copyOf 나 clone 으로 새 객체를 만든다. length 는 final 필드라 괄호가 없고 크기를 바꿀 수 없다. 배열은 Object 의 equals(참조 비교)·toString([I@해시)·hashCode 를 그대로 쓰므로 내용 비교·출력은 Arrays.equals·Arrays.toString 을 쓴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

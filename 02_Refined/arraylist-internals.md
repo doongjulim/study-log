@@ -114,6 +114,7 @@ elementData[--size] = null;   // 마지막 칸 비우고 size 감소 (GC 위해 
 - **스레드 안전하지 않다.** `add` 는 `elementData[size]` 쓰기 + `size++` 두 단계라 여러 스레드가 동시에 부르면 같은 칸을 덮어써 값이 사라진다 ([[race-condition-lost-update]]).
 - 병렬 Stream 소스로는 좋다 — 인덱스 계산으로 O(1) 분할 ([[parallel-stream-pitfalls]]).
 - 그래도 연속 메모리라 **캐시 지역성**이 좋아 실무 기본 List 는 ArrayList 다.
+- 단 원소는 참조형만 담을 수 있어 숫자를 대량으로 다루면 박싱 비용이 든다. 크기가 고정된 대량 숫자는 `int[]` 가 낫다 ([[java-array]]).
 
 > [!WARNING]
 > **오답 코너**
@@ -137,4 +138,4 @@ elementData[--size] = null;   // 마지막 칸 비우고 size 감소 (GC 위해 
 
 ## 관련
 
-[[linkedlist-internals]] · [[hashmap-internals]] · [[big-o-notation]] · [[string-concatenation-cost]] · [[garbage-collection-reachability]] · [[race-condition-lost-update]] · [[parallel-stream-pitfalls]]
+[[java-array]] · [[arrays-aslist-pitfalls]] · [[linkedlist-internals]] · [[hashmap-internals]] · [[big-o-notation]] · [[string-concatenation-cost]] · [[garbage-collection-reachability]] · [[race-condition-lost-update]] · [[parallel-stream-pitfalls]]

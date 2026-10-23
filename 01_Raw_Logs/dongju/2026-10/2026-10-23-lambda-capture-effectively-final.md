@@ -6,7 +6,8 @@ tags: [람다, lambda, 람다캡처, lambda-capture, 변수캡처, variable-capt
 topic: 람다는 지역 변수를 값으로 복사해 캡처하므로 effectively final 만 허용한다 — 필드는 this 를 캡처하고 힙에 살아 있어 허용되지만 동시성 위험은 남는다
 summary: 지역 변수는 메서드 스택 프레임과 함께 사라지는데 람다는 메서드가 끝난 뒤 다른 스레드에서 실행될 수도 있다. 그래서 자바는 람다를 만들 때 지역 변수의 값을 복사해 람다 객체 안에 넣어 두고(캡처), 사본을 바꾸게 두면 원본과 어긋나 개발자를 속이므로 바뀌지 않는 effectively final 변수만 캡처하게 한다. 필드는 람다가 this 참조를 캡처하고 필드 자체는 힙의 객체 안에 살아 있어 람다 안에서 바꿀 수 있지만, 여러 스레드가 동시에 바꾸면 갱신 유실이 날 수 있다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

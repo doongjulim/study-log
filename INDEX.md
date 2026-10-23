@@ -36,6 +36,8 @@
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 인터프리터는 CPU 시간 낭비(해석 ≠ 컴파일), 호출 카운터·임계값, 핫스팟, 워밍업·오토스케일링 함정, AOT(GraalVM Native Image)는 WORA 포기, 역최적화, 첫 요청엔 클래스 로딩 비용도
 - [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것, 객체 필드의 기본형은 힙
 - [기본형 vs 참조형](02_Refined/primitive-vs-reference-type.md) — 변수 안에 값 자체 vs 참조, 기본형 8개, "기본형은 스택"은 틀린 일반화(위치는 그릇을 따라감), 기본값은 필드만·지역변수는 컴파일 에러, int[] 4MB vs Integer[] 20MB(헤더·간접 참조·GC), 프록시 ≠ 참조
+- [지역·인스턴스·클래스 변수와 초기화](02_Refined/variable-kinds-initialization.md) — 호출마다/객체마다/클래스에 하나, 생성·소멸·기본값 표, 지역 변수만 초기화 강제 = 컴파일러가 검사할 수 있는 범위(definite assignment), 필드는 기본값 보장, fail-fast, final 필드는 생성자 끝까지 강제
+- [람다 캡처와 effectively final](02_Refined/lambda-capture-effectively-final.md) — 지역 변수는 스택 프레임과 함께 사라짐 → 값 복사 캡처 → effectively final 만 허용, 필드는 this 캡처라 허용되지만 동시성 위험, forEach 카운트 대신 count/collect
 - [Call by Value](02_Refined/java-pass-by-value.md) — 대입은 칸의 내용 복사, 앨리어싱, 메서드 호출 = 숨은 대입문(Member p = m), 필드 변경은 보이고 재대입은 안 보임, 항상 Call by Value·참조값 복사, C++ & / C# ref 와 비교, swap 불가
 - [정수 오버플로](02_Refined/integer-overflow.md) — int 4바이트·31비트 ±21억, 0 이 양수 자리 차지, MAX+1=MIN wraparound(4비트 예제), 예외 없음(검사 비용), Math.addExact·multiplyExact·toIntExact ArithmeticException, 음수 결제 fail-fast
 - [기본형 형변환 — 확대와 축소](02_Refined/primitive-type-conversion.md) — 기준은 바이트가 아닌 표현 범위(long→float 자동), 축소는 위쪽 비트 절단 (int)3_000_000_000L=-1294967296, 캐스트는 검사하지 않는 약속, int/long→float/double 정밀도 손실 16_777_217, 0.1+0.2, 금액 BigDecimal
@@ -63,13 +65,15 @@
 - [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
 - [문자열 연결의 비용](02_Refined/string-concatenation-cost.md) — + 는 invokedynamic, 루프에서 O(n²), StringBuilder 분할상환 O(1), StringBuffer 를 안 쓰는 진짜 이유
 - [record](02_Refined/java-record.md) — 요청/응답 DTO, private final 자동, 정규 생성자·컴팩트 생성자, 접근자 title() vs getTitle(), Jackson 생성자 바인딩, getRecordComponents, 엔티티로 못 쓰는 이유
-- [얕은 불변과 방어적 복사](02_Refined/shallow-immutability-defensive-copy.md) — final 은 참조만 고정, 공유 리스트 앨리어싱, unmodifiableList(view·CCTV) vs List.copyOf(copy·사진), readonly 없음, copyOf null NPE, static final 도 내부는 가변(SimpleDateFormat)
+- [얕은 불변과 방어적 복사](02_Refined/shallow-immutability-defensive-copy.md) — final 은 참조만 고정, 공유 리스트 앨리어싱, unmodifiableList(view·CCTV) vs List.copyOf(copy·사진), readonly 없음, copyOf null NPE, static final 도 내부는 가변(SimpleDateFormat), private final int[] 게터 노출 → 생성자·게터 clone
 - [Optional](02_Refined/java-optional.md) — 시그니처가 전달하는 "없을 수 있음", 인지 강제 vs 처리 강제, get() → NoSuchElementException, orElseThrow(), 파라미터 상태 3개·필드·Optional<List> 안티패턴
 - [orElse vs orElseGet](02_Refined/optional-orelse-vs-orelseget.md) — 인자 먼저 평가, 즉시 평가 vs 지연 평가, Supplier, 부수효과로 인한 중복 저장·불필요 호출
 - [Checked vs Unchecked 예외](02_Refined/checked-vs-unchecked-exception.md) — RuntimeException 상속 여부가 유일 기준, catch or declare, throws 전파, IOException 설계 의도, DataAccessException 예외 전환
 - [@Transactional 롤백 규칙](02_Refined/transactional-rollback-rules.md) — 기본 RuntimeException·Error 롤백 / Checked 커밋, 프록시가 통과 예외 타입으로 결정, rollbackFor vs RuntimeException 상속, catch 로 삼키면 전체 커밋, UnexpectedRollbackException, 전파·self-invocation 노트 연결
 - [빅오 표기법](02_Refined/big-o-notation.md) — 시간복잡도, 숫자 대입 금지·상수 제거, 2배 판별법(1배 O(1)/2배 O(n)/4배 O(n²)), O(1) 의 1 은 '고정', O(0) 없음, 분할상환 O(1)
-- [ArrayList 내부 동작](02_Refined/arraylist-internals.md) — Object[] elementData, 랜덤 접근 O(1), 1.5배 grow·Arrays.copyOf, +1 확장은 O(n²), 맨 앞 shift O(n), 확장 vs shift, Vector/Hashtable 증가율
+- [자바 배열](02_Refined/java-array.md) — 배열은 참조형 객체(int[] x = null 가능), 변수·객체·칸 세 층, int[] b = a 앨리어싱(a == b true)·Arrays.copyOf/clone, length 는 final 필드(크기 고정), equals·toString 미재정의 → Arrays.equals/toString, [I@…, 배열 vs ArrayList 선택(박싱·크기·API)
+- [Arrays.asList 의 두 함정](02_Refined/arrays-aslist-pitfalls.md) — 원본 배열을 감싼 고정 크기 리스트, set 은 원본까지 반영·add 는 UnsupportedOperationException, new ArrayList<>(…), Arrays.asList(int[]) → List<int[]> size 1(배열 자동 박싱 없음), Arrays.stream().boxed()
+- [ArrayList 내부 동작](02_Refined/arraylist-internals.md) — Object[] elementData, 랜덤 접근 O(1), 1.5배 grow·Arrays.copyOf, +1 확장은 O(n²), 맨 앞 shift O(n), 확장 vs shift, Vector/Hashtable 증가율, 대량 숫자는 int[]
 - [LinkedList 내부 동작](02_Refined/linkedlist-internals.md) — 이중 연결 Node(prev/next), first/last, node(index) 가까운 끝 순회, 중간 삽입 O(1) 함정, 맨 앞 O(1), 메모리 4~6배·캐시 미스, ArrayDeque
 - [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n), & 는 비트 AND(나머지 아님)
 - [Stream vs for 문](02_Refined/stream-vs-for-loop.md) — 어디에 쓰고 안 쓰나, 선언형 vs 명령형(≠ 절차/객체지향), 가독성의 구체적 의미, 결과값 vs 행위, break=findFirst, forEach 공유 상태, toList 불변, 면접 답변

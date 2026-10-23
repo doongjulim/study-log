@@ -6,7 +6,8 @@ tags: [배열vsArrayList, array-vs-arraylist, ArrayList, 선택기준, 기본형
 topic: 배열은 기본형을 박싱 없이 담아 메모리·속도에 유리하고 ArrayList 는 크기가 유동적이고 API 가 풍부하다 — 그리고 배열 게터 노출과 Arrays.asList 의 두 함정
 summary: ArrayList 는 제네릭이라 참조형만 담아 숫자 100만 개면 Integer 객체 100만 개가 생기지만(약 20MB, 간접 접근 2번), int[] 는 값 그대로 약 4MB 다. 반면 배열은 length 가 final 이라 크기가 고정이고 contains·remove 같은 API 가 없어 일반 비즈니스 코드는 ArrayList 가 기본이다. private final int[] 필드를 게터로 그대로 내보내면 바깥에서 내부 상태를 바꿀 수 있어 생성자와 게터에서 clone 하거나 List.copyOf 를 쓴다. Arrays.asList 는 원본 배열을 감싼 고정 크기 리스트라 set 은 원본까지 바꾸고 add 는 UnsupportedOperationException 이며, Arrays.asList(int[]) 는 배열이 자동 박싱되지 않아 List<int[]>(size 1)가 된다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

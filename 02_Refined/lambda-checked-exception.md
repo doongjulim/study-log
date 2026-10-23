@@ -89,4 +89,4 @@ for (String path : paths) {
 
 ## 관련
 
-[[checked-vs-unchecked-exception]] · [[stream-vs-for-loop]] · [[transactional-rollback-rules]] · [[optional-orelse-vs-orelseget]]
+[[checked-vs-unchecked-exception]] · [[stream-vs-for-loop]] · [[lambda-capture-effectively-final]] · [[transactional-rollback-rules]] · [[optional-orelse-vs-orelseget]]

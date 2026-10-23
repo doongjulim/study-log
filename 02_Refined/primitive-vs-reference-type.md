@@ -108,4 +108,4 @@ Integer[] b = new Integer[1_000_000];   // 각 칸에 Integer 객체를 채운 �
 
 ## 관련
 
-[[jvm-stack-and-heap]] · [[java-pass-by-value]] · [[primitive-type-conversion]] · [[numeric-promotion]] · [[integer-overflow]] · [[unboxing-npe-wrapper-null]] · [[wrapper-cache-autoboxing]] · [[reference-vs-value-equality]] · [[class-loading-lifecycle]] · [[string-immutability]]
+[[jvm-stack-and-heap]] · [[java-pass-by-value]] · [[java-array]] · [[variable-kinds-initialization]] · [[primitive-type-conversion]] · [[numeric-promotion]] · [[integer-overflow]] · [[unboxing-npe-wrapper-null]] · [[wrapper-cache-autoboxing]] · [[reference-vs-value-equality]] · [[class-loading-lifecycle]] · [[string-immutability]]

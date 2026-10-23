@@ -138,4 +138,4 @@ class Config {
 
 ## 관련
 
-[[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[jdk-jre-jvm]] · [[primitive-vs-reference-type]] · [[singleton-bean-stateful]]
+[[jvm-execution-pipeline]] · [[interpreter-and-jit]] · [[jdk-jre-jvm]] · [[primitive-vs-reference-type]] · [[variable-kinds-initialization]] · [[singleton-bean-stateful]]
