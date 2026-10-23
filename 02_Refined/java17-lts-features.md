@@ -100,4 +100,4 @@ public boolean allowedBy(NotificationPreference preference) {   // enum 메서�
 
 ## 관련
 
-[[java-record]] · [[enum-constant-specific-polymorphism]] · [[stream-vs-for-loop]] · [[jvm-container-heap-sizing]]
+[[java-record]] · [[switch-expression]] · [[switch-fall-through]] · [[enum-constant-specific-polymorphism]] · [[stream-vs-for-loop]] · [[jvm-container-heap-sizing]]

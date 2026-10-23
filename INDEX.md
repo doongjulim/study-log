@@ -37,6 +37,11 @@
 - [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것, 객체 필드의 기본형은 힙
 - [기본형 vs 참조형](02_Refined/primitive-vs-reference-type.md) — 변수 안에 값 자체 vs 참조, 기본형 8개, "기본형은 스택"은 틀린 일반화(위치는 그릇을 따라감), 기본값은 필드만·지역변수는 컴파일 에러, int[] 4MB vs Integer[] 20MB(헤더·간접 참조·GC), 프록시 ≠ 참조
 - [Call by Value](02_Refined/java-pass-by-value.md) — 대입은 칸의 내용 복사, 앨리어싱, 메서드 호출 = 숨은 대입문(Member p = m), 필드 변경은 보이고 재대입은 안 보임, 항상 Call by Value·참조값 복사, C++ & / C# ref 와 비교, swap 불가
+- [정수 오버플로](02_Refined/integer-overflow.md) — int 4바이트·31비트 ±21억, 0 이 양수 자리 차지, MAX+1=MIN wraparound(4비트 예제), 예외 없음(검사 비용), Math.addExact·multiplyExact·toIntExact ArithmeticException, 음수 결제 fail-fast
+- [기본형 형변환 — 확대와 축소](02_Refined/primitive-type-conversion.md) — 기준은 바이트가 아닌 표현 범위(long→float 자동), 축소는 위쪽 비트 절단 (int)3_000_000_000L=-1294967296, 캐스트는 검사하지 않는 약속, int/long→float/double 정밀도 손실 16_777_217, 0.1+0.2, 금액 BigDecimal
+- [산술 승격 — 연산 타입은 피연산자가](02_Refined/numeric-promotion.md) — byte·short·char → int 승격, long total = 50_000*50_000 음수, (long)(a*b) ❌ vs (long)a*b ✅, 정수 나눗셈 0 쪽 버림 3/4=0·성공률 0.0, (double)success/total, byte+byte 컴파일 에러 vs 상수 표현식, += 숨은 캐스트
+- [연산자 평가 순서의 함정](02_Refined/operator-evaluation-order.md) — i = i++ 는 5(+1 후 대입이 덮어씀), 1+2+"3"="33" vs "1"+2+3="123", 왼쪽부터·String 만나면 연결, 로그 계산은 괄호
+- [단락 평가 — && vs &](02_Refined/short-circuit-evaluation.md) — && 는 오른쪽 생략·& 는 양쪽 평가, null 가드 NPE, 조건식 부수 효과, int 의 & 는 비트 AND(나머지 아님), (n-1)&hash = hash%n (2의 거듭제곱), (x&1)==0 짝수
 - [GC 와 도달 가능성](02_Refined/garbage-collection-reachability.md) — GC Root, reachability, OOM 이 나는 이유, 메모리 누수 정의, Stop-the-World, 세대별은 별개 축
 - [세션 vs 토큰](02_Refined/session-vs-token-auth.md) — HTTP 무상태 + 느린 bcrypt 라 로그인 1회 검증, 쿠키는 운반 수단(층위 다름), stateful vs stateless, 쿠키 자동(CSRF) vs localStorage 수동(XSS), 수평 확장 vs 즉시 무효화
 - [JWT 구조와 서명](02_Refined/jwt-structure-signature.md) — header.payload.signature, HMAC 재계산으로 위조 방지, payload 는 Base64Url 인코딩(누구나 읽음), sub·권한·만료 O 민감정보 X
@@ -52,7 +57,7 @@
 - [SOP 와 CORS](02_Refined/sop-vs-cors.md) — SOP 는 읽기만 막고 보내기는 안 막음, CORS 는 예외 허락 장치, 단순 요청 preflight 없음, 출처(프로토콜+호스트+포트) vs 사이트(eTLD+1), localStorage 출처별 분리, CORS 는 CSRF 방어 아님
 - [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서
 - [오토박싱과 래퍼 캐시](02_Refined/wrapper-cache-autoboxing.md) — Long.valueOf, -128~127 캐시, ID 128 부터 깨지는 == 비교, fail-open vs fail-closed, contains 타입 불일치, int 는 캐시 대상 아님
-- [래퍼 타입의 null — 언박싱 NPE](02_Refined/unboxing-npe-wrapper-null.md) — 언박싱 = intValue() 호출, map.get 없는 키 → 런타임 NPE(컴파일러는 타입만 봄), getOrDefault, 요청 DTO int(미전송=0) vs Integer(null 구별·NPE 책임), 부분 수정 null 체크·@NotNull 400
+- [래퍼 타입의 null — 언박싱 NPE](02_Refined/unboxing-npe-wrapper-null.md) — 언박싱 = intValue() 호출, map.get 없는 키 → 런타임 NPE(컴파일러는 타입만 봄), getOrDefault, 요청 DTO int(미전송=0) vs Integer(null 구별·NPE 책임), 부분 수정 null 체크·@NotNull 400, 삼항 연산자 기본형+래퍼 → int 로 맞춰져 NPE
 - [equals / hashCode 규약](02_Refined/equals-hashcode-contract.md) — 필수는 한 방향뿐, 비둘기집 원리, HashMap 3단계, 가변 키와 유령 원소, 정확성 vs 성능
 - [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상대 id 는 getId()(필드 직접 접근 null), 상수 hashCode, 1차 캐시 동일성
 - [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
@@ -66,7 +71,7 @@
 - [빅오 표기법](02_Refined/big-o-notation.md) — 시간복잡도, 숫자 대입 금지·상수 제거, 2배 판별법(1배 O(1)/2배 O(n)/4배 O(n²)), O(1) 의 1 은 '고정', O(0) 없음, 분할상환 O(1)
 - [ArrayList 내부 동작](02_Refined/arraylist-internals.md) — Object[] elementData, 랜덤 접근 O(1), 1.5배 grow·Arrays.copyOf, +1 확장은 O(n²), 맨 앞 shift O(n), 확장 vs shift, Vector/Hashtable 증가율
 - [LinkedList 내부 동작](02_Refined/linkedlist-internals.md) — 이중 연결 Node(prev/next), first/last, node(index) 가까운 끝 순회, 중간 삽입 O(1) 함정, 맨 앞 O(1), 메모리 4~6배·캐시 미스, ArrayDeque
-- [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n)
+- [HashMap 내부 동작](02_Refined/hashmap-internals.md) — Node[] table, hashCode→섞기→(n-1)&hash, 체이닝, hash+equals 확정, load factor 0.75·2배 resize, treeify 8/64/6, Comparable 없으면 O(n), & 는 비트 AND(나머지 아님)
 - [Stream vs for 문](02_Refined/stream-vs-for-loop.md) — 어디에 쓰고 안 쓰나, 선언형 vs 명령형(≠ 절차/객체지향), 가독성의 구체적 의미, 결과값 vs 행위, break=findFirst, forEach 공유 상태, toList 불변, 면접 답변
 - [Stream 지연 평가·수직 처리·단락](02_Refined/stream-lazy-evaluation.md) — 중간/최종 연산, 최종 연산 없으면 0줄, 일회용 IllegalStateException, 루프 퓨전, 원소 하나씩 끝까지, findFirst 7번, sorted 장벽, count 가 peek 생략
 - [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent, static final SimpleDateFormat·Calendar 덮어쓰기·DateTimeFormatter, ConcurrentHashMap get→put 로그인 카운터·compute
@@ -74,6 +79,8 @@
 - [병렬 Stream 의 함정](02_Refined/parallel-stream-pitfalls.md) — Spliterator 분할, ArrayList O(1) vs LinkedList O(n), commonPool 공유·코어-1, 블로킹 I/O 고갈, 작은 데이터 오버헤드, 전용 Executor
 - [다형성 — 오버라이딩 vs 오버로딩](02_Refined/overriding-vs-overloading-binding.md) — 하나의 호출·실제 객체·여러 구현, 점(.) 왼쪽 받는 객체가 결정, 동적 바인딩 vs 정적 바인딩, invokevirtual/invokestatic, print(Object) 함정, static 은 hiding
 - [enum 상수별 구현과 다형성](02_Refined/enum-constant-specific-polymorphism.md) — constant-specific body, 익명 자식 클래스 SearchType$1, getDeclaringClass, switch default vs 컴파일 에러, switch 식, OCP, @Autowired 불가, 전략 패턴 빈
+- [switch fall-through](02_Refined/switch-fall-through.md) — 라벨로 한 번 점프 → 아래 라벨은 검사 없이 통과 → break/블록 끝, if-else 사슬 오해, day=2 → 화·수·기타, case 6: case 7: 묶기, break 누락 함정, 중복 case 컴파일 에러
+- [switch 식 (Java 14)](02_Refined/switch-expression.md) — 문 vs 식(값을 내놓는가), 화살표 -> 는 람다 아닌 case 규칙·fall-through 없음, 콜론 형식은 여전히 fall-through, 완전성 검사(없으면 null 불가), yield vs return(attempt to return out of a switch expression)
 - [static 유틸 vs 스프링 빈](02_Refined/static-util-vs-spring-bean.md) — 판단 기준 4가지(의존성·교체·순수성·가변 상태), 여러 곳 호출은 기준 아님, static 주입 불가, PasswordEncoder 공존·테스트, 면접 답변
 - [숨은 입력과 테스트 — now() 를 밖으로](02_Refined/hidden-input-time-testability.md) — LocalDate.now() 숨은 입력, 다음 날 깨지는 테스트, calcDday(today, deadline), 경계에서만 now(), Clock 주입·Clock.fixed
 - [Java 17 — 왜 17 이고 무엇을 썼나](02_Refined/java17-lts-features.md) — Spring Boot 3 최소 요건 + LTS, record 16·switch 식 14·텍스트 블록 15·패턴 매칭 16, 17 신규는 sealed, default 없는 switch 식 누락 검사, 면접 답변

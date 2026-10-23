@@ -149,4 +149,4 @@ if (sb.length() > 0) {                  // ① 락 획득 → 해제
 
 ## 관련
 
-[[string-immutability]] · [[jvm-stack-and-heap]] · [[reference-vs-value-equality]] · [[arraylist-internals]] · [[big-o-notation]]
+[[string-immutability]] · [[operator-evaluation-order]] · [[jvm-stack-and-heap]] · [[reference-vs-value-equality]] · [[arraylist-internals]] · [[big-o-notation]]

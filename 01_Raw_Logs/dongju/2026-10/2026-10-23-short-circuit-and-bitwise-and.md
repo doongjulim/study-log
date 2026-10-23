@@ -6,7 +6,8 @@ tags: [단락평가, short-circuit-evaluation, 논리연산자, logical-operator
 topic: "&& 는 왼쪽으로 결과가 정해지면 오른쪽을 평가하지 않는 단락 평가이고 & 는 양쪽을 다 평가한다 — 그리고 int 피연산자의 & 는 전혀 다른 비트 AND 다"
 summary: "user != null && user.isAdmin() 은 user 가 null 이면 오른쪽을 평가하지 않아 안전하지만, & 는 양쪽을 모두 평가해 isAdmin() 호출에서 NPE 가 난다. boolean 의 & 는 오른쪽 부수 효과가 항상 실행돼야 할 때 쓰지만 조건식 안의 부수 효과 자체가 나쁜 냄새다. 피연산자가 int 이면 & 는 같은 자리 비트가 둘 다 1일 때만 1을 남기는 비트 AND 이고, n 이 2의 거듭제곱일 때 (n-1) & hash 가 hash % n 과 같은 결과를 내므로 HashMap 이 테이블 크기를 2의 거듭제곱으로 유지한다."
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

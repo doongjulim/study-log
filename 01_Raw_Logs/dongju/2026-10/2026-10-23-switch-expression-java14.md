@@ -6,7 +6,8 @@ tags: [switch식, switch-expression, 자바14, java14, 문, statement, 식, expr
 topic: 자바 14 switch 식은 switch 를 값을 내놓는 식으로 만들고, 화살표 형식으로 fall-through 를 없애며, 값을 반드시 내놓아야 하므로 완전성을 컴파일 시점에 검사한다
 summary: 식은 실행 결과로 값을 내놓아 변수에 바로 대입할 수 있고 문은 값 없이 동작만 한다. 옛 switch 는 문이라 바깥에 변수를 선언하고 case 마다 대입해야 했지만, 자바 14 switch 식은 String type = switch (day) { case 6, 7 -> "주말"; default -> "평일"; } 처럼 값을 바로 내놓는다. 화살표(->)는 람다가 아니라 fall-through 없는 case 규칙이고, 블록 본문은 yield 로 값을 내놓으며 return 은 메서드를 빠져나가므로 컴파일 에러다. 모든 경우를 다루지 않으면 컴파일 에러(완전성 검사)라서, enum 상수를 전부 나열하면 새 상수 추가 시 default 처럼 조용히 빠지지 않고 컴파일러가 모든 위치를 알려 준다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

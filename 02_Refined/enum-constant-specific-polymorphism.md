@@ -159,4 +159,4 @@ enum 은 **"무엇을"(타입 식별)**, 빈은 **"어떻게"(의존성이 필�
 
 ## 관련
 
-[[overriding-vs-overloading-binding]] · [[static-util-vs-spring-bean]] · [[stream-vs-for-loop]] · [[java17-lts-features]]
+[[overriding-vs-overloading-binding]] · [[static-util-vs-spring-bean]] · [[stream-vs-for-loop]] · [[java17-lts-features]] · [[switch-expression]]

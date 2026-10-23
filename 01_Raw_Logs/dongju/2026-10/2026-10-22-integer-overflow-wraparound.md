@@ -6,7 +6,8 @@ tags: [오버플로, overflow, 정수오버플로, integer-overflow, wraparound,
 topic: int 의 범위(±21억)는 32비트에서 1비트를 부호로 쓴 결과이고, 넘치면 예외 없이 반대편 끝으로 감겨 돈다 — 틀리면 안 되는 값은 Math.~Exact 로 fail-fast 한다
 summary: int 는 4바이트(32비트)로 1비트를 부호에, 31비트를 크기에 써서 -2³¹ ~ 2³¹-1(약 ±21억)을 표현하며 0 이 양수 쪽 자리를 차지해 양수가 1 적다. MAX_VALUE + 1 은 올림이 부호 비트까지 넘어가 MIN_VALUE 가 되는데, 자바는 매 연산 검사 비용을 피하려 이 wraparound 를 스펙으로 정하고 예외를 던지지 않는다. 금액처럼 틀리면 안 되는 값은 Math.addExact·multiplyExact·toIntExact 로 넘칠 때 ArithmeticException 을 받아 조용한 데이터 오염을 막는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

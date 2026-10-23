@@ -6,7 +6,8 @@ tags: [형변환, type-conversion, 캐스팅, casting, 묵시적형변환, impli
 topic: 형변환은 바이트 크기가 아니라 표현 범위로 자동/명시가 갈리고, 캐스트는 검사하지 않는 약속이며, 연산 타입은 담을 변수가 아니라 연산 순간 피연산자의 타입이 정한다
 summary: 표현 범위가 좁은 타입에서 넓은 타입으로는 자동(확대 변환), 반대는 (타입) 캐스트가 필요(축소 변환)하며 축소는 위쪽 비트를 잘라 (int)3_000_000_000L 이 -1294967296 이 된다. 캐스트는 값을 고쳐 주는 장치가 아니라 아무도 검사하지 않는 약속이다. byte·short·char 는 연산 전에 int 로 승격되고 연산 타입은 피연산자가 정하므로 long t = 50_000 * 50_000 은 int 곱셈에서 이미 넘치고, += 는 숨은 캐스트로 조용히 감겨 돈다. 확대 변환도 int/long → float/double 은 범위 대신 정밀도를 잃을 수 있어 금액은 BigDecimal 이나 long 으로 다룬다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

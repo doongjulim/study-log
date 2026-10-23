@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html
   - https://openjdk.org/jeps/180
-updated: 2026-10-11
+updated: 2026-10-23
 ---
 
 # HashMap 내부 동작
@@ -138,6 +138,7 @@ table[1]  [k1] → [k2] → … → [k100만]   → get = O(n)
 
 > [!WARNING]
 > **오답 코너**
+> - **"`(n - 1) & hash` 의 `&` 는 나머지 연산"** — **비트 AND** 다. n 이 2의 거듭제곱일 때 `hash % n` 과 **결과가 같을 뿐**이다(그래서 용량을 2의 거듭제곱으로 유지) ([[short-circuit-evaluation]]).
 > - **"키를 배열의 가장 마지막 칸에 넣는다"** — `hashCode()` 로 **칸 번호를 계산**한다. 그래야 꺼낼 때 같은 계산으로 바로 간다.
 > - **"충돌하면 먼저 저장된 값의 해시코드를 저장해 비교한다"** — hash 를 저장·비교하는 건 맞지만(1차 필터), **두 개를 함께 담는 구조는 `next` 로 잇는 연결 리스트(체이닝)** 다.
 > - **"체인에서 next 가 없으면 호출, 있으면 노드 값을 비교"** — next 유무와 무관하게 **현재 노드부터** 확인하고, 비교 대상은 **값이 아니라 키**다.
@@ -157,4 +158,4 @@ table[1]  [k1] → [k2] → … → [k100만]   → get = O(n)
 
 ## 관련
 
-[[equals-hashcode-contract]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[big-o-notation]] · [[string-immutability]] · [[sse-server-sent-events]] · [[concurrenthashmap-vs-synchronizedmap]]
+[[equals-hashcode-contract]] · [[short-circuit-evaluation]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[big-o-notation]] · [[string-immutability]] · [[sse-server-sent-events]] · [[concurrenthashmap-vs-synchronizedmap]]

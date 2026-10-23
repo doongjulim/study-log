@@ -1,14 +1,14 @@
 ---
 type: refined
 slug: unboxing-npe-wrapper-null
-tags: [오토언박싱, auto-unboxing, 언박싱, unboxing, 오토박싱, autoboxing, intValue, NullPointerException, NPE, 언박싱NPE, 런타임예외, runtime-exception, 컴파일에러, compile-error, 컴파일러는타입만본다, Map.get, getOrDefault, 래퍼타입, wrapper-type, Integer, Long, int, null의미, DTO, 요청DTO, request-dto, 부분수정, PATCH, 미전송, absent-field, Jackson, NotNull, Bean-Validation, 400, 면접답변]
+tags: [오토언박싱, auto-unboxing, 언박싱, unboxing, 오토박싱, autoboxing, intValue, NullPointerException, NPE, 언박싱NPE, 런타임예외, runtime-exception, 컴파일에러, compile-error, 컴파일러는타입만본다, Map.get, getOrDefault, 래퍼타입, wrapper-type, Integer, Long, int, null의미, DTO, 요청DTO, request-dto, 부분수정, PATCH, 미전송, absent-field, Jackson, NotNull, Bean-Validation, 400, 삼항연산자, ternary-operator, 조건연산자, 삼항타입결정, 면접답변]
 topic: "래퍼 타입의 null — 자동 언박싱 NPE 는 실행 중에 터지고, DTO 에 Integer 를 쓰면 '안 보냄'을 구별하는 대신 null 처리 책임이 생긴다"
 summary: "int c = map.get(키) 는 타입상 Integer→int 가 합법이라 컴파일은 되지만, 컴파일러가 intValue() 호출로 바꿔 쓰므로 null 이 오면 실행 중 NullPointerException 이 난다. 컴파일러는 타입만 보고 값은 모른다. 요청 DTO 필드를 int 로 두면 미전송이 0 이 되어 0 으로 바꾸려는 요청과 구별할 수 없고, Integer 로 두면 null 로 구별되지만 그 null 을 int 로 바꾸는 순간 같은 NPE 가 나므로 부분 수정은 null 체크, 필수 값은 @NotNull 로 명시 처리한다."
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-5.html#jls-5.1.8
   - https://docs.spring.io/spring-framework/reference/core/validation/beanvalidation.html
-updated: 2026-10-22
+updated: 2026-10-23
 ---
 
 # 래퍼 타입의 null — 언박싱 NPE 와 DTO 필드 선택
@@ -36,6 +36,22 @@ int count = stock.get("apple").intValue();   // null.intValue() → NullPointerE
 | `int c = stock.get("apple");` | ❌ `Integer → int` 는 타입상 합법. 맵에 무엇이 있을지는 실행해 봐야 앎 | **런타임 NPE** |
 
 **컴파일러는 타입만 검사하고 값은 모른다.** 같은 "값 없음" 문제가 하나는 컴파일 에러, 하나는 런타임 NPE 가 되는 이유다.
+
+### 삼항 연산자 속 숨은 언박싱
+
+```java
+Map<String, Integer> stock = new HashMap<>();   // "apple" 키 없음
+boolean useDefault = false;
+
+Integer count = useDefault ? 0 : stock.get("apple");
+// 컴파일러가 바꿔 쓴 모습
+Integer count = Integer.valueOf( useDefault ? 0 : stock.get("apple").intValue() );
+//                                               ↑ null.intValue() → NPE
+```
+
+- 두 결과가 기본형(`0`)과 래퍼(`Integer`)면 삼항 **전체 타입은 기본형 `int`** 가 된다 → null 쪽이 선택되면 언박싱 NPE.
+- 좌변이 `Integer` 라 null 을 담을 수 있을 것 같지만, **대입 전에** 터진다.
+- 해결: 두 결과를 `Integer` 로 맞추거나(`Integer.valueOf(0)`), `getOrDefault` 로 null 자체를 없앤다.
 
 ## 트레이드오프 — DTO 필드는 `int` 인가 `Integer` 인가
 
@@ -69,6 +85,7 @@ null 을 명시적으로 처리한다:
 > [!WARNING]
 > **오답 코너**
 > - **"`int count = map.get(없는 키)` 는 컴파일 에러"** — 컴파일은 된다. 실행 중 **언박싱 NPE** 가 난다. 원인(get 이 null 을 돌려주고 int 는 null 불가)은 맞아도 **시점**을 틀리기 쉽다.
+> - **"삼항 결과가 `Integer` 에 담길 때 자동형변환"** — **오토박싱**이다(형변환은 기본형끼리). 그리고 그 전에 삼항 전체가 `int` 로 맞춰지며 **언박싱 NPE** 가 난다.
 > - **"`Integer` 로 바꾸면 해결"** — 구별은 가능해지지만, null 을 `int` 로 바꾸는 순간 같은 NPE 가 난다. null 체크나 `@NotNull` 이 함께 있어야 한다.
 
 ## 면접 답변
@@ -82,7 +99,8 @@ null 을 명시적으로 처리한다:
 - [ ] 초기화 안 된 지역변수는 컴파일 에러인데 언박싱 NPE 는 왜 런타임에 나는가?
 - [ ] 요청 DTO 숫자 필드를 `int` 와 `Integer` 로 둘 때 각각 무엇을 얻고 잃는가?
 - [ ] `Integer` 필드를 택했을 때 NPE 가 나는 지점과 대응 방법 두 가지는?
+- [ ] `Integer count = flag ? 0 : map.get(key)` 가 NPE 를 내는 이유와 고치는 방법은?
 
 ## 관련
 
-[[primitive-vs-reference-type]] · [[wrapper-cache-autoboxing]] · [[exception-status-code-mapping]] · [[java-optional]]
+[[primitive-vs-reference-type]] · [[wrapper-cache-autoboxing]] · [[primitive-type-conversion]] · [[exception-status-code-mapping]] · [[java-optional]]

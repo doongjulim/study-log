@@ -6,7 +6,8 @@ tags: [연산자함정, operator-pitfalls, 후위증가, post-increment, 전위�
 topic: "연산자 함정 네 가지 — i = i++ 는 5, + 는 왼쪽부터 String 을 만나면 연결, 기본형과 래퍼가 섞인 삼항은 언박싱 NPE, 정수 나눗셈은 0 쪽으로 버려 비율이 0.0 이 된다"
 summary: "i = i++ 는 i++ 가 5 를 꺼내 두고 i 를 6 으로 올린 뒤 대입이 5 로 덮어써 5 가 된다. + 는 왼쪽부터 계산하고 피연산자에 String 이 나오는 순간부터 연결이라 1 + 2 + \"3\" 은 \"33\", \"1\" + 2 + 3 은 \"123\" 이다. 삼항 연산자의 두 결과가 기본형과 래퍼면 전체 타입이 기본형이 되어 null 쪽이 선택될 때 언박싱 NPE 가 난다. 정수 나눗셈은 반올림이 아니라 0 쪽으로 버리므로 success / total * 100 은 3/4 = 0 → 0.0 이 되고, 계산 전에 피연산자 하나를 double 로 만들어야 한다."
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념

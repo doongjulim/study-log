@@ -6,7 +6,8 @@ tags: [switch, switch문, switch-statement, fall-through, 폴스루, 흘러떨�
 topic: 옛 switch(콜론 형식)는 값에 맞는 case 라벨로 한 번 점프한 뒤 아래 라벨을 검사 없이 지나쳐 break 나 블록 끝까지 흘러 떨어진다
 summary: switch 는 if-else 처럼 case 마다 조건을 검사하지 않는다. 진입할 때 한 번 값에 맞는 case 라벨로 점프하고, 그 아래의 case·default 는 표지판일 뿐이라 검사 없이 지나치며 break 나 블록 끝에서만 멈춘다(fall-through). 그래서 break 없는 코드에서 day = 2 면 화·수·기타가 모두 출력된다. 한 값은 case 하나에만 맞으므로(중복 case 는 컴파일 에러) fall-through 의 쓸모는 여러 값이 한 처리를 공유하는 case 묶기이고, break 를 하나 빠뜨리면 다음 case 까지 실행되는 함정이 된다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-23
 ---
 
 ## 배운 개념
