@@ -6,7 +6,8 @@ tags: [String, 문자열, 문자열리터럴, string-literal, new-String, 문자
 topic: 리터럴은 상수 풀에서 공유되고 new 는 항상 힙의 새 객체이며, 공유를 가능하게 하는 건 final 이 아니라 불변성이다 — 풀과 힙을 가르는 기준은 컴파일러가 값을 확신하는가
 summary: 같은 리터럴은 상수 풀의 한 객체를 공유하고(a == b true) new String 은 항상 힙에 새 객체를 만든다(최대 2개, 풀에 이미 있으면 1개). 공유가 안전한 건 String 에 내용을 바꾸는 메서드가 없는 불변성 덕분이고, 클래스의 final 은 하위 클래스가 그 불변성을 깨지 못하게 하는 보조 장치다. "java" + "spring" 과 final 상수 변수 연결은 컴파일러가 값을 확신해 컴파일 때 폴딩(ldc "javaspring")되어 풀 객체가 되지만, 일반 변수와의 연결은 실행 중 invokedynamic 으로 만든 힙의 새 객체다. intern() 은 내용이 같은 풀의 대표 객체를 돌려줄 뿐 원래 객체를 옮기지 않는다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-24
 ---
 
 ## 배운 개념

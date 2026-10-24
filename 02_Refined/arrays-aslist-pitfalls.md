@@ -72,4 +72,4 @@ List<Integer> list = Arrays.stream(nums).boxed().toList();   // [1, 2, 3]
 
 ## 관련
 
-[[java-array]] · [[arraylist-internals]] · [[shallow-immutability-defensive-copy]] · [[unboxing-npe-wrapper-null]]
+[[java-array]] · [[varargs]] · [[arraylist-internals]] · [[shallow-immutability-defensive-copy]] · [[unboxing-npe-wrapper-null]]

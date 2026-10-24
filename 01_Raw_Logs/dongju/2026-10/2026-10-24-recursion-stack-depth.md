@@ -6,7 +6,8 @@ tags: [재귀, recursion, 재귀호출, recursive-call, 종료조건, base-case,
 topic: 재귀는 호출마다 스택 프레임이 쌓이므로 종료 조건이 없으면 StackOverflowError 가 나고, 종료 조건이 있어도 깊이가 크면 넘친다 — 깊이가 입력에 비례하면 반복문으로 바꾼다
 summary: 재귀 호출마다 매개변수·지역 변수·돌아갈 위치를 담은 스택 프레임이 하나씩 쌓이고 스택은 유한하다. 종료 조건(base case)이 없으면 끝없이 쌓여 StackOverflowError 가 나는데, 이는 Exception 이 아니라 Error 라 @ExceptionHandler(Exception.class) 에 걸리지 않는다. 종료 조건이 있어도 factorial(100_000) 처럼 도달 전에 프레임을 10만 개 쌓아야 하면 스택(-Xss, 보통 수백 KB~1MB)이 넘치고, 자바는 꼬리 호출 최적화가 없어 재귀 깊이가 곧 프레임 개수다. 깊이가 입력에 비례하면 반복문으로 바꾸고, 큰 수 계산이면 오버플로도 따로 챙긴다(13! 부터 int 초과, BigInteger).
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-24
 ---
 
 ## 배운 개념

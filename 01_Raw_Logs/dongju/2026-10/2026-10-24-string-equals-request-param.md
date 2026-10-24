@@ -6,7 +6,8 @@ tags: [문자열비교, string-comparison, equals, ==, 동일성, 동등성, 요
 topic: 요청 파라미터처럼 실행 중에 만들어진 문자열은 힙의 새 객체라 리터럴과 == 로 비교하면 false — 테스트에선 리터럴끼리라 우연히 통과하므로 문자열 비교는 무조건 equals, null 안전은 Objects.equals
 summary: 테스트 코드의 "ADMIN" 과 컨트롤러의 "ADMIN" 은 둘 다 리터럴이라 같은 풀 객체를 공유해 role == "ADMIN" 이 우연히 true 가 된다. 하지만 실제 요청에서 톰캣은 받은 바이트로 실행 중에 String 을 새로 만들므로 role 은 힙의 새 객체이고 == 는 false 가 되어 권한 검사가 실패한다. 문자열의 출처에 따라 == 결과가 달라지고 출처를 매번 따질 수 없으므로 내용 비교는 무조건 equals 다. role 이 null 이면 role.equals("ADMIN") 은 NPE, "ADMIN".equals(role) 은 false 이고, 양쪽 다 null 일 수 있으면 Objects.equals 를 쓴다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-24
 ---
 
 ## 배운 개념

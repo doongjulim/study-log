@@ -6,7 +6,8 @@ tags: [메서드시그니처, method-signature, 시그니처, signature, 메서�
 topic: 메서드 시그니처는 이름 + 매개변수 타입 목록(개수·순서)이고, 반환 타입·매개변수 이름·접근 제어자·throws 는 포함되지 않는다 — 컴파일러가 호출부에서 볼 수 있는 정보만 시그니처가 된다
 summary: 같은 클래스에 int sum(int a, int b) 가 있을 때 반환 타입만 다른 long sum(int, int) 와 매개변수 이름만 다른 sum(int x, int y) 는 같은 시그니처라 컴파일 에러이고, 타입이나 순서가 다른 sum(long, int)·sum(int, long) 은 오버로딩된다. 반환 타입이 빠지는 이유는 컴파일러가 반환 타입을 몰라서가 아니라, 호출하는 줄(sum(1, 2);)에서 보이는 건 이름과 인자뿐이고 결과를 버리는 호출도 합법이라 호출부가 어느 것을 원하는지 고를 단서가 없기 때문이다. 오버로딩은 이 시그니처로 컴파일 때 호출 대상을 정한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-24
 ---
 
 ## 배운 개념

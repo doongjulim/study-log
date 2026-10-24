@@ -96,6 +96,7 @@ System.out.println(List.of(1, 2, 3));    // [1, 2, 3] — List 는 toString 을 
 > [!WARNING]
 > **오답 코너**
 > - **"배열은 기본형"** — **참조형(객체)** 이다. 담긴 원소 타입과 배열 자체의 타입은 다르다.
+> - **"`int... nums` 의 실제 타입은 기본 타입"** — 가변 인자도 **`int[]` 배열**이다. 원소가 `int` 로 보여도 배열 자체는 참조형이다 ([[varargs]]).
 > - **"`int[] b = a; b[0] = 99;` 후 `a[0]` 은 1"** — **99**. 복사된 건 숫자가 아니라 참조다. 원소가 `int` 라도 배열은 객체라 앨리어싱이 일어난다.
 > - **"`int[]` 의 칸은 참조를 담는다"** — 참조인 건 **변수**다. `int[]` **칸에는 값 자체**가 있다.
 > - **"`x.equals(y)` 는 내용 비교라 true"** — 배열은 `equals` 를 재정의하지 않아 **참조 비교 → false**.
@@ -116,4 +117,4 @@ System.out.println(List.of(1, 2, 3));    // [1, 2, 3] — List 는 toString 을 
 
 ## 관련
 
-[[arraylist-internals]] · [[arrays-aslist-pitfalls]] · [[primitive-vs-reference-type]] · [[java-pass-by-value]] · [[shallow-immutability-defensive-copy]] · [[equals-hashcode-contract]] · [[variable-kinds-initialization]]
+[[arraylist-internals]] · [[arrays-aslist-pitfalls]] · [[varargs]] · [[primitive-vs-reference-type]] · [[java-pass-by-value]] · [[shallow-immutability-defensive-copy]] · [[equals-hashcode-contract]] · [[variable-kinds-initialization]]

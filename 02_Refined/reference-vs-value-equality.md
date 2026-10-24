@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)
   - https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Objects.html#equals(java.lang.Object,java.lang.Object)
-updated: 2026-09-26
+updated: 2026-10-24
 ---
 
 # == 와 equals — 동일성과 동등성
@@ -68,6 +68,25 @@ if (!loginUser.getId().equals(notice.getWriterId())) { ... }   // 로그인 사�
 
 ## 트레이드오프 / 한계
 
+### 테스트는 통과하고 운영은 실패한다 — 요청 파라미터를 `==` 로 비교
+
+```java
+@GetMapping("/admin")
+public String admin(@RequestParam String role) {
+    if (role == "ADMIN") { return "관리자 화면"; }   // ← 리터럴 ㉯
+    return "권한 없음";
+}
+
+controller.admin("ADMIN");                           // 테스트 코드의 리터럴 ㉮
+```
+
+| | 비교하는 두 문자열 | 위치 | `role == "ADMIN"` |
+|---|---|---|---|
+| 테스트 | 리터럴 ㉮ vs 리터럴 ㉯ | 둘 다 상수 풀 → 같은 객체 | **true** |
+| 실제 요청 | 톰캣이 요청 바이트로 실행 중에 만든 `role` vs ㉯ | `role` 은 힙의 새 객체 | **false** → "권한 없음" |
+
+리터럴은 어느 클래스에 적혀 있든 하나의 풀 객체를 공유한다. 그래서 테스트는 **우연히** 통과한다. 래퍼 캐시 127 까지만 `==` 가 통과하는 것과 같은 구조다 ([[wrapper-cache-autoboxing]]). 문자열의 출처(리터럴 / 요청·DB·런타임 연결)를 매번 따질 수 없으니 내용 비교는 무조건 `equals` 다 ([[string-immutability]]).
+
 - **타입이 다르면 값이 같아도 `false`** 다. `Long.equals()` 의 첫 줄은 `if (obj instanceof Long)` 이므로
   `Integer` 를 넘기면 무조건 `false`. 컴파일 경고도 없다 ([[wrapper-cache-autoboxing]] 의 fail-open 사례).
 - 재정의한 `equals` 는 반사성·대칭성·추이성·일관성을 만족해야 한다. `instanceof` 를 쓰면 상속 계층에서
@@ -78,6 +97,7 @@ if (!loginUser.getId().equals(notice.getWriterId())) { ... }   // 로그인 사�
 > - **"`==` 는 힙의 저장 위치를 비교한다"** — 상자에 담긴 **값 자체**를 비교한다.
 >   원시타입은 힙이 없어도 `==` 가 동작한다(`long p == q` → `true`).
 > - **"`equals()` 는 값의 해시를 비교한다"** — 내용을 비교한다. `"Aa"` 와 `"BB"` 는 해시가 같아도 `false`.
+> - **"테스트에서 `role == "ADMIN"` 이 통과했으니 괜찮다"** — 테스트의 리터럴끼리라 우연히 같은 풀 객체였을 뿐이다. 실제 요청의 `role` 은 실행 중 만든 힙 객체다.
 > - **"NPE 를 피하려면 `Optional` 을 쓴다"** — `java.util.Objects.equals(a, b)` 다.
 
 ## 복습 체크

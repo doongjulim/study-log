@@ -103,4 +103,4 @@ invokevirtual Printer.print(Ljava/lang/Object;)V    ← 컴파일 시점에 고�
 
 ## 관련
 
-[[enum-constant-specific-polymorphism]] · [[static-util-vs-spring-bean]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[interpreter-and-jit]] · [[java-optional]]
+[[method-signature]] · [[varargs]] · [[enum-constant-specific-polymorphism]] · [[static-util-vs-spring-bean]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[interpreter-and-jit]] · [[java-optional]]

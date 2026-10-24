@@ -7,7 +7,7 @@ summary: 기본형 지역변수와 참조 지역변수는 스택에, new 로 만
 contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html
-updated: 2026-10-22
+updated: 2026-10-24
 ---
 
 # JVM 메모리 구조 — 스택과 힙
@@ -108,6 +108,16 @@ Throwable
 재귀는 호출마다 프레임을 쌓으므로 몇 초 안에 죽는다.
 엔티티의 양방향 연관을 `equals` 로 비교할 때가 대표적인 사례다 ([[jpa-entity-equality]]).
 
+**종료 조건이 있어도 깊이가 크면 넘친다.** `factorial(100_000)` 은 `if (n <= 1) return 1;` 에 닿기 **전에** 프레임을 10만 개 쌓아야 한다. 스레드 스택은 보통 수백 KB~1MB(`-Xss`)라 그 전에 넘친다. 자바는 마지막 호출의 프레임을 재사용하는 **꼬리 호출 최적화가 없어서** 재귀 깊이가 곧 프레임 개수다. 깊이가 입력 크기에 비례하면 반복문으로 바꾼다(큰 수 계산이면 오버플로도 따로: [[integer-overflow]]).
+
+```java
+static long factorial(int n) {
+    long result = 1;
+    for (int i = 2; i <= n; i++) result *= i;   // 프레임 1개로 끝
+    return result;
+}
+```
+
 ### 지역변수의 스레드 안전이 만드는 실무 판단
 
 지역변수가 구조적으로 도달 불가능하다는 사실은 "동기화가 필요 없다"에서 끝나지 않는다.
@@ -125,6 +135,7 @@ Throwable
 - [ ] 싱글턴 빈에 가변 필드를 두면 왜 위험한가?
 - [ ] `StackOverflowError` 가 `Exception` 이 아니라 `Error` 인 것이 왜 실무에서 문제가 되는가?
 - [ ] 무한 루프와 무한 재귀는 무엇이 다른가?
+- [ ] 종료 조건이 있는 재귀도 `StackOverflowError` 가 나는 경우와, 그 대안은?
 - [ ] 지역변수로 만든 객체에 동기화를 거는 것이 왜 낭비인가?
 
 ## 관련

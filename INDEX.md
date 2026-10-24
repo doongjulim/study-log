@@ -34,7 +34,7 @@
 - [클래스 로딩 생명주기](02_Refined/class-loading-lifecycle.md) — 로딩(클래스패스·FQCN·확장자 없음) → 링킹(검증=안전 규칙≠변조·준비=기본값 0L·해석) → 초기화(static 대입·블록, 클래스당 한 번·상태 기록), 지연 로딩, 첫 요청 지연·DispatcherServlet load-on-startup, ExceptionInInitializerError → NoClassDefFoundError: Could not initialize class
 - [JVM 실행 파이프라인과 WORA](02_Refined/jvm-execution-pipeline.md) — javac→바이트코드→JVM, C 실행 파일의 CPU(ISA)+OS 두 축, JVM 은 OS × CPU 조합별, 종속성은 사라진 게 아니라 JVM 으로 이동, WORA 가 깨지는 코드(경로·Runtime.exec·대소문자·JNI), 클래스로더·런타임데이터영역·실행엔진, 자바는 하이브리드(컴파일/인터프리터는 실행 방식의 성질), javac(JDK·실행 전) vs JIT(JVM·실행 중)
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 인터프리터는 CPU 시간 낭비(해석 ≠ 컴파일), 호출 카운터·임계값, 핫스팟, 워밍업·오토스케일링 함정, AOT(GraalVM Native Image)는 WORA 포기, 역최적화, 첫 요청엔 클래스 로딩 비용도
-- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것, 객체 필드의 기본형은 힙
+- [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것, 객체 필드의 기본형은 힙, 종료 조건 있어도 깊은 재귀는 StackOverflow(꼬리 호출 최적화 없음) → 반복문
 - [기본형 vs 참조형](02_Refined/primitive-vs-reference-type.md) — 변수 안에 값 자체 vs 참조, 기본형 8개, "기본형은 스택"은 틀린 일반화(위치는 그릇을 따라감), 기본값은 필드만·지역변수는 컴파일 에러, int[] 4MB vs Integer[] 20MB(헤더·간접 참조·GC), 프록시 ≠ 참조
 - [지역·인스턴스·클래스 변수와 초기화](02_Refined/variable-kinds-initialization.md) — 호출마다/객체마다/클래스에 하나, 생성·소멸·기본값 표, 지역 변수만 초기화 강제 = 컴파일러가 검사할 수 있는 범위(definite assignment), 필드는 기본값 보장, fail-fast, final 필드는 생성자 끝까지 강제
 - [람다 캡처와 effectively final](02_Refined/lambda-capture-effectively-final.md) — 지역 변수는 스택 프레임과 함께 사라짐 → 값 복사 캡처 → effectively final 만 허용, 필드는 this 캡처라 허용되지만 동시성 위험, forEach 카운트 대신 count/collect
@@ -57,12 +57,12 @@
 - [토큰 저장 위치 — localStorage vs HttpOnly 쿠키](02_Refined/token-storage-httponly-cookie.md) — XSS 유출, CSRF, HttpOnly 는 탈취만 막고 악용은 못 막음, SameSite Strict/Lax/None (링크 이동 vs 숨은 POST), Lax 는 GET 읽기 전용 전제, SameSite 만으론 부족(정정), Secure/Path, 액세스·리프레시 저장 분리
 - [CSRF — 성립 조건과 방어](02_Refined/csrf-conditions-and-defenses.md) — 세 조건(인증 정보·자동 첨부·예측 가능), SameSite→조건2·CSRF 토큰→조건3, 요청은 도달·쿠키만 빠짐, CsrfFilter 403, 토큰 방식 안전은 전송 방식 덕, 쿠키에 담으면 재노출, 사이트 vs 출처 두 겹, 서브도메인, CORS 는 방어 아님, study-board
 - [SOP 와 CORS](02_Refined/sop-vs-cors.md) — SOP 는 읽기만 막고 보내기는 안 막음, CORS 는 예외 허락 장치, 단순 요청 preflight 없음, 출처(프로토콜+호스트+포트) vs 사이트(eTLD+1), localStorage 출처별 분리, CORS 는 CSRF 방어 아님
-- [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서
+- [== 와 equals — 동일성과 동등성](02_Refined/reference-vs-value-equality.md) — == 는 상자에 담긴 값 자체, 참조 비교 vs 값 비교, Objects.equals, NPE, 피연산자 순서, 요청 파라미터 role == "ADMIN" 테스트는 우연히 통과·운영 실패
 - [오토박싱과 래퍼 캐시](02_Refined/wrapper-cache-autoboxing.md) — Long.valueOf, -128~127 캐시, ID 128 부터 깨지는 == 비교, fail-open vs fail-closed, contains 타입 불일치, int 는 캐시 대상 아님
 - [래퍼 타입의 null — 언박싱 NPE](02_Refined/unboxing-npe-wrapper-null.md) — 언박싱 = intValue() 호출, map.get 없는 키 → 런타임 NPE(컴파일러는 타입만 봄), getOrDefault, 요청 DTO int(미전송=0) vs Integer(null 구별·NPE 책임), 부분 수정 null 체크·@NotNull 400, 삼항 연산자 기본형+래퍼 → int 로 맞춰져 NPE
 - [equals / hashCode 규약](02_Refined/equals-hashcode-contract.md) — 필수는 한 방향뿐, 비둘기집 원리, HashMap 3단계, 가변 키와 유령 원소, 정확성 vs 성능
 - [JPA 엔티티의 equals / hashCode](02_Refined/jpa-entity-equality.md) — Lombok 전체 필드의 지뢰 3개, 무한 재귀·프록시·N+1, instanceof, 상대 id 는 getId()(필드 직접 접근 null), 상수 hashCode, 1차 캐시 동일성
-- [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern
+- [String 의 불변성](02_Refined/string-immutability.md) — 불변이 낳는 세 이득, 문자열 상수 풀, 상수 폴딩, hash 필드 캐싱, intern, new String 최대 2개, 공유는 final 아닌 불변성(클래스 final 은 보조), final 상수 변수 폴딩·javap ldc vs invokedynamic, intern 은 풀 대표 객체 반환(정정)
 - [문자열 연결의 비용](02_Refined/string-concatenation-cost.md) — + 는 invokedynamic, 루프에서 O(n²), StringBuilder 분할상환 O(1), StringBuffer 를 안 쓰는 진짜 이유
 - [record](02_Refined/java-record.md) — 요청/응답 DTO, private final 자동, 정규 생성자·컴팩트 생성자, 접근자 title() vs getTitle(), Jackson 생성자 바인딩, getRecordComponents, 엔티티로 못 쓰는 이유
 - [얕은 불변과 방어적 복사](02_Refined/shallow-immutability-defensive-copy.md) — final 은 참조만 고정, 공유 리스트 앨리어싱, unmodifiableList(view·CCTV) vs List.copyOf(copy·사진), readonly 없음, copyOf null NPE, static final 도 내부는 가변(SimpleDateFormat), private final int[] 게터 노출 → 생성자·게터 clone
@@ -82,6 +82,8 @@
 - [람다와 checked 예외](02_Refined/lambda-checked-exception.md) — Predicate.test 에 throws 없음, 오버라이드 규칙, catch 만 남음, UncheckedIOException, 메서드 추출, I/O 루프는 for 문
 - [병렬 Stream 의 함정](02_Refined/parallel-stream-pitfalls.md) — Spliterator 분할, ArrayList O(1) vs LinkedList O(n), commonPool 공유·코어-1, 블로킹 I/O 고갈, 작은 데이터 오버헤드, 전용 Executor
 - [다형성 — 오버라이딩 vs 오버로딩](02_Refined/overriding-vs-overloading-binding.md) — 하나의 호출·실제 객체·여러 구현, 점(.) 왼쪽 받는 객체가 결정, 동적 바인딩 vs 정적 바인딩, invokevirtual/invokestatic, print(Object) 함정, static 은 hiding
+- [메서드 시그니처](02_Refined/method-signature.md) — 이름 + 매개변수 타입 목록(개수·순서), 반환 타입·매개변수 이름·접근 제어자·throws 제외, 반환 타입만 다르면 중복 에러(호출부엔 이름과 인자뿐·결과 버리기 합법), 오버로딩 해석 순서
+- [가변 인자 (varargs)](02_Refined/varargs.md) — int... 는 int[] (참조형 배열), sum(1,2,3) → new int[]{…}, sum() → new int[0](null 아님), (int[]) null → NPE, 맨 뒤 하나만, 호출마다 배열 생성·SLF4J 고정 오버로드
 - [enum 상수별 구현과 다형성](02_Refined/enum-constant-specific-polymorphism.md) — constant-specific body, 익명 자식 클래스 SearchType$1, getDeclaringClass, switch default vs 컴파일 에러, switch 식, OCP, @Autowired 불가, 전략 패턴 빈
 - [switch fall-through](02_Refined/switch-fall-through.md) — 라벨로 한 번 점프 → 아래 라벨은 검사 없이 통과 → break/블록 끝, if-else 사슬 오해, day=2 → 화·수·기타, case 6: case 7: 묶기, break 누락 함정, 중복 case 컴파일 에러
 - [switch 식 (Java 14)](02_Refined/switch-expression.md) — 문 vs 식(값을 내놓는가), 화살표 -> 는 람다 아닌 case 규칙·fall-through 없음, 콜론 형식은 여전히 fall-through, 완전성 검사(없으면 null 불가), yield vs return(attempt to return out of a switch expression)

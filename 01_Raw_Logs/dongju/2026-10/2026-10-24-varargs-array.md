@@ -6,7 +6,8 @@ tags: [가변인자, varargs, variable-arguments, "int...", "T...", 배열로묶
 topic: 가변 인자는 인자들을 배열로 묶어 넘기는 문법이다 — 메서드 안에서는 int[] 이고, 인자가 없으면 null 이 아닌 빈 배열이 넘어가며, 맨 뒤에 하나만 쓸 수 있다
 summary: int... nums 는 메서드 안에서 int[] (참조형 배열)이라 nums.length·nums[0] 을 쓸 수 있고 배열을 그대로 넘길 수도 있다. 컴파일러는 sum(1, 2, 3) 을 sum(new int[]{1, 2, 3}) 으로, sum() 을 sum(new int[0]) 으로 바꿔 쓰므로 인자가 없어도 nums 는 null 이 아닌 길이 0 배열이라 for 문이 NPE 없이 돈다. 호출자가 일부러 (int[]) null 을 넘길 때만 null 이 되어 NPE 가 난다. 가변 인자는 매개변수 맨 마지막에 하나만 쓸 수 있는데, 그래야 앞의 고정 매개변수부터 채우고 나머지 전부를 배열로 묶는다는 경계가 정해지기 때문이다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-24
 ---
 
 ## 배운 개념
