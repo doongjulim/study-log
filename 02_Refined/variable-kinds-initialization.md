@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-16.html
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html#jls-4.12.5
-updated: 2026-10-23
+updated: 2026-10-27
 ---
 
 # 지역 · 인스턴스 · 클래스 변수와 초기화 규칙
@@ -105,6 +105,7 @@ class Member2 {
 > **오답 코너**
 > - **"static 변수는 메모리에 올려서 관리하기 때문에 합쳐진다"** — 인스턴스 변수도 힙 메모리에 있다. 차이는 **개수**다. 객체마다 한 칸이냐, 클래스에 한 칸이냐.
 > - **"필드는 검사할 수 없다"(이유 없이)** — 이유까지: 필드는 여러 메서드에서 **실행 중에 정해지는 순서**로 쓰인다. 지역 변수는 일생이 메서드 하나 안에 다 있다.
+> - **"필드 기본값은 기본 생성자가 채워 준다 (`name = new String()`)"** — 기본값은 `new` 로 힙 메모리를 할당하는 순간 채워진다. 생성자 실행 **전**이고, 참조형은 `""` 가 아니라 `null` ([[default-constructor]]).
 > - **"final 필드는 컴파일 전까지 값이 들어가야 한다"** — 값은 실행 중에 들어간다. 규칙은 **모든 생성자가 끝나기 전에 한 번**이고, 그걸 컴파일러가 컴파일 때 검사한다.
 
 ## 면접 답변
@@ -121,4 +122,4 @@ class Member2 {
 
 ## 관련
 
-[[class-loading-lifecycle]] · [[primitive-vs-reference-type]] · [[jvm-stack-and-heap]] · [[lambda-capture-effectively-final]] · [[race-condition-lost-update]] · [[singleton-bean-stateful]] · [[java-array]]
+[[class-loading-lifecycle]] · [[default-constructor]] · [[primitive-vs-reference-type]] · [[jvm-stack-and-heap]] · [[lambda-capture-effectively-final]] · [[race-condition-lost-update]] · [[singleton-bean-stateful]] · [[java-array]]

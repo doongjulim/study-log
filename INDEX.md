@@ -18,7 +18,7 @@
 - [연관관계의 주인과 mappedBy](02_Refined/jpa-association-owner.md) — 객체 참조 2개 vs FK 1개, 주인=FK 관리 필드(N 쪽 @JoinColumn), 비주인은 완전히 무시, mappedBy="상대 클래스 필드 이름", 편의 메서드(주인만→INSERT 없음, 비주인만→FK NULL 행)
 - [cascade 와 orphanRemoval](02_Refined/jpa-cascade-orphan-removal.md) — 영속성 전이, CascadeType 5종, 부모 작업 전이 vs 컬렉션에서 빠진 자식 삭제, 둘 다 거는 이유(PERSIST), 생명주기 단독 소유 기준, @ManyToOne cascade 사고, JPA 는 DB 행만 지움
 - [@Embedded 값 타입](02_Refined/jpa-embedded-value-type.md) — Embeddable, 주인 테이블 컬럼, 응집도·불변식, 공유 시 앨리어싱 → 불변·교체, 불변식 vs 불변성, 값 타입 vs 엔티티(식별자·개수), ElementCollection 한계
-- [엔티티의 기본 생성자와 protected](02_Refined/jpa-entity-default-constructor.md) — 리플렉션으로 기본 생성자 → 필드 채우기, private=프록시 super() 불가, public=불변식 우회, PROTECTED, final 클래스·메서드(조용한 null)·record 금지
+- [엔티티의 기본 생성자와 protected](02_Refined/jpa-entity-default-constructor.md) — 리플렉션으로 기본 생성자 → 필드 채우기, private=프록시 super() 불가, public=불변식 우회, PROTECTED, final 클래스·메서드(조용한 null)·record 금지, 인자 있는 생성자 선언 시 컴파일러가 기본 생성자 안 만듦 → 컴파일 OK·조회 시 런타임 실패
 - [플러시 vs 커밋](02_Refined/jpa-flush.md) — 컨텍스트→DB 전송 vs 확정, 커밋 직전·JPQL 직전 자동 플러시, persist 후 JPQL, 플러시 후 롤백, 1차 캐시 유지 vs clear, find·readOnly(MANUAL)·롤백은 플러시 없음, IDENTITY 즉시 INSERT 는 플러시 아님
 - [벌크 연산과 em.clear()](02_Refined/jpa-bulk-update-and-clear.md) — executeUpdate 후 낡은 1차 캐시, clearAutomatically, 준영속 detached, 대량 배치 flush→clear·batch_size
 - [반정규화 카운터와 원자적 UPDATE](02_Refined/denormalized-counter-atomic-update.md) — likeCount, 카운트 N+1 회피, 정합성 관리 책임, 변경 감지 +1 의 갱신 손실(10→11), like_count + 1, clearAutomatically vs flushAutomatically, 낙관적·비관적 락 비교
@@ -36,7 +36,7 @@
 - [인터프리터와 JIT 컴파일러](02_Refined/interpreter-and-jit.md) — 하이브리드 전략, 인터프리터는 CPU 시간 낭비(해석 ≠ 컴파일), 호출 카운터·임계값, 핫스팟, 워밍업·오토스케일링 함정, AOT(GraalVM Native Image)는 WORA 포기, 역최적화, 첫 요청엔 클래스 로딩 비용도
 - [JVM 메모리 구조 — 스택과 힙](02_Refined/jvm-stack-and-heap.md) — 스택은 스레드별·힙은 공유 1개, 지역변수 스레드 안전, 참조 변수, StackOverflowError, Error vs Exception 계층, Checked/Unchecked 로 이어짐, 무한 재귀, @ExceptionHandler 가 못 잡는 것, 객체 필드의 기본형은 힙, 종료 조건 있어도 깊은 재귀는 StackOverflow(꼬리 호출 최적화 없음) → 반복문
 - [기본형 vs 참조형](02_Refined/primitive-vs-reference-type.md) — 변수 안에 값 자체 vs 참조, 기본형 8개, "기본형은 스택"은 틀린 일반화(위치는 그릇을 따라감), 기본값은 필드만·지역변수는 컴파일 에러, int[] 4MB vs Integer[] 20MB(헤더·간접 참조·GC), 프록시 ≠ 참조
-- [지역·인스턴스·클래스 변수와 초기화](02_Refined/variable-kinds-initialization.md) — 호출마다/객체마다/클래스에 하나, 생성·소멸·기본값 표, 지역 변수만 초기화 강제 = 컴파일러가 검사할 수 있는 범위(definite assignment), 필드는 기본값 보장, fail-fast, final 필드는 생성자 끝까지 강제
+- [지역·인스턴스·클래스 변수와 초기화](02_Refined/variable-kinds-initialization.md) — 호출마다/객체마다/클래스에 하나, 생성·소멸·기본값 표, 지역 변수만 초기화 강제 = 컴파일러가 검사할 수 있는 범위(definite assignment), 필드는 기본값 보장, fail-fast, final 필드는 생성자 끝까지 강제, 필드 기본값은 생성자가 아니라 할당 시점
 - [람다 캡처와 effectively final](02_Refined/lambda-capture-effectively-final.md) — 지역 변수는 스택 프레임과 함께 사라짐 → 값 복사 캡처 → effectively final 만 허용, 필드는 this 캡처라 허용되지만 동시성 위험, forEach 카운트 대신 count/collect
 - [Call by Value](02_Refined/java-pass-by-value.md) — 대입은 칸의 내용 복사, 앨리어싱, 메서드 호출 = 숨은 대입문(Member p = m), 필드 변경은 보이고 재대입은 안 보임, 항상 Call by Value·참조값 복사, C++ & / C# ref 와 비교, swap 불가
 - [정수 오버플로](02_Refined/integer-overflow.md) — int 4바이트·31비트 ±21억, 0 이 양수 자리 차지, MAX+1=MIN wraparound(4비트 예제), 예외 없음(검사 비용), Math.addExact·multiplyExact·toIntExact ArithmeticException, 음수 결제 fail-fast
@@ -81,7 +81,7 @@
 - [경쟁 조건과 갱신 유실](02_Refined/race-condition-lost-update.md) — race condition, lost update, ArrayList 동시 add, size++ 비원자, read-modify-write, 공유 제거 vs 원자화, collect combiner, putIfAbsent, static final SimpleDateFormat·Calendar 덮어쓰기·DateTimeFormatter, ConcurrentHashMap get→put 로그인 카운터·compute
 - [람다와 checked 예외](02_Refined/lambda-checked-exception.md) — Predicate.test 에 throws 없음, 오버라이드 규칙, catch 만 남음, UncheckedIOException, 메서드 추출, I/O 루프는 for 문
 - [병렬 Stream 의 함정](02_Refined/parallel-stream-pitfalls.md) — Spliterator 분할, ArrayList O(1) vs LinkedList O(n), commonPool 공유·코어-1, 블로킹 I/O 고갈, 작은 데이터 오버헤드, 전용 Executor
-- [다형성 — 오버라이딩 vs 오버로딩](02_Refined/overriding-vs-overloading-binding.md) — 하나의 호출·실제 객체·여러 구현, 점(.) 왼쪽 받는 객체가 결정, 동적 바인딩 vs 정적 바인딩, invokevirtual/invokestatic, print(Object) 함정, static 은 hiding
+- [다형성 — 오버라이딩 vs 오버로딩](02_Refined/overriding-vs-overloading-binding.md) — 하나의 호출·실제 객체·여러 구현, 점(.) 왼쪽 받는 객체가 결정, 동적 바인딩 vs 정적 바인딩, invokevirtual/invokestatic, print(Object) 함정, static 은 hiding, 생성자는 상속 안 됨 → 오버로딩만(@Override 불가)
 - [메서드 시그니처](02_Refined/method-signature.md) — 이름 + 매개변수 타입 목록(개수·순서), 반환 타입·매개변수 이름·접근 제어자·throws 제외, 반환 타입만 다르면 중복 에러(호출부엔 이름과 인자뿐·결과 버리기 합법), 오버로딩 해석 순서
 - [가변 인자 (varargs)](02_Refined/varargs.md) — int... 는 int[] (참조형 배열), sum(1,2,3) → new int[]{…}, sum() → new int[0](null 아님), (int[]) null → NPE, 맨 뒤 하나만, 호출마다 배열 생성·SLF4J 고정 오버로드
 - [enum 상수별 구현과 다형성](02_Refined/enum-constant-specific-polymorphism.md) — constant-specific body, 익명 자식 클래스 SearchType$1, getDeclaringClass, switch default vs 컴파일 에러, switch 식, OCP, @Autowired 불가, 전략 패턴 빈
@@ -100,3 +100,5 @@
 - [예외 → HTTP 상태 코드 매핑](02_Refined/exception-status-code-mapping.md) — @ControllerAdvice, 4xx/5xx 기준(누구의 잘못·재시도·모니터링), 표준 예외 타입 매핑의 함정(IAE→404, NumberFormatException 위장), BusinessException 계층 + Exception 폴백(log.error·500·일반 문구), 존재 숨김 404, 필터 예외는 ExceptionTranslationFilter
 - [@ConditionalOnProperty](02_Refined/conditional-on-property.md) — 부팅 시 한 번 빈 등록 여부 결정, H2 콘솔 보안 체인(CSRF·프레임·인증 면제), @Profile 이면 스위치 2개로 어긋남, 기능과 보안 예외의 수명 일치, 운영 안전은 기본값 false
 - [외부 설정](02_Refined/externalized-configuration.md) — 우선순위(커맨드라인 > -D > 환경변수 > 프로필 yml > 기본 yml, 실행 시점에 가까울수록), 완화된 바인딩(FILE_UPLOADDIR 함정), ${이름:기본값} 명시 이유 3가지, 기본값 기준(안전한가·티가 나는가), JWT_SECRET fail fast
+- [클래스, 인스턴스, 참조변수](02_Refined/class-and-instance.md) — 설계도이자 타입 / 힙의 실체 / 참조값 담는 리모컨, new 2번 → a == b false, Dog b = a 는 참조 복사(인스턴스 1·변수 2), 참조변수 ≠ 인스턴스, 메서드 영역·힙·스택, 객체 vs 인스턴스
+- [기본 생성자 (default constructor)](02_Refined/default-constructor.md) — 컴파일러가 생성자가 하나도 없을 때만 public Dog() { super(); }, 호출부가 아니라 선언부를 봄, Dog(String) 만 있으면 new Dog() 컴파일 에러 → Dog() {} 오버로딩, new 실행 순서·필드 기본값(null ≠ ""), JPA 엔티티 런타임 실패, 부모에 기본 생성자 없으면 자식 에러

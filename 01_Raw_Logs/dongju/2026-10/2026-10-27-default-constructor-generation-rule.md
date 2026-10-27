@@ -6,7 +6,8 @@ tags: [기본 생성자, default constructor, no-arg constructor, 생성자, con
 topic: 기본 생성자는 컴파일러가 컴파일할 때, 클래스에 생성자가 하나도 없을 때만 public Dog() { super(); } 형태로 추가한다 — 호출부가 아니라 선언부를 보고 결정한다
 summary: 기본 생성자는 JVM 이 아니라 컴파일러(javac)가 .java 를 .class 로 만들 때 넣어 주며, 모양은 매개변수 없고 본문은 super(); 한 줄, 접근제어자는 클래스를 따른다. 필드의 null·0 은 생성자가 아니라 new 로 힙 메모리가 할당되는 순간 채워지는 타입별 기본값이다. 컴파일러는 호출하는 쪽이 아니라 클래스 선언부만 보고, 생성자가 하나라도 선언돼 있으면 기본 생성자를 추가하지 않는다 — Dog(String) 만 있으면 new Dog() 는 컴파일 에러. 그래서 인자 있는 생성자를 둔 JPA 엔티티에는 기본 생성자를 직접(protected) 추가해야 한다.
 source: session
-distilled: false
+distilled: true
+distilled_at: 2026-10-27
 ---
 
 ## 배운 개념

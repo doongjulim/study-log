@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://jakarta.ee/specifications/persistence/3.1/
   - https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#entity-pojo
-updated: 2026-10-18
+updated: 2026-10-27
 ---
 
 # 엔티티의 기본 생성자와 protected
@@ -46,6 +46,21 @@ Post post = Post.class.getDeclaredConstructor().newInstance();   // ① 리플�
 - JPA 명세도 기본 생성자를 `public` 또는 `protected` 로 요구한다.
 - `@Embeddable` 값 타입도 JPA 가 같은 방식으로 만들므로 기본 생성자가 필요하다 ([[jpa-embedded-value-type]]).
 
+### 왜 "직접" 써야 하나 — 컴파일러가 안 만들어 주므로
+
+```java
+@Entity
+public class Member {
+    @Id @GeneratedValue private Long id;
+    private String name;
+    public Member(String name) { this.name = name; }   // 생성자를 하나 선언함
+}
+```
+
+- 컴파일러는 **생성자가 하나도 없을 때만** 기본 생성자를 넣는다 ([[default-constructor]]). 인자 있는 생성자를 선언한 순간 `Member()` 는 사라진다.
+- 코드 어디에도 `new Member()` 가 없으니 **컴파일은 통과**하고, `findById` 등으로 Hibernate 가 리플렉션으로 기본 생성자를 찾는 **런타임에** 실패한다.
+- 그래서 검증 생성자를 둔 엔티티에는 `@NoArgsConstructor(access = AccessLevel.PROTECTED)` 또는 `protected Member() {}` 를 **직접** 선언한다.
+
 ## 트레이드오프 / 한계 — 프록시 = 상속에서 나오는 금지 사항
 
 | 하면 안 되는 것 | 결과 |
@@ -73,11 +88,13 @@ proxy.getNickname()        // final 메서드
 > - **"자식 생성자는 부모의 클래스를 호출 / private 이면 생성자를 만들 수 없다"** — 부모의 **생성자**(`super()`)를 호출하고, private 이면 **프록시를** 만들 수 없다.
 > - **"final 메서드를 프록시에서 호출하면 부모의 값이 나온다"** — 부모의 **코드**가 **프록시 자신의 필드**(null)를 읽어 null.
 > - **"record 가 엔티티가 안 되는 이유는 final 하나"** — + 기본 생성자 없음·필드 final.
+> - **"기본 생성자를 추가하려면 `@Getter`"** — `@Getter` 는 getter 생성. 기본 생성자는 `@NoArgsConstructor`. ⚠️ 이름만 외우면 헷갈린다 — "인자 있는 생성자를 선언하면 컴파일러가 기본 생성자를 안 만든다" 는 **규칙**과 연결해야 한다 (2026-10-27 재발).
 > - 답할 때 "상속받아 사용", "아무 데서나 생성" 같은 현상만 말하지 말고 **프록시, super(), 불변식** 같은 원인의 이름으로.
 
 ## 복습 체크
 
 - [ ] JPA 가 엔티티를 만드는 두 단계를 말할 수 있는가? 인자 있는 생성자를 못 쓰는 이유는?
+- [ ] 인자 있는 생성자만 둔 엔티티가 컴파일은 되는데 조회 시 실패하는 이유를 컴파일러의 기본 생성자 생성 규칙으로 설명할 수 있는가?
 - [ ] 기본 생성자를 public / protected / private 으로 두면 각각 어떻게 되는가?
 - [ ] private 이 안 되는 이유를 "프록시", "상속", "super()" 로 설명할 수 있는가?
 - [ ] public 이 안 되는 이유를 "불변식" 으로 설명할 수 있는가?
@@ -86,4 +103,4 @@ proxy.getNickname()        // final 메서드
 
 ## 관련
 
-[[lazy-loading-proxy]] · [[jpa-embedded-value-type]] · [[jpa-entity-equality]] · [[java-record]] · [[jpa-dto-projection]]
+[[default-constructor]] · [[lazy-loading-proxy]] · [[jpa-embedded-value-type]] · [[jpa-entity-equality]] · [[java-record]] · [[jpa-dto-projection]]

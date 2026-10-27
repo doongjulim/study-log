@@ -8,7 +8,7 @@ contributors: [dongju]
 source_refs:
   - https://docs.oracle.com/javase/specs/jls/se17/html/jls-15.html#jls-15.12
   - https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-6.html#jvms-6.5.invokevirtual
-updated: 2026-10-09
+updated: 2026-10-27
 ---
 
 # 다형성 — 오버라이딩(동적 바인딩) vs 오버로딩(정적 바인딩)
@@ -80,6 +80,11 @@ invokevirtual Printer.print(Ljava/lang/Object;)V    ← 컴파일 시점에 고�
 - static 메서드는 **오버라이딩되지 않는다.** 자식에 같은 시그니처 static 메서드를 만들면 **숨김(hiding)** 일 뿐.
 - 호출은 `invokestatic Util.method` 로 **컴파일 시점에 고정** → 정적 바인딩 → **다형성 없음**. 그래서 구현 교체·테스트 대역이 필요한 기능은 static 이 아니라 빈으로 만든다 ([[static-util-vs-spring-bean]]).
 
+### 생성자는 오버로딩만 된다
+
+- 생성자는 **상속되지 않는다** → 자식이 재정의할 부모 생성자가 없다 → **오버라이딩 불가**, `@Override` 를 붙이면 컴파일 에러.
+- 같은 클래스에 매개변수가 다른 생성자를 여러 개 두는 것(`Dog()`, `Dog(String)`)은 **오버로딩**이고, `new Dog(...)` 의 인자 선언 타입으로 **컴파일 시점에** 어느 생성자인지 정해진다 ([[default-constructor]]).
+
 ## 트레이드오프 / 한계
 
 - 동적 바인딩은 실행 시 테이블 조회 비용이 있지만, JIT 이 실제 타입이 하나뿐인 호출을 단일화·인라이닝해 대부분 상쇄한다 ([[interpreter-and-jit]]).
@@ -91,6 +96,7 @@ invokevirtual Printer.print(Ljava/lang/Object;)V    ← 컴파일 시점에 고�
 > - **"다형성 = 하나의 상수(객체)로부터 여러 메서드 동작"** — 객체 하나는 구현 **1개**만 안다. 하나인 것은 **호출 코드**, 여러 개인 것은 **구현**.
 > - **"`list.add(0, "X")` 에서 구현을 정하는 건 `"X"`"** — `"X"` 는 **인자**다. 결정권은 점 **왼쪽 받는 객체**. 인자로 고르는 직관은 **오버로딩식 사고**다.
 > - **"`Object x = "hello"; print(x)` 는 String 버전"** — 오버로딩은 컴파일 시점에 **선언 타입**(`Object`)으로 정해진다 → **Object 버전**.
+> - **"매개변수 없는 생성자를 추가할 때 `@Override`"** — 생성자 추가는 **오버로딩**. 생성자는 상속되지 않아 오버라이딩 대상이 없다. ⚠️ 2026-10-27 생성자 맥락에서 재발.
 > - **"오버라이딩은 변수의 값, 타입을 보고 결정"** — 변수의 **선언 타입은 늘 같다.** 결정을 바꾸는 건 변수가 **가리키는 객체의 실제 클래스**뿐.
 
 ## 복습 체크
@@ -100,7 +106,8 @@ invokevirtual Printer.print(Ljava/lang/Object;)V    ← 컴파일 시점에 고�
 - [ ] `Object x = "hello"; print(x);` 의 출력과 그 이유는?
 - [ ] 오버라이딩/오버로딩 각각 언제, 무엇을 보고 결정되는가?
 - [ ] static 메서드가 다형성을 못 쓰는 이유를 바이트코드 명령으로 설명할 수 있는가?
+- [ ] 생성자를 하나 더 추가하는 건 오버라이딩인가 오버로딩인가? `@Override` 를 못 붙이는 이유는?
 
 ## 관련
 
-[[method-signature]] · [[varargs]] · [[enum-constant-specific-polymorphism]] · [[static-util-vs-spring-bean]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[interpreter-and-jit]] · [[java-optional]]
+[[method-signature]] · [[default-constructor]] · [[varargs]] · [[enum-constant-specific-polymorphism]] · [[static-util-vs-spring-bean]] · [[arraylist-internals]] · [[linkedlist-internals]] · [[interpreter-and-jit]] · [[java-optional]]
